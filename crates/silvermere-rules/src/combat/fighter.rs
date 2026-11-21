@@ -52,6 +52,9 @@ pub struct Fighter {
     /// Whether a player's blow was fast enough for the critical bonus. Not part of the
     /// game's fighter record; [`is_weapon_too_fast_for_user`] reads it after a normal blow.
     pub fast: bool,
+    /// The critical bonus a fast blow added (0 when not fast). Not part of the game's
+    /// fighter record; the fork's Spellstrike moves it to the cast (design/war-mage.md).
+    pub fast_bonus: i32,
 }
 
 /// The ability totals [`player_fighter`] reads, summed by T-032 and passed here as plain
@@ -505,12 +508,10 @@ pub fn player_fighter(
     if f.energy < 200 && encumpct <= 66 && !tooweak {
         // agility read signed: one drained below 0 lowers the bonus
         let n = (200 - f.energy as i32 + signed_less(plr.agi, 50) / 10).min(20);
-        if encumpct < 33 {
-            f.crit += n;
-        } else {
-            f.crit += n / 2;
-        }
+        let n = if encumpct < 33 { n } else { n / 2 };
+        f.crit += n;
         f.fast = true;
+        f.fast_bonus = n;
     }
 
     // attacking after casting in the same round (`PlayerSettings::CANCAST` cleared) costs 10%
@@ -589,6 +590,7 @@ pub fn monster_fighter(
         missverbs: weapon.map_or(MessageNo(0), |w| w.missmsg),
         defalign: 0,
         fast: false,
+        fast_bonus: 0,
     };
 
     // defence against the opponent's alignment, when the opponent is in another
