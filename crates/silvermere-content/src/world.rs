@@ -83,6 +83,13 @@ fn set_abilities(slots: &mut [AbilitySlot], add: &[AbilitySlot]) -> Result<(), S
     Ok(())
 }
 
+fn weapon_type(name: &str) -> Option<silvermere_types::enums::WeaponType> {
+    silvermere_types::enums::WeaponType::ALL
+        .iter()
+        .copied()
+        .find(|t| format!("{t:?}").eq_ignore_ascii_case(name))
+}
+
 fn lines<const N: usize>(text: &[String]) -> [String; N] {
     std::array::from_fn(|i| text.get(i).cloned().unwrap_or_default())
 }
@@ -160,6 +167,9 @@ pub fn check(w: &WorldFile) -> Result<(), String> {
             ));
         }
         abilities(&i.abilities).map_err(|e| format!("item {}: {e}", i.number))?;
+        if let Some(t) = &i.weapon_type {
+            weapon_type(t).ok_or_else(|| format!("item {}: unknown weapon type `{t}`", i.number))?;
+        }
     }
     for c in &w.item_change {
         abilities(&c.add_abilities).map_err(|e| format!("item change {}: {e}", c.number))?;
@@ -195,6 +205,11 @@ async fn first_missing(db: &Db, w: &WorldFile) -> Result<Option<String>, Install
     for c in &w.item_change {
         if db.items().get(ItemNo(c.number)).await?.is_none() {
             return Ok(Some(format!("item {}", c.number)));
+        }
+    }
+    for n in w.item.iter().filter_map(|i| i.verbs_like) {
+        if db.items().get(ItemNo(n)).await?.is_none() {
+            return Ok(Some(format!("item {n}")));
         }
     }
     for m in &w.monster {
@@ -258,6 +273,24 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
         item.name = i.name.clone();
         item.desc = lines(&i.desc);
         item.cost = i.cost;
+        if let Some(t) = i.weapon_type.as_deref().and_then(weapon_type) {
+            item.wpntype = t;
+        }
+        if let Some(v) = i.mindmg {
+            item.mindmg = v;
+        }
+        if let Some(v) = i.maxdmg {
+            item.maxdmg = v;
+        }
+        if let Some(v) = i.speed {
+            item.speed = v;
+        }
+        if let Some(n) = i.verbs_like
+            && let Some(verbs) = db.items().get(ItemNo(n)).await?
+        {
+            item.hitmsg = verbs.hitmsg;
+            item.missmsg = verbs.missmsg;
+        }
         set_abilities(&mut item.abilities, &abilities(&i.abilities).map_err(bad)?).map_err(bad)?;
         db.items()
             .put_many(&[item], StateWrite::CreateMissing)
@@ -408,6 +441,9 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
         };
         for (d, to) in exits(&c.exits).map_err(bad)? {
             room.exits[d] = exit_to(to);
+        }
+        if let Some(shop) = c.shop {
+            room.shopnum = ShopNo(shop);
         }
         db.rooms().put_many(&[room], StateWrite::Untouched).await?;
         n += 1;

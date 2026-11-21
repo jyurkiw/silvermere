@@ -258,3 +258,32 @@ number = 20039
 text = """
 You don't have that leash.
 """
+
+# A sharp weapon for new characters in Newhaven, whose weapon shop sells only blunt ones:
+# an Assassin can use neither (design/stealth-casters.md). The club, sharpened: a point less
+# at most, and a little quicker.
+[[item]]
+number = 9004
+like = 90
+name = "secondhand dagger"
+desc = [
+  "A plain dagger with a nicked edge and a grip worn smooth by other hands.",
+  "Someone has kept it sharp, at least.",
+]
+weapon_type = "OneHandSharp"
+mindmg = 3
+maxdmg = 7
+speed = 900
+verbs_like = 68
+
+# The Newhaven weapon shop, replaced by a copy that sells the dagger too; the stock shop
+# (45) is left as it was.
+[[shop]]
+number = 901
+like = 45
+name = "Newhaven Weapon Shop"
+items = [100, 90, 9004]
+
+[[room_change]]
+room = "1/2141"
+shop = 901

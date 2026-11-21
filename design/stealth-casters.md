@@ -114,6 +114,11 @@ one that matters, and it is as likely to be a bolt of force as a blade.
 | 25-29 | Silent Hand | 65-69 | Master of Shadows |
 | 30-34 | Shade | 70+ | Assassin |
 
+**Its first weapon.** Newhaven's weapon shop sells only the club and the quarterstaff, both
+blunt, so the fork replaces it with a copy (shop 901, at 1/2141) that also sells a free
+**secondhand dagger** (item 9004): the club sharpened, 3-7 and speed 900 (the club is 3-8,
+speed 1000), with the dagger's verbs.
+
 **Its spells,** the stock Mage-1 line: magic missile (1), frost jet (4), lightning bolt (8),
 sunbolt (13), eldritch bolt (20).
 

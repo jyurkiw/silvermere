@@ -106,6 +106,49 @@ async fn the_stable_yard_and_old_bannon() {
     db.close().await;
 }
 
+/// Fork (design/stealth-casters.md): the Newhaven weapon shop is the fork's copy (901), which
+/// sells a secondhand dagger beside the club and quarterstaff, so a new Assassin (sharp
+/// weapons only) has something to wield.
+#[tokio::test]
+async fn a_new_assassin_buys_and_wields_the_secondhand_dagger() {
+    let (_dir, url) = team_db();
+    edit_char(&url, "Aldric", |c| c.class = ClassNo(19)).await;
+    place(&url, "Aldric", 2141).await;
+    let r = start_manual(&url).await;
+    let mut a = Player::enter(&r, "Aldric").await;
+    let out = a.cmd("list").await;
+    for item in ["club", "quarterstaff", "secondhand dagger"] {
+        assert!(out.contains(item), "{item}: {out}");
+    }
+    let out = a.cmd("buy secondhand dagger").await;
+    assert!(out.contains("You just bought"), "{out}");
+    let out = a.cmd("wield secondhand dagger").await;
+    assert!(!out.contains("can't use"), "{out}");
+    a.leave_ticking(&r).await;
+    r.stop().await.unwrap();
+    let c = stored(&url, "Aldric").await;
+    assert_eq!(c.weapon, silvermere_types::ids::ItemNo(9004), "wielded");
+    let db = Db::connect_and_migrate(&url).await.unwrap();
+    let dagger = db
+        .items()
+        .get(silvermere_types::ids::ItemNo(9004))
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(
+        (dagger.wpntype, dagger.mindmg, dagger.maxdmg, dagger.speed),
+        (silvermere_types::enums::WeaponType::OneHandSharp, 3, 7, 900)
+    );
+    let room = db
+        .rooms()
+        .get(silvermere_types::ids::RoomKey::new(1, 2141))
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(room.shopnum.0, 901);
+    db.close().await;
+}
+
 /// Fork: the universal trainers a new character meets, Newhaven's Adventurer's Guild (1/2147)
 /// and the Adventurer's Guild Universal Trainer (1/1376), train the fork's classes too: a
 /// War Mage and a Warden each train level 2 at both.
