@@ -1456,3 +1456,50 @@ fn no_off_hand_refuses_shields() {
         "Class Item Inclusion overrides"
     );
 }
+
+// Fork (design/warden.md): armour that improves with level, and ranged weapons allowed by
+// a class ability whatever their weapon type.
+#[test]
+fn warden_armour_steps_and_ranged_weapons() {
+    use silvermere_types::fork;
+    let mut c = silvermere_engine::clear_player();
+    c.class = ClassNo(17);
+    c.race = RaceNo(1);
+    let mut warden = class(17, WeaponClass::AnyTwoHand);
+    warden.armour = ArmourType::StuddedRigidLeather;
+    warden.abilities[0] = (fork::CHAINMAIL_AT_LEVEL, 10);
+    warden.abilities[1] = (fork::SCALEMAIL_AT_LEVEL, 20);
+    warden.abilities[2] = (fork::RANGED_WEAPONS, 0);
+    let mut chain = armour(910, "chainmail shirt", 30, WornLocation::Torso);
+    chain.armtype = ArmourType::Chainmail;
+    let mut scale = armour(911, "scalemail shirt", 30, WornLocation::Torso);
+    scale.armtype = ArmourType::Scalemail;
+    let mut plate = armour(912, "platemail", 30, WornLocation::Torso);
+    plate.armtype = ArmourType::Platemail;
+    let at = |c: &mut silvermere_types::records::Character, level, item: &Item| {
+        c.level = level;
+        can_use(c, item, &check(&warden, false))
+    };
+    assert_eq!(at(&mut c, 9, &chain), Err(CantUse::Armour));
+    assert_eq!(at(&mut c, 10, &chain), Ok(()));
+    assert_eq!(at(&mut c, 19, &scale), Err(CantUse::Armour));
+    assert_eq!(at(&mut c, 20, &scale), Ok(()));
+    assert_eq!(at(&mut c, 50, &plate), Err(CantUse::Armour));
+    // a one-handed sling: refused unless marked Ranged
+    let mut sling = weapon(913, "sling", 5, WeaponType::OneHandBlunt, 0, 1200);
+    let axe = weapon(914, "greataxe", 30, WeaponType::TwoHandSharp, 0, 2000);
+    c.level = 5;
+    assert_eq!(can_use(&c, &axe, &check(&warden, false)), Ok(()));
+    assert_eq!(
+        can_use(&c, &sling, &check(&warden, false)),
+        Err(CantUse::WeaponClass)
+    );
+    sling.abilities[0] = (fork::RANGED, 0);
+    assert_eq!(can_use(&c, &sling, &check(&warden, false)), Ok(()));
+    // a class without RangedWeapons gets nothing from the marker
+    let plain = class(18, WeaponClass::AnyTwoHand);
+    assert_eq!(
+        can_use(&c, &sling, &check(&plain, false)),
+        Err(CantUse::WeaponClass)
+    );
+}

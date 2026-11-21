@@ -3,7 +3,9 @@
 
 use silvermere_rules::abilities::item_has_ability;
 use silvermere_rules::spells::{LegalBand, can_use_spell};
-use silvermere_types::enums::{Ability, ItemType, WeaponClass, WeaponType, WornLocation};
+use silvermere_types::enums::{
+    Ability, ArmourType, ItemType, WeaponClass, WeaponType, WornLocation,
+};
 use silvermere_types::ids::{ClassNo, ItemNo, RaceNo, SpellNo};
 use silvermere_types::records::{Character, Class, Item, Spell};
 
@@ -117,10 +119,37 @@ pub fn can_use(plr: &Character, item: &Item, check: &UseCheck<'_>) -> Result<(),
     if named {
         return Ok(());
     }
+    let class_value = |a| {
+        cls.abilities
+            .iter()
+            .find(|s| s.0 == a)
+            .map(|s| i32::from(s.1))
+    };
+    // Fork: armour that improves with level (the Warden: chain from 10, scale from 20)
+    let mut armour_limit = cls.armour.code();
+    for (ability, armour) in [
+        (
+            silvermere_types::fork::CHAINMAIL_AT_LEVEL,
+            ArmourType::Chainmail,
+        ),
+        (
+            silvermere_types::fork::SCALEMAIL_AT_LEVEL,
+            ArmourType::Scalemail,
+        ),
+    ] {
+        if class_value(ability).is_some_and(|at| i32::from(plr.level) >= at) {
+            armour_limit = armour_limit.max(armour.code());
+        }
+    }
     let mut ok = match item.item_type {
-        ItemType::Weapon => weapon_allowed(item, cls.weapon),
+        // Fork: a class with RangedWeapons may also use any item marked Ranged
+        ItemType::Weapon => {
+            weapon_allowed(item, cls.weapon)
+                || (class_value(silvermere_types::fork::RANGED_WEAPONS).is_some()
+                    && has(silvermere_types::fork::RANGED))
+        }
         ItemType::Armour => {
-            if item.armtype.code() > cls.armour.code() {
+            if item.armtype.code() > armour_limit {
                 false
             } else {
                 !(matches!(

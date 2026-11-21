@@ -16,6 +16,7 @@ round, pet names in output), and that's accepted for this one.
 - [The pet in output text](#the-pet-in-output-text)
 - [Weapons: two-handed and ranged](#weapons-two-handed-and-ranged)
 - [Fitting it into silvermere](#fitting-it-into-silvermere)
+- [Follow-up: room renovations](#follow-up-room-renovations)
 - [Decisions](#decisions)
 - [Open questions](#open-questions)
 - [Brainstorm](#brainstorm)
@@ -301,6 +302,14 @@ ammunition and no special rules. Real ranged combat can hang off the same marker
    the balance lever; the balance sim ([testing.md](testing.md)) can measure it.
 6. ~~The "Also here:" line.~~ **Decided:** it shows "Devin and Fang" too, checked against
    MegaMud in play-testing.
+
+## Follow-up: room renovations
+
+Once the Warden is built: **room renovations**, starting with **trainers for the War Mage
+and the Warden.** Stock training halls are shops tied to classes (a shop's `trainclass`
+field), so neither new class may be able to train levels until it has a trainer. Check how
+training picks the classes it serves, then add trainers (new rooms or changes to existing
+halls) through the content overlay.
 
 ## Brainstorm
 

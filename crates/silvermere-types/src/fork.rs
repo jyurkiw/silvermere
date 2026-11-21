@@ -16,6 +16,17 @@ pub const SPELLSTRIKE_SUCCESS_OFF: Ability = Ability::Unknown(1002);
 pub const SPELLSTRIKE_FAIL_OFF: Ability = Ability::Unknown(1003);
 /// The class may not use items worn off-hand (shields).
 pub const NO_OFF_HAND: Ability = Ability::Unknown(1004);
+/// On a character: the kind of the companion it has bonded (design/warden.md); 0 or
+/// absent for none. Set by content scripts (`addability`).
+pub const PET_KIND: Ability = Ability::Unknown(1005);
+/// On a class: from this level the class may wear chainmail.
+pub const CHAINMAIL_AT_LEVEL: Ability = Ability::Unknown(1006);
+/// On a class: from this level the class may wear scalemail.
+pub const SCALEMAIL_AT_LEVEL: Ability = Ability::Unknown(1007);
+/// On an item: a ranged weapon (a sling, a bow). For now only a marker for who may use it.
+pub const RANGED: Ability = Ability::Unknown(1008);
+/// On a class: may use any item marked [`RANGED`], whatever its weapon type.
+pub const RANGED_WEAPONS: Ability = Ability::Unknown(1009);
 
 /// The fork's abilities by the name content uses, and whether players are shown them.
 pub const FORK_ABILITIES: &[(&str, Ability, bool)] = &[
@@ -23,6 +34,11 @@ pub const FORK_ABILITIES: &[(&str, Ability, bool)] = &[
     ("SpellstrikeSuccessOff", SPELLSTRIKE_SUCCESS_OFF, true),
     ("SpellstrikeFailOff", SPELLSTRIKE_FAIL_OFF, true),
     ("NoOffHand", NO_OFF_HAND, false),
+    ("PetKind", PET_KIND, true),
+    ("ChainmailAtLevel", CHAINMAIL_AT_LEVEL, false),
+    ("ScalemailAtLevel", SCALEMAIL_AT_LEVEL, false),
+    ("Ranged", RANGED, false),
+    ("RangedWeapons", RANGED_WEAPONS, false),
 ];
 
 /// A fork ability by its content name.
