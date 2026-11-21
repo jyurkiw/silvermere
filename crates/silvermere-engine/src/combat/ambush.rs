@@ -3,9 +3,10 @@
 //! A class with `SpellBackstab` that casts a single-target attack spell from hiding or
 //! sneaking makes a stealth roll as the spell is begun: the stock hide/sneak chance less
 //! the class's `SpellBackstabStealth` penalty. The roll is kept until the cast itself (the
-//! first auto-combat round). If the caster stayed unseen and the spell lands, its damage is
-//! raised by the `SpellBackstab` percentage plus a roll between the caster's Backstab
-//! Min. and Max. abilities. One attempt: whatever happens, the caster is revealed.
+//! first auto-combat round). If the caster stayed unseen and the spell lands, its amount is
+//! built as a melee backstab's damage is ([`backstab_amount`]), so a spell backstab keeps
+//! pace with a weapon's as the levels go up. One attempt: whatever happens, the caster is
+//! revealed.
 
 use silvermere_rules::Rng;
 use silvermere_text::Msg;
@@ -57,6 +58,7 @@ pub fn strike(world: &mut World, id: SessionId, spl: &Spell, rolled: i32) -> i32
     let pct = user_ability(world, p, fork::SPELL_BACKSTAB);
     let min = user_ability(world, p, Ability::BackstabMin);
     let max = user_ability(world, p, Ability::BackstabMax).max(min);
+    let (level, stealth) = (i32::from(p.level), i32::from(p.stealth));
     let who = p.firstname.clone();
     let room = room_of(p);
     tell_user(
@@ -80,5 +82,17 @@ pub fn strike(world: &mut World, id: SessionId, spl: &Spell, rolled: i32) -> i32
         },
     );
     let bonus = world.rng.range(min, max + 1);
-    (i64::from(rolled) * i64::from(100 + pct) / 100 + i64::from(bonus)) as i32
+    backstab_amount(rolled, pct, level, stealth, bonus)
+}
+
+/// A spell backstab's amount, built as the stock melee backstab builds its damage with the
+/// spell's roll in the weapon's place: the roll raised by `pct` (100 doubles it), plus twice
+/// the level, a tenth of the stealth and the Backstab Min./Max. roll, then all of it raised
+/// by the level in percent.
+pub fn backstab_amount(rolled: i32, pct: i32, level: i32, stealth: i32, bonus: i32) -> i32 {
+    let base = i64::from(rolled) * i64::from(100 + pct) / 100
+        + i64::from(level) * 2
+        + i64::from(stealth) / 10
+        + i64::from(bonus);
+    (base * (i64::from(level) + 100) / 100).clamp(0, i64::from(i32::MAX)) as i32
 }

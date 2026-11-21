@@ -86,9 +86,9 @@ fn a_spell_from_hiding_lands_as_a_backstab() {
             .any(|l| l == "You strike from the shadows with magic missile!"),
         "{out:?}"
     );
-    // the spell's 10 doubled, plus the backstab bonus of 5, before the spell's own
-    // modifiers: above anything a normal cast of it does
-    assert!(dmg >= 25, "backstab damage, got {dmg}: {out:?}");
+    // as a melee backstab: the spell's 10 or more doubled, plus twice the level (10), a
+    // tenth of the stealth (90) and the backstab bonus of 5, raised by 10%
+    assert!(dmg >= 59, "backstab damage, got {dmg}: {out:?}");
     let (_, _, normal) = cast_from_hiding(-200, false);
     assert!(normal < 25, "a normal cast, got {normal}");
 }
@@ -230,4 +230,13 @@ fn vanish_is_for_a_fight_and_for_avengers() {
     let out = say(&mut w, id, "vanish");
     assert!(!out.iter().any(|l| l.contains("vanish")), "{out:?}");
     assert!(w.vanish_wait.is_empty());
+}
+
+#[test]
+fn a_spell_backstab_is_built_as_a_melee_backstab() {
+    use silvermere_engine::combat::ambush::backstab_amount;
+    // a level 50 godstrike of 67 with stealth 164: (134 + 100 + 16 + 5) * 150%
+    assert_eq!(backstab_amount(67, 100, 50, 164, 5), 382);
+    // a level 1 harm of 13 with stealth 30: (26 + 2 + 3 + 5) * 101%
+    assert_eq!(backstab_amount(13, 100, 1, 30, 5), 36);
 }
