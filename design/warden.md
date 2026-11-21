@@ -78,7 +78,7 @@ Proposed: a tough Warden that swings less often, with a slow companion that hits
 | armour | plate | **leather; chain from level 10; scale from level 20** | see below |
 | weapons | any | two-handed and ranged only | see [Weapons](#weapons-two-handed-and-ranged) |
 | magic | none | none | its pet is not a spell |
-| experience | 100% | **160%** | above the Witchunter (130%) and the Priest and Mage (140%), well below the Warlock (185%); the balance sim decides |
+| experience | 100% | **140%** | the Priest's and Mage's, just above the Witchunter (130%); you set it around 130-140%; the balance sim checks it |
 | abilities | Bash | Bash; a companion at creation; the armour steps | fork abilities |
 | titles | | *open* | |
 
@@ -178,8 +178,8 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
 ## Open questions
 
 1. **Stats:** proposed above: 7-11 HP, fighting 3, leather then chain (10) and scale (20),
-   160%, and a companion with one heavy blow a round. Experience lowered from a first 175%
-   at your request; the rest waiting for your review.
+   140%, and a companion with one heavy blow a round. Experience set to around 130-140% at
+   your request (140% for now); the rest waiting for your review.
 2. **Pet kinds at launch:** one kind for every Warden, or a choice of a few (wolf, bear,
    hawk, snake)? Do kinds differ only in flavour, or in speed and damage too?
 3. **Naming:** at character creation (touches the creation screens) or a `PET NAME` command
