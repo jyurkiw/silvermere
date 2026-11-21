@@ -19,10 +19,14 @@ sim ([testing.md](testing.md)). Fork-only. Kept on its own branch, unmerged.
 New spells shared by the **War Mage** and the **Warlock**, the two halves of the King's
 Battle-Mage corps ([war-mage.md, Lore](war-mage.md#lore)). There are two families:
 
-- **Strikes**: attack spells made to be cast through a weapon with Spellstrike. They're
-  cheap, easy to land, and meant to go out round after round.
-- **Melee spells**: buffs that enchant the caster's weapon so that every hit deals extra
-  elemental damage. These replace the warlock's flametongue.
+- **Strikes**: at-level attack spells that are more mana-efficient than the caster's most
+  powerful spell, so a battle-mage can cast every round without under-casting a spell two
+  tiers down and without running out of mana at once. Made to go through a weapon with
+  Spellstrike.
+- **Melee spells**: buffs cast on yourself that add passive elemental damage to every melee
+  hit. These replace the warlock's flametongue.
+
+Both families are in: they do different jobs and can be used together.
 
 Mages never get them: the two classes are close cousins in a way a mage isn't.
 
@@ -62,13 +66,28 @@ Stock spell effects the new spells can reuse as data, with no code:
 
 ## Strikes: Spellstrike-native attack spells
 
+**What a strike is for.** Today a battle-mage who wants to cast every round without running
+dry has to *under-cast*: drop to a spell two tiers below its best (lightning bolt instead
+of eldritch bolt), which is cheap but weak for its level. A strike is the at-level
+alternative: an attack spell for the caster's level that is **more mana-efficient** than
+its most powerful spell, so it can go out round after round without emptying the mana
+pool at once. It sits between the two:
+
+| At a given level | Damage | Mana per cast |
+|---|---|---|
+| The best stock spell | highest | highest |
+| **The strike** | **close to the best** | **close to the under-cast spell** |
+| The under-cast spell (two tiers down) | lowest | lowest |
+
 What makes a strike different from a stock attack spell:
 
-- **Cheap and castable.** Low mana and a mild difficulty, so a War Mage can cast one every
-  round (the *Conserve* run of the balance sim) without its cast chance collapsing.
-- **Modest damage, steady growth.** Less than a full-round spell of the same level, since
-  the blows still land beside it, and it keeps growing with level instead of stopping
-  early.
+- **Mana-efficient.** More damage per point of mana than the caster's best spell, at a
+  mild difficulty, so a War Mage can cast one every round without its cast chance
+  collapsing. In the balance sim, strikes are what the *Conserve* run casts once they
+  exist ([testing.md, The War Mage runs](testing.md#the-war-mage-runs)).
+- **At-level damage, steady growth.** Somewhat less than the best spell of the same level,
+  since the blows still land beside it, and it keeps growing with level instead of
+  stopping early.
 - **An element each.** A spread of elements across the ladder, so the battle-mage picks
   the strike a monster is weak to.
 - **Through the weapon.** In the lore a strike is channelled through the blade, not
