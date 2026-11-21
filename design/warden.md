@@ -9,6 +9,7 @@ round, pet names in output), and that's accepted for this one.
 - [How the model covers each case](#how-the-model-covers-each-case)
 - [The Warden](#the-warden)
 - [The pet's attack](#the-pets-attack)
+- [The Newhaven stable: choosing a companion](#the-newhaven-stable-choosing-a-companion)
 - [The pet in output text](#the-pet-in-output-text)
 - [Weapons: two-handed and ranged](#weapons-two-handed-and-ranged)
 - [Fitting it into silvermere](#fitting-it-into-silvermere)
@@ -87,8 +88,9 @@ level is a new fork rule, the same kind as `NoOffHand`: two fork abilities,
 `ChainmailAtLevel` (10) and `ScalemailAtLevel` (20), checked where gear is allowed. Below
 level 10 the limit is the class's own (leather); from 10 chain; from 20 scale.
 
-A new Warden starts with one companion (`source` = class, `immortal`, `summoned`) of a kind
-to be decided, and names it ([open question 3](#open-questions)).
+A new Warden bonds its companion at the Newhaven stable
+([below](#the-newhaven-stable-choosing-a-companion)): `source` = class, `immortal`,
+`summoned`.
 
 ## The pet's attack
 
@@ -119,6 +121,43 @@ General rules for any pet:
 The first version's companion shares its owner's hit points, so monsters attack only the
 owner, as they do today. A pet with its own hit points (falcon, Warden 2.0) is a later
 step: it needs monsters able to choose it as a target.
+
+## The Newhaven stable: choosing a companion
+
+A new Warden chooses its companion in the game world, not on the creation screens: its first
+stop is a **stable** in Newhaven.
+
+- **New rooms in Newhaven** for the stable, reached by an exit from an existing Newhaven
+  room.
+- **A stablemaster NPC**, a permanent monster in the stable. Players can `ask stablemaster
+  about wardens` (and about each companion) for the lore and the choices. That's the stock
+  talk mechanism: the NPC's record names a talk text block of `KEYWORDS:text` lines.
+- **The stable is a shop.** `LIST` shows four sets of **reins**, each priced at nothing:
+
+| Reins | Companion | Character |
+|---|---|---|
+| hound's reins | **hunting hound** | average: the baseline companion |
+| hawkling's jesses | **hawkling** | a low-level bird: strikes several times a round, little damage each |
+| snake handler's pouch | **trained rattlesnake** | low damage, but its bite poisons |
+| drop bear harness | **Drop Bear** | slow (a blow every other round) but hits very hard |
+
+- **Using the reins bonds the companion.** The reins are Warden-only items carrying a fork
+  ability `BondPet` whose value is the kind. Using them creates the Warden's companion
+  (immortal, summoned, sharing HP), or switches an existing companion to the new kind. The
+  reins are used up. A Warden who changes their mind can come back for another set.
+- Until a Warden bonds a companion, it fights alone.
+
+Proposed companion stats (placeholders for the balance sim; values on each pet kind):
+
+| Kind | Blows | Damage per blow, by Warden level (1 / 10 / 20 / 30) | Extra |
+|---|---|---|---|
+| hunting hound | 1 a round | 2-10 / 7-28 / 12-48 / 17-68 | |
+| hawkling | about 3 a round (an energy pool at a fast speed) | 1-4 / 2-9 / 4-16 / 5-22 | strikes often, so it lands more consistently |
+| trained rattlesnake | 1 a round | 1-5 / 4-14 / 6-24 / 9-34 | poisons the target |
+| Drop Bear | 1 every other round (a slow energy pool) | 4-20 / 14-56 / 24-96 / 34-136 | |
+
+Aim: about the same damage over a fight for each, delivered differently. The sim checks
+it.
 
 ## The pet in output text
 
@@ -159,7 +198,9 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
 | The pet's blows | `silvermere-engine`, after the owner's blows in the round; a pet fighter built in `silvermere-rules` from its kind |
 | Displayed name | one helper in the engine, used by the who list and the arrival and departure lines |
 | The Warden class | content, like the War Mage |
-| Naming | creation or a command ([open question 3](#open-questions)) |
+| Naming | a command after bonding ([open question 3](#open-questions)) |
+| The stable | content: new Newhaven rooms, the stablemaster (a talking monster and its text blocks), the stable shop, four reins items. Needs the overlay to grow to rooms, monsters, shops, items and text blocks |
+| Reins | a fork item ability `BondPet`, handled when the item is used (code) |
 
 ## Decisions
 
@@ -172,6 +213,9 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
 5. Targeting stays on the character only.
 6. The Warden wears leather (chain from level 10, scale from 20) and uses two-handed or
    ranged weapons.
+8. The companion is chosen in game, at a new stable in Newhaven: a stablemaster to ask, and
+   four free reins (hound, hawkling, rattlesnake, Drop Bear) that bond the companion when
+   used.
 7. The Warden has high HP and low fighting (3): it swings less, and its companion hits
    hard. 7-11 HP, 140% experience, one companion blow a round.
 
@@ -179,8 +223,9 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
 
 1. ~~Stats.~~ **Decided:** 7-11 HP, fighting 3, 140% experience, leather then chain (10)
    and scale (20), and a companion with one heavy blow a round (damage to be tuned).
-2. **Pet kinds at launch:** one kind for every Warden, or a choice of a few (wolf, bear,
-   hawk, snake)? Do kinds differ only in flavour, or in speed and damage too?
+2. ~~Pet kinds at launch.~~ **Decided:** a choice of four at the Newhaven stable: hunting
+   hound, hawkling, trained rattlesnake, Drop Bear, each different in speed, damage or
+   effect.
 3. **Naming:** at character creation (touches the creation screens) or a `PET NAME` command
    afterwards (simpler)?
 4. **Ranged weapons:** a `Ranged` item ability, or Class Item Inclusion per item?
