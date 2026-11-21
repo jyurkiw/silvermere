@@ -11,6 +11,7 @@ round, pet names in output), and that's accepted for this one.
 - [Level titles](#level-titles)
 - [The pet's attack](#the-pets-attack)
 - [The Newhaven stable: choosing a companion](#the-newhaven-stable-choosing-a-companion)
+- [Naming the companion](#naming-the-companion)
 - [The pet in output text](#the-pet-in-output-text)
 - [Weapons: two-handed and ranged](#weapons-two-handed-and-ranged)
 - [Fitting it into silvermere](#fitting-it-into-silvermere)
@@ -192,6 +193,20 @@ Proposed companion stats (placeholders for the balance sim; values on each pet k
 Aim: about the same damage over a fight for each, delivered differently. The sim checks
 it.
 
+## Naming the companion
+
+A new command, `PET`:
+
+- `PET NAME Fang` names the summoned companion. A name is one word of letters, up to 10
+  characters (the same limit as a character's first name), capitalised as typed. It can be
+  changed any time.
+- `PET` alone shows the companion: its name, kind and what it does.
+- Until it's named, a companion goes by its kind: "your hunting hound", "Devin and his
+  hunting hound".
+
+The name is kept in the companion's `pets` row. It's display only: players still target
+the Warden, not the pet.
+
 ## The pet in output text
 
 One helper gives a character's displayed name with its summoned pet, "Devin and Fang", used
@@ -231,7 +246,7 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
 | The pet's blows | `silvermere-engine`, after the owner's blows in the round; a pet fighter built in `silvermere-rules` from its kind |
 | Displayed name | one helper in the engine, used by the who list and the arrival and departure lines |
 | The Warden class | content, like the War Mage |
-| Naming | a command after bonding ([open question 3](#open-questions)) |
+| `PET` / `PET NAME` | a new command in the engine; the name in the `pets` row |
 | The stable | content: new Newhaven rooms, the stablemaster (a talking monster and its text blocks), the stable shop, four leash items. Needs the overlay to grow to rooms, monsters, shops, items and text blocks |
 | Bonding | room scripts (stock clauses) setting the fork character ability `PetKind`; no code |
 | `PetKind` | read by the pet's attack to pick the companion's kind |
@@ -250,6 +265,7 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
 8. The companion is chosen in game, at a new stable in Newhaven: a stablemaster to ask, and
    four free leashes (hound, hawkling, rattlesnake, Drop Bear). You use the leash in the
    stable, whose room script takes it and sets the character's `PetKind` ability.
+11. The companion is named with `PET NAME`; `PET` shows it.
 10. Titles: Cub to Huntsman, sixteen ranks, in text block 3020.
 9. All pet acquisition is content: shops or retrieval quests, ending in the same script
    clauses. No code for acquiring pets.
@@ -263,8 +279,8 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
 2. ~~Pet kinds at launch.~~ **Decided:** a choice of four at the Newhaven stable: hunting
    hound, hawkling, trained rattlesnake, Drop Bear, each different in speed, damage or
    effect.
-3. **Naming:** at character creation (touches the creation screens) or a `PET NAME` command
-   afterwards (simpler)?
+3. ~~Naming.~~ **Decided:** a `PET NAME` command after bonding
+   ([Naming the companion](#naming-the-companion)).
 4. **Ranged weapons:** a `Ranged` item ability, or Class Item Inclusion per item?
 5. **How strong is the pet?** Its damage per round against a Warrior's at the same level is
    the balance lever; the balance sim ([testing.md](testing.md)) can measure it.
