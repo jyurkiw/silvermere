@@ -68,33 +68,53 @@ Two tables: pet **kinds** are content, each character's **pets** are play state.
 
 ## The Warden
 
-| Field | Value | Note |
-|---|---|---|
-| name | Warden | |
-| class number | 17 | the next after the War Mage |
-| HP per level | *open* | |
-| experience | *open* | |
-| magic | none | the Warden casts nothing; its pet is not a spell |
-| fighting | *open* | |
-| weapons | two-handed and ranged only | see [Weapons](#weapons-two-handed-and-ranged) |
-| armour | leather | |
-| abilities | a fork ability marking the class as starting with a companion | |
-| titles | *open* | |
+Proposed: a tough Warden that swings less often, with a slow companion that hits hard.
+
+| Field | Warrior | Warden (proposed) | Note |
+|---|---|---|---|
+| class number | 1 | 17 | the next after the War Mage |
+| HP per level | 6-10 | **7-11** | more than any stock class |
+| fighting | 4 (`combat` 6) | **3** (`combat` 5, "Average") | fewer swings of its own |
+| armour | plate | **leather; chain from level 10; scale from level 20** | see below |
+| weapons | any | two-handed and ranged only | see [Weapons](#weapons-two-handed-and-ranged) |
+| magic | none | none | its pet is not a spell |
+| experience | 100% | **175%** | first guess, between the Witchunter (130%) and the Warlock (185%); the balance sim decides |
+| abilities | Bash | Bash; a companion at creation; the armour steps | fork abilities |
+| titles | | *open* | |
+
+**Armour by level.** A class record holds one armour limit, so armour that improves with
+level is a new fork rule, the same kind as `NoOffHand`: two fork abilities,
+`ChainmailAtLevel` (10) and `ScalemailAtLevel` (20), checked where gear is allowed. Below
+level 10 the limit is the class's own (leather); from 10 chain; from 20 scale.
 
 A new Warden starts with one companion (`source` = class, `immortal`, `summoned`) of a kind
 to be decided, and names it ([open question 3](#open-questions)).
 
 ## The pet's attack
 
-Each round, for every **summoned, living** pet a fighting character has, the pet makes its
-own blows at the character's target, after the character's:
+**Proposed for the Warden's companion: one heavy blow a round.** "Attacks less, but you feel
+it": rather than an energy pool, the companion makes exactly one blow each round, after
+the Warden's, at the Warden's target. All the scaling is in its damage:
 
-- **its own energy**: a full round (1000), spent on blows at the pet's weapon speed, so a
-  fast pet strikes more often;
-- **to-hit and damage** from its kind, grown with the owner's level, against the target's
-  armour, through the stock blow resolution (a pet's blow is a fighter's blow);
+| Warden level | Companion's blow (proposed) |
+|---|---|
+| 1 | 2-10 |
+| 10 | 7-28 |
+| 20 | 12-48 |
+| 30 | 17-68 |
+
+Damage is `2 + level/2` to `8 + 2 × level`, rolled to hit against the target's armour
+through the stock blow resolution (a pet's blow is a fighter's blow). These are placeholders
+for the balance sim to tune; they're values on the pet kind, not code.
+
+General rules for any pet:
+
+- only **summoned, living** pets attack;
 - **no mana, no casting, no cost to the owner**: the owner's energy isn't touched;
-- **its own lines**: "Fang bites the giant rat for 9 damage!", and its own miss line.
+- **its own lines**: "Fang bites the giant rat for 9 damage!", and its own miss line;
+- a kind sets **blows per round**: a fixed count (the Warden's companion: 1), or an energy
+  pool at its weapon speed for pets that should strike more often as they're quicker
+  (a later falcon, say).
 
 The first version's companion shares its owner's hit points, so monsters attack only the
 owner, as they do today. A pet with its own hit points (falcon, Warden 2.0) is a later
@@ -133,6 +153,7 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
 | Piece | Where |
 |---|---|
 | `pet_kinds` | content (`content/pets.toml`), installed by the overlay, grown to cover pet kinds |
+| Armour by level | two fork abilities checked in `items/can_use.rs` |
 | `pets` table | a migration (SQLite and PostgreSQL), a repository in `silvermere-db`, `docs/schema.md` regenerated |
 | Pets in the world | loaded with the characters, saved through the persistence worker when they change |
 | The pet's blows | `silvermere-engine`, after the owner's blows in the round; a pet fighter built in `silvermere-rules` from its kind |
@@ -149,11 +170,15 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
 4. The Warden's first companion is immortal, shares its owner's HP, and is always
    summoned.
 5. Targeting stays on the character only.
-6. The Warden wears leather and uses two-handed or ranged weapons.
+6. The Warden wears leather (chain from level 10, scale from 20) and uses two-handed or
+   ranged weapons.
+7. The Warden has high HP and low fighting (3): it swings less, and its companion hits
+   hard.
 
 ## Open questions
 
-1. **Stats:** the Warden's HP per level, experience cost and fighting value.
+1. **Stats:** proposed above: 7-11 HP, fighting 3, leather then chain (10) and scale (20),
+   175%, and a companion with one heavy blow a round. Waiting for your review.
 2. **Pet kinds at launch:** one kind for every Warden, or a choice of a few (wolf, bear,
    hawk, snake)? Do kinds differ only in flavour, or in speed and damage too?
 3. **Naming:** at character creation (touches the creation screens) or a `PET NAME` command
