@@ -45,6 +45,42 @@ pub fn pet_names(world: &World, id: SessionId, kind: &PetKind) -> (String, Strin
     )
 }
 
+/// What follows a character's name where its companion is shown with it: " and Fang", or
+/// " and his hunting hound" until it's named. `None` without a companion.
+pub fn shown_suffix(world: &World, id: SessionId) -> Option<String> {
+    let kind = pet_kind(world, id)?;
+    Some(match world.pet_names.get(&id).filter(|n| !n.is_empty()) {
+        Some(name) => format!(" and {name}"),
+        None => {
+            let his = super::possessive_pronoun(player(world, id));
+            format!(" and {his} {}", kind.name)
+        }
+    })
+}
+
+/// `base` (a name as a line shows it) with the companion after it: "Devin and Fang".
+pub fn shown_name(world: &World, id: SessionId, base: &str) -> String {
+    match shown_suffix(world, id) {
+        Some(suffix) => format!("{}{suffix}", base.trim_end()),
+        None => base.to_owned(),
+    }
+}
+
+/// [`shown_name`] for the player in the game whose first name is `firstname`.
+pub fn shown_name_of(world: &World, firstname: &str, base: &str) -> String {
+    let id = world.session_ids().into_iter().find(|&s| {
+        world.is_in_game(s)
+            && world
+                .session(s)
+                .and_then(|x| x.player())
+                .is_some_and(|p| p.firstname == firstname)
+    });
+    match id {
+        Some(id) => shown_name(world, id, base),
+        None => base.to_owned(),
+    }
+}
+
 /// The companion's blows at `mon` after its owner's round, if the owner has one and the
 /// fight is still on.
 pub fn pet_round(world: &mut World, id: SessionId, mon: ActiveMonsterId) {

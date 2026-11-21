@@ -24,7 +24,7 @@ use silvermere_types::ids::{
 };
 use silvermere_types::records::{ActiveMonster, ActiveSpell, Character, Coins, Spell};
 
-const ROOM: u32 = 2140;
+pub(crate) const ROOM: u32 = 2140;
 pub(crate) const WAR_MAGE: ClassNo = ClassNo(16);
 const PLAIN_MAGE: ClassNo = ClassNo(12);
 const HUMAN: RaceNo = RaceNo(1);

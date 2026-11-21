@@ -379,8 +379,8 @@ fn perform_move(
             };
             tell_room_all(world, target, [Some(id), dragvictim], inm);
         } else {
-            // the plain walk, one line each way
-            let who = name.to_owned();
+            // the plain walk, one line each way (Fork: with the companion, design/warden.md)
+            let who = crate::combat::pet::shown_name(world, id, name);
             let drag = buf.to_owned();
             let d = usize::from(dir.code());
             let left = match dir {

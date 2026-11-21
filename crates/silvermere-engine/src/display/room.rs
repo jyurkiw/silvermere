@@ -411,7 +411,8 @@ fn also_here(world: &mut World, id: SessionId, key: RoomKey, palette: Palette) -
         } else {
             who.push_str(", ");
         }
-        who.push_str(&v.firstname);
+        // Fork: the companion with its Warden (design/warden.md)
+        who.push_str(&crate::combat::pet::shown_name(world, other, &v.firstname));
         // A timer either way or an Outlaw, unless robbed unseen
         if crate::evil::shows_evil_star(world, id, other, v.evil) {
             who.push('*');

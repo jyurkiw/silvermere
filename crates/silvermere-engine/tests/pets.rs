@@ -152,3 +152,32 @@ fn pet_is_left_alone_without_a_companion() {
     assert!(!out.iter().any(|l| l.contains("now called")), "{out:?}");
     assert!(w.pet_names.is_empty());
 }
+
+#[test]
+fn others_see_the_warden_with_the_companion() {
+    let (mut w, id, _) = fight(1);
+    w.pet_names.insert(id, "Fang".into());
+    let bob = crate::common::enter(
+        &mut w,
+        "Bob",
+        crate::spellstrike::ROOM,
+        silvermere_types::enums::MessageLevel::Low,
+    );
+    plr(&mut w, bob).settings = silvermere_types::flags::PlayerSettings::VALIDATED;
+    let out = say(&mut w, bob, "look");
+    assert!(
+        out.iter()
+            .any(|l| l.contains("Also here:") && l.contains("Gorin and Fang")),
+        "{out:?}"
+    );
+    let out = say(&mut w, bob, "who");
+    assert!(out.iter().any(|l| l.contains("and Fang")), "{out:?}");
+    // unnamed, it goes by its kind
+    w.pet_names.remove(&id);
+    let out = say(&mut w, bob, "look");
+    assert!(
+        out.iter()
+            .any(|l| l.contains("Gorin and his hunting hound")),
+        "{out:?}"
+    );
+}
