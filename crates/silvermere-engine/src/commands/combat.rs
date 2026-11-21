@@ -294,7 +294,14 @@ pub fn cmd_backstab(world: &mut World, id: SessionId, _cmd: Cmd, line: &CommandL
     let Some(itm) = world.items.get(&plr.weapon) else {
         return Handled::Done;
     };
-    if combat::item_has(itm, Ability::BackstabAv) {
+    // Fork: a class with BluntBackstab backstabs with any blunt weapon
+    // (design/stealth-casters.md)
+    let blunt = matches!(
+        itm.wpntype,
+        silvermere_types::enums::WeaponType::OneHandBlunt
+            | silvermere_types::enums::WeaponType::TwoHandBlunt
+    ) && combat::user_has(world, plr, silvermere_types::fork::BLUNT_BACKSTAB);
+    if blunt || combat::item_has(itm, Ability::BackstabAv) {
         cmd_any_attack(world, id, line, Move::Backstab, Move::Backstab)
     } else {
         tell_user(world, id, Msg::CombatNoBackstabWeapon);

@@ -182,6 +182,11 @@ pub fn execute_input(world: &mut World, id: SessionId, line: &str, queued: bool)
         prompt(world, id);
         return Outcome::Continue;
     }
+    // Fork: VANISH from a class that can vanish (design/stealth-casters.md)
+    if super::vanish::try_vanish(world, id, &cl) {
+        prompt(world, id);
+        return Outcome::Continue;
+    }
 
     // Stage 6: the parser and the handlers.
     match handle_commands(world, id, &cl) {

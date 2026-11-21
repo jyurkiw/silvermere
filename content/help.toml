@@ -52,7 +52,7 @@ words = "Companions"
 text = '''
 Companions
 
-A Warden's companion fights beside them. Each round, after the Warden's own blows, it
+A Warden's companion fights beside them. Each round, before the Warden's own blows, it
 strikes the Warden's foe on its own: a hunting hound once, a hawkling several times for
 less, a trained rattlesnake once with a poisoned bite, and a drop bear every other round
 with great force. Its strength grows with the Warden's level. It shares the Warden's life
@@ -60,4 +60,44 @@ and needs no gear.
 
 Choose a companion at the Newhaven stable: get its leash there and USE it in the stable.
 PET shows your companion; PET NAME <name> names it.
+'''
+
+[[class_topic]]
+class = "Avenger"
+words = "Avengers"
+text = '''
+When a temple names someone an enemy of the faith and no court will touch them, it sends
+an Avenger. Avengers are priests who learned to walk unseen: they carry no holy symbol
+openly and wear no vestments, only dark leather and a mace. Good temples send them after
+the cruel and the powerful; evil temples send them after everyone else.
+
+An Avenger fights well enough face to face, but its art is to strike, vanish and strike
+again before its quarry knows where the blows are coming from. From hiding, its attack
+spells land as backstabs; in a fight it can VANISH back into the shadows; and it can
+backstab with any blunt weapon.
+'''
+abilities = "Stealth, backstab, spell backstab, vanish."
+
+[[topic]]
+words = "Spell Backstab"
+text = '''
+Spell Backstab
+
+An Avenger who casts a single-target attack spell from hiding or sneaking strikes from
+the shadows. Two things must go right: the Avenger must stay unseen while the spell is
+spoken (harder than sneaking, since casting is not quiet), and the spell must be cast.
+If both do, the spell lands as a backstab, for far more damage. If the foe spots the
+Avenger first, the spell is an ordinary cast. Either way the Avenger is revealed and the
+fight is on.
+'''
+
+[[topic]]
+words = "Vanish"
+text = '''
+Vanish
+
+VANISH, in the middle of a fight, lets an Avenger slip back into hiding. It takes the
+round, and it is harder than hiding when no one is looking. If it works, the Avenger's
+foes lose sight of it and the Avenger can strike again from the shadows, with a backstab
+or a spell. An Avenger can try to vanish once every five rounds.
 '''

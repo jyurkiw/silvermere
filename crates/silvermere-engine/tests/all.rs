@@ -75,6 +75,7 @@ mod settings;
 mod shutdown;
 mod spawning;
 mod spellstrike;
+mod stealth_casters;
 mod startup_passes;
 mod stealth_commands;
 mod suicide;

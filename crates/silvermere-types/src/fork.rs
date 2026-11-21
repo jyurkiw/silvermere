@@ -39,6 +39,17 @@ pub const STARTER_BONDED: Ability = Ability::Unknown(1011);
 /// On a character: has bought a starter leash; a stable takes back any further one. Set and
 /// checked by content scripts. Hidden.
 pub const STARTER_LEASH: Ability = Ability::Unknown(1012);
+/// On a class: an attack spell cast from hiding or sneaking can land as a spell backstab
+/// (design/stealth-casters.md). The value is the damage raise, in percent.
+pub const SPELL_BACKSTAB: Ability = Ability::Unknown(1013);
+/// On a class: the penalty to the stealth roll of a spell backstab. Hidden.
+pub const SPELL_BACKSTAB_STEALTH: Ability = Ability::Unknown(1014);
+/// On a class: VANISH, hiding again in the middle of a fight. The value is the penalty to
+/// the hide chance.
+pub const VANISH: Ability = Ability::Unknown(1015);
+/// On a class: BACKSTAB works with any blunt weapon, as if it had "Alter Backstab Attack
+/// Value".
+pub const BLUNT_BACKSTAB: Ability = Ability::Unknown(1016);
 
 /// The fork's abilities by the name content uses, and whether players are shown them.
 pub const FORK_ABILITIES: &[(&str, Ability, bool)] = &[
@@ -54,6 +65,10 @@ pub const FORK_ABILITIES: &[(&str, Ability, bool)] = &[
     ("RoomUse", ROOM_USE, false),
     ("StarterBonded", STARTER_BONDED, true),
     ("StarterLeash", STARTER_LEASH, true),
+    ("SpellBackstab", SPELL_BACKSTAB, false),
+    ("SpellBackstabStealth", SPELL_BACKSTAB_STEALTH, true),
+    ("Vanish", VANISH, false),
+    ("BluntBackstab", BLUNT_BACKSTAB, false),
 ];
 
 /// A fork ability by its content name.

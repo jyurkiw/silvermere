@@ -4523,6 +4523,41 @@ text = "{@ANSI_CLRLINE}{@ANSI_CYAN}{who} channels {spell} through {his} {weapon}
 example = { who = "Gorin", spell = "magic missile", his = "his", weapon = "longsword" }
 note = "Fork (design/war-mage.md): a player target's line before a Spellstrike's cast."
 
+[messages.spell_backstab_lead_in]
+text = "{@ANSI_CLRLINE}{@ANSI_CYAN}You strike from the shadows with {spell}!\r"
+example = { spell = "godstrike" }
+note = "Fork (design/stealth-casters.md): the line before a spell backstab's cast, to the caster."
+
+[messages.spell_backstab_lead_in_room]
+text = "{@ANSI_CLRLINE}{@ANSI_CYAN}{who} strikes from the shadows with {spell}!\r"
+example = { who = "Gorin", spell = "godstrike" }
+note = "Fork (design/stealth-casters.md): the room's line before a spell backstab's cast."
+
+[messages.spell_backstab_spotted]
+text = "{@ANSI_CLRLINE}{@ANSI_CYAN}Your foe spots you as you begin to cast!\r"
+note = "Fork (design/stealth-casters.md): a spell from stealth whose stealth roll failed."
+
+[messages.vanish_done]
+text = "{@ANSI_CLRLINE}{@ANSI_GREEN}You slip away and melt into the shadows.\r"
+note = "Fork (design/stealth-casters.md): VANISH worked."
+
+[messages.vanish_done_room]
+text = "{@ANSI_CLRLINE}{@ANSI_GREEN}{who} slips away into the shadows!\r"
+example = { who = "Gorin" }
+note = "Fork (design/stealth-casters.md): the room sees a VANISH work."
+
+[messages.vanish_failed]
+text = "{@ANSI_CLRLINE}{@ANSI_GREEN}You try to slip away, but your foe keeps you in sight.\r"
+note = "Fork (design/stealth-casters.md): VANISH failed; the round is spent."
+
+[messages.vanish_wait]
+text = "{@ANSI_CLRLINE}{@ANSI_GREEN}You can't vanish again so soon.\r"
+note = "Fork (design/stealth-casters.md): VANISH again before its rounds have passed."
+
+[messages.vanish_not_fighting]
+text = "{@ANSI_CLRLINE}{@ANSI_GREEN}You can only vanish in the middle of a fight; try HIDE.\r"
+note = "Fork (design/stealth-casters.md): VANISH out of combat."
+
 [messages.cast_resisted]
 text = "{@ANSI_CLRLINE}{@ANSI_CYAN}You attempt to cast {spell} at {target}, but the spell is resisted.\r"
 pattern = "cast_resisted"

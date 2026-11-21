@@ -133,3 +133,42 @@ fn the_warden_record_matches_the_design() {
         )
     );
 }
+
+#[test]
+fn the_avenger_record_matches_the_design() {
+    let c = Content::embedded().unwrap();
+    let a = c.classes.iter().find(|c| c.name == "Avenger").unwrap();
+    assert_eq!(a.number, ClassNo(18));
+    assert_eq!((a.basehp, a.hplevel), (4, 4), "4-8 HP per level");
+    assert_eq!(a.exp, 100, "200% experience");
+    assert_eq!((a.magery, a.magelvl), (Magery::Priest, 1));
+    assert_eq!(a.combat, 5, "fighting 3");
+    assert_eq!(a.weapon, WeaponClass::AnyBlunt);
+    assert_eq!(a.armour, ArmourType::StuddedRigidLeather);
+    assert_eq!(a.titles, TextBlockNo(3021));
+    for want in [
+        (silvermere_types::enums::Ability::ClassStealth, 0),
+        (silvermere_types::enums::Ability::BackstabMin, 5),
+        (silvermere_types::enums::Ability::BackstabMax, 5),
+        (fork::SPELL_BACKSTAB, 100),
+        (fork::SPELL_BACKSTAB_STEALTH, 20),
+        (fork::VANISH, 20),
+        (fork::BLUNT_BACKSTAB, 0),
+    ] {
+        assert!(a.abilities.contains(&want), "{want:?}");
+    }
+    let block = c
+        .titles
+        .iter()
+        .find(|t| t.number == TextBlockNo(3021))
+        .unwrap();
+    let lines: Vec<&str> = block.text.lines().collect();
+    assert_eq!(
+        (lines[0], lines[1], lines[69]),
+        ("Acolyte", "Initiate", "Avenger")
+    );
+    let topics = help::topics(&c).unwrap();
+    assert!(topics.iter().any(|t| t.words == "Avengers"));
+    assert!(topics.iter().any(|t| t.words == "Spell Backstab"));
+    assert!(topics.iter().any(|t| t.words == "Vanish"));
+}

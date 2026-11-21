@@ -21,6 +21,7 @@
 //! not globals.
 
 pub mod attack;
+pub mod ambush;
 pub mod autocombat;
 pub mod experience_split;
 pub mod kill_monster;

@@ -279,6 +279,14 @@ pub struct World {
     pub pet_energy: std::collections::HashMap<SessionId, i32>,
     /// Fork (pets): each character's companion's name, while the character is in the game.
     pub pet_names: std::collections::HashMap<SessionId, String>,
+    /// Fork (spell backstab, design/stealth-casters.md): a spell cast from stealth whose
+    /// stealth roll has been made, waiting for the cast itself: `true` when the caster stayed
+    /// unseen.
+    pub ambush: std::collections::HashMap<SessionId, bool>,
+    /// Fork (VANISH): the rounds left before each character may vanish again.
+    pub vanish_wait: std::collections::HashMap<SessionId, u8>,
+    /// Fork (VANISH): characters whose next auto-combat round a failed vanish took.
+    pub vanish_skip: std::collections::HashSet<SessionId>,
     /// Pending gang invitations.
     pub gang_invites: Vec<GangInvite>,
     /// The background cycles' own state and hooks (T-037).
@@ -419,6 +427,9 @@ impl World {
             pet_kinds: BTreeMap::new(),
             pet_energy: std::collections::HashMap::new(),
             pet_names: std::collections::HashMap::new(),
+            ambush: std::collections::HashMap::new(),
+            vanish_wait: std::collections::HashMap::new(),
+            vanish_skip: std::collections::HashSet::new(),
             gang_invites: Vec::new(),
             cycles: crate::cycles::CycleState::default(),
             autocombat: Default::default(),

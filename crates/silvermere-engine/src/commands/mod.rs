@@ -52,6 +52,7 @@ pub mod sysop;
 pub mod table;
 pub mod training;
 pub mod use_item;
+pub mod vanish;
 
 pub use dispatch::{Handled, dispatch};
 pub use input::execute_input;
