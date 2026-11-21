@@ -141,10 +141,22 @@ stop is a **stable** in Newhaven.
 | snake handler's pouch | **trained rattlesnake** | low damage, but its bite poisons |
 | drop bear harness | **Drop Bear** | slow (a blow every other round) but hits very hard |
 
-- **Using the reins bonds the companion.** The reins are Warden-only items carrying a fork
-  ability `BondPet` whose value is the kind. Using them creates the Warden's companion
-  (immortal, summoned, sharing HP), or switches an existing companion to the new kind. The
-  reins are used up. A Warden who changes their mind can come back for another set.
+- **Bonding is a room script, in the stable.** Stock rooms can react to what players type
+  there and run script clauses, and those already cover bonding: check the player's class,
+  check for and take an item, add or remove an ability, show text. Typing `bond hound` in
+  the stable runs:
+
+  ```
+  class is Warden? -> takeitem hound's reins -> removeability PetKind ->
+  addability PetKind 1 -> text "You bond with your hunting hound."
+  ```
+
+  The companion's kind lives on the character as a fork ability, `PetKind`, which saves
+  with the character like any ability; the combat code reads it to know which companion
+  fights. **No new code for bonding.** A Warden who changes their mind comes back for
+  another set of reins and bonds again.
+- **All pet acquisition is content:** shops (like the stable) or retrieval quests whose
+  script ends with the same clauses. A quest that rewards a new companion needs no code.
 - Until a Warden bonds a companion, it fights alone.
 
 Proposed companion stats (placeholders for the balance sim; values on each pet kind):
@@ -200,7 +212,8 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
 | The Warden class | content, like the War Mage |
 | Naming | a command after bonding ([open question 3](#open-questions)) |
 | The stable | content: new Newhaven rooms, the stablemaster (a talking monster and its text blocks), the stable shop, four reins items. Needs the overlay to grow to rooms, monsters, shops, items and text blocks |
-| Reins | a fork item ability `BondPet`, handled when the item is used (code) |
+| Bonding | room scripts (stock clauses) setting the fork character ability `PetKind`; no code |
+| `PetKind` | read by the pet's attack to pick the companion's kind |
 
 ## Decisions
 
@@ -214,8 +227,10 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
 6. The Warden wears leather (chain from level 10, scale from 20) and uses two-handed or
    ranged weapons.
 8. The companion is chosen in game, at a new stable in Newhaven: a stablemaster to ask, and
-   four free reins (hound, hawkling, rattlesnake, Drop Bear) that bond the companion when
-   used.
+   four free reins (hound, hawkling, rattlesnake, Drop Bear). Bonding is a room script
+   in the stable that takes the reins and sets the character's `PetKind` ability.
+9. All pet acquisition is content: shops or retrieval quests, ending in the same script
+   clauses. No code for acquiring pets.
 7. The Warden has high HP and low fighting (3): it swings less, and its companion hits
    hard. 7-11 HP, 140% experience, one companion blow a round.
 
