@@ -57,19 +57,20 @@ fn pet_lines(out: &[String], name: &str) -> usize {
 }
 
 #[test]
-fn a_hound_strikes_once_a_round_after_its_owner() {
+fn a_hound_strikes_once_a_round_before_its_owner() {
     let (mut w, id, _) = fight(1);
     let out = round(&mut w, id);
     assert_eq!(pet_lines(&out, "hunting hound"), 1, "{out:?}");
-    let last = out.last().unwrap();
+    let first = out.first().unwrap();
     assert!(
-        last.starts_with("Your hunting hound "),
-        "after the owner's blows: {out:?}"
+        first.starts_with("Your hunting hound "),
+        "before the owner's blows: {out:?}"
     );
     assert!(
-        last.contains("bites practice dummy for") || last.contains("snaps at practice dummy"),
+        first.contains("bites practice dummy for") || first.contains("snaps at practice dummy"),
         "{out:?}"
     );
+    assert!(out.len() > 1, "the owner still strikes: {out:?}");
 }
 
 #[test]

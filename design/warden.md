@@ -116,7 +116,7 @@ sex. Huntsman runs to level 110 like the stock last ranks. The block is a new te
 ## The pet's attack
 
 **The Warden's companion: one heavy blow a round.** "Attacks less, but you feel
-it": rather than an energy pool, the companion makes exactly one blow each round, after
+it": rather than an energy pool, the companion makes exactly one blow each round, before
 the Warden's, at the Warden's target. All the scaling is in its damage:
 
 | Warden level | Companion's blow (proposed) |

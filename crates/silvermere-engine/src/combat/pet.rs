@@ -1,7 +1,7 @@
 //! Fork: a companion's blows (design/warden.md).
 //!
-//! After a character's own auto-combat round against a monster, its companion strikes the
-//! same monster on its own: blows paid for from the pet's own energy (a full round each
+//! At the start of a character's auto-combat round against a monster, before the character's
+//! own blows, its companion strikes that monster on its own: blows paid for from the pet's own energy (a full round each
 //! round, carried over like a fighter's), so a kind's `energy_per_blow` sets how often it
 //! strikes. A blow is a fighter's blow: the owner's attack value plus the kind's accuracy,
 //! the kind's damage for the owner's level, against the monster's defence, through the
@@ -81,8 +81,8 @@ pub fn shown_name_of(world: &World, firstname: &str, base: &str) -> String {
     }
 }
 
-/// The companion's blows at `mon` after its owner's round, if the owner has one and the
-/// fight is still on.
+/// The companion's blows at `mon` at the start of its owner's round, if the owner has one
+/// and the fight is on.
 pub fn pet_round(world: &mut World, id: SessionId, mon: ActiveMonsterId) {
     let Some(kind) = pet_kind(world, id) else {
         return;

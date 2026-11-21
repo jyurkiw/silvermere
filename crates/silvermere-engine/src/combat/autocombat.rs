@@ -552,6 +552,12 @@ pub fn do_autocombat_for_user(world: &mut World, id: SessionId) -> bool {
             }
         }
         Some(AutoTarget::Monster(m)) => {
+            // Fork: the companion strikes first, before its owner (design/warden.md); a
+            // monster it kills leaves its owner nothing to strike this round
+            super::pet::pet_round(world, id, m);
+            if monster(world, m).is_none() {
+                return true;
+            }
             if e.casting {
                 // Fork: a Spellstrike class casts through its weapon (design/war-mage.md)
                 if super::spellstrike::try_round(world, id, e.spell, m) {
@@ -561,8 +567,6 @@ pub fn do_autocombat_for_user(world: &mut World, id: SessionId) -> bool {
             } else {
                 attack_user_monster(world, id, m, e.mv, e.mv, Mode::Auto);
             }
-            // Fork: the companion strikes after its owner (design/warden.md)
-            super::pet::pet_round(world, id, m);
         }
         None => {
             if e.casting && world.spells.contains_key(&e.spell) {
