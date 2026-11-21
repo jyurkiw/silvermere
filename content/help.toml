@@ -83,12 +83,12 @@ words = "Spell Backstab"
 text = '''
 Spell Backstab
 
-An Avenger who casts a single-target attack spell from hiding or sneaking strikes from
-the shadows. Two things must go right: the Avenger must stay unseen while the spell is
-spoken (harder than sneaking, since casting is not quiet), and the spell must be cast.
-If both do, the spell lands as a backstab, for far more damage. If the foe spots the
-Avenger first, the spell is an ordinary cast. Either way the Avenger is revealed and the
-fight is on.
+An Avenger or an Assassin who casts a single-target attack spell from hiding or
+sneaking strikes from the shadows. Two things must go right: the caster must stay unseen
+while the spell is spoken (harder than sneaking, since casting is not quiet), and the
+spell must be cast. If both do, the spell lands as a backstab, for far more damage. If
+the foe spots the caster first, the spell is an ordinary cast. Either way the caster is
+revealed and the fight is on.
 '''
 
 [[topic]]
@@ -101,3 +101,18 @@ round, and it is harder than hiding when no one is looking. If it works, the Ave
 foes lose sight of it and the Avenger can strike again from the shadows, with a backstab
 or a spell. An Avenger can try to vanish once every five rounds.
 '''
+
+[[class_topic]]
+class = "Assassin"
+words = "Assassins"
+text = '''
+The Assassins learned their magic the way they learned their knives: from someone who
+expected to be paid for it. A mage would call their spellcraft crude, and it is: a
+handful of killing words and nothing else. But spoken from the dark, at someone who never
+knew they were there, a crude spell is enough.
+
+An Assassin fights well enough with a blade, but its first strike is the one that
+matters, and it is as likely to be a bolt of force as a knife. From hiding, its attack
+spells land as backstabs.
+'''
+abilities = "Stealth, backstab, spell backstab."

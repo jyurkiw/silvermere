@@ -240,3 +240,42 @@ fn a_spell_backstab_is_built_as_a_melee_backstab() {
     // a level 1 harm of 13 with stealth 30: (26 + 2 + 3 + 5) * 101%
     assert_eq!(backstab_amount(13, 100, 1, 30, 5), 36);
 }
+
+/// An Assassin-like class: spell backstab, and none of the Avenger's other tricks.
+fn assassin(w: &mut World) -> ClassNo {
+    let n = ClassNo(19);
+    let mut c = w.classes.get(&AVENGER).unwrap().clone();
+    c.number = n;
+    c.name = "Assassin".into();
+    c.weapon = WeaponClass::AnySharp;
+    for s in c.abilities.iter_mut() {
+        if s.0 == fork::VANISH || s.0 == fork::BLUNT_BACKSTAB {
+            *s = (Ability::None, 0);
+        }
+    }
+    w.classes.insert(n, c);
+    n
+}
+
+#[test]
+fn an_assassin_spell_backstabs_but_cannot_vanish() {
+    let mut w = world();
+    avenger(&mut w, -200, -200);
+    let n = assassin(&mut w);
+    let id = caster(&mut w, n, false);
+    plr(&mut w, id).stealth = 90;
+    plr(&mut w, id).hidden = 1;
+    let m = spawn(&mut w);
+    say(&mut w, id, "cast magic missile practice dummy");
+    let out = round(&mut w, id);
+    assert!(
+        out.iter()
+            .any(|l| l == "You strike from the shadows with magic missile!"),
+        "{out:?}"
+    );
+    assert!(DUMMY_HP - dummy_hp(&w, m) >= 59);
+    // in the fight now, VANISH is no command of its
+    let out = say(&mut w, id, "vanish");
+    assert!(!out.iter().any(|l| l.contains("slip away")), "{out:?}");
+    assert!(w.vanish_wait.is_empty());
+}

@@ -111,7 +111,7 @@ one that matters, and it is as likely to be a bolt of force as a blade.
 | 10-14 | Knifehand | 50-54 | Black Hand |
 | 15-19 | Hexknife | 55-59 | Master of Knives |
 | 20-24 | Nightblade | 60-64 | Spellslayer |
-| 25-29 | Silent Hand | 65-69 | Grandmaster of Shadows |
+| 25-29 | Silent Hand | 65-69 | Master of Shadows |
 | 30-34 | Shade | 70+ | Assassin |
 
 **Its spells,** the stock Mage-1 line: magic missile (1), frost jet (4), lightning bolt (8),

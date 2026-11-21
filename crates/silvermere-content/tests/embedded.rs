@@ -172,3 +172,54 @@ fn the_avenger_record_matches_the_design() {
     assert!(topics.iter().any(|t| t.words == "Spell Backstab"));
     assert!(topics.iter().any(|t| t.words == "Vanish"));
 }
+
+#[test]
+fn the_assassin_record_matches_the_design() {
+    let c = Content::embedded().unwrap();
+    let a = c.classes.iter().find(|c| c.name == "Assassin").unwrap();
+    assert_eq!(a.number, ClassNo(19));
+    assert_eq!((a.basehp, a.hplevel), (4, 4), "4-8 HP per level");
+    assert_eq!(a.exp, 100, "200% experience");
+    assert_eq!((a.magery, a.magelvl), (Magery::Mage, 1));
+    assert_eq!(a.combat, 5, "fighting 3");
+    assert_eq!(a.weapon, WeaponClass::AnySharp);
+    assert_eq!(a.armour, ArmourType::StuddedRigidLeather);
+    assert_eq!(a.titles, TextBlockNo(3022));
+    for want in [
+        (silvermere_types::enums::Ability::ClassStealth, 0),
+        (silvermere_types::enums::Ability::BackstabMin, 5),
+        (silvermere_types::enums::Ability::BackstabMax, 5),
+        (fork::SPELL_BACKSTAB, 100),
+        (fork::SPELL_BACKSTAB_STEALTH, 20),
+    ] {
+        assert!(a.abilities.contains(&want), "{want:?}");
+    }
+    // the Avenger's own tricks stay the Avenger's
+    assert!(!a.abilities.iter().any(|s| s.0 == fork::VANISH));
+    assert!(!a.abilities.iter().any(|s| s.0 == fork::BLUNT_BACKSTAB));
+    let block = c
+        .titles
+        .iter()
+        .find(|t| t.number == TextBlockNo(3022))
+        .unwrap();
+    let lines: Vec<&str> = block.text.lines().collect();
+    assert_eq!(
+        (lines[0], lines[1], lines[69]),
+        ("Initiate", "Footpad", "Assassin")
+    );
+    let topics = help::topics(&c).unwrap();
+    let t = topics.iter().find(|t| t.words == "Assassins").unwrap();
+    assert!(t.text.contains("Magic: Mage-1"), "{}", t.text);
+}
+
+// A title is kept in the character record's 20 bytes: at most 19 characters, as stock's
+// longest ("Mistress of the Way").
+#[test]
+fn every_title_fits_the_character_record() {
+    let c = Content::embedded().unwrap();
+    for block in &c.titles {
+        for title in block.text.lines().flat_map(|l| l.split('|')) {
+            assert!(title.len() <= 19, "`{title}` in block {}", block.number.0);
+        }
+    }
+}
