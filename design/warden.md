@@ -1,6 +1,7 @@
 # The Warden, and pets
 
-Status: **draft, in design.** Nothing here is implemented. Fork-only. This changes
+Status: **design settled** apart from tuning the companions' numbers (open question 5).
+Nothing here is implemented. Fork-only. This changes
 silvermere's own code more than the War Mage did (a pet table, a pet's blows in the combat
 round, pet names in output), and that's accepted for this one.
 
@@ -214,14 +215,15 @@ where it reads well:
 
 - the who list: "Devin and Fang – Apprentice …";
 - arrivals and departures: "Devin and Fang just walked in from the north.";
+- the room's "Also here:" line;
 - the pet's own combat lines.
 
 **Targeting is unchanged.** Players target the character, "Devin", only; typing the pet's
 name does nothing. That oddity is accepted for now.
 
-**Left plain for now:** the room's "Also here:" line. MegaMud reads it to track players,
-and "Devin and Fang" there could confuse its player and party tracking. To revisit after a
-MegaMud test.
+**The room line too:** "Also here: Devin and Fang, Bob." MegaMud reads that line to track
+players, so play-testing checks it doesn't confuse MegaMud's player and party tracking; if
+it does, this one line goes back to plain "Devin".
 
 ## Weapons: two-handed and ranged
 
@@ -274,6 +276,7 @@ ammunition and no special rules. Real ranged combat can hang off the same marker
 8. The companion is chosen in game, at a new stable in Newhaven: a stablemaster to ask, and
    four free leashes (hound, hawkling, rattlesnake, Drop Bear). You use the leash in the
    stable, whose room script takes it and sets the character's `PetKind` ability.
+13. The displayed name with the pet shows on the room's "Also here:" line too.
 12. Ranged weapons are marked with a fork `Ranged` item ability; the Warden's
     `RangedWeapons` class ability allows them beside its two-handers.
 11. The companion is named with `PET NAME`; `PET` shows it.
@@ -296,7 +299,8 @@ ammunition and no special rules. Real ranged combat can hang off the same marker
    class ability that allows those items.
 5. **How strong is the pet?** Its damage per round against a Warrior's at the same level is
    the balance lever; the balance sim ([testing.md](testing.md)) can measure it.
-6. **The "Also here:" line:** show "Devin and Fang" there after a MegaMud test, or never?
+6. ~~The "Also here:" line.~~ **Decided:** it shows "Devin and Fang" too, checked against
+   MegaMud in play-testing.
 
 ## Brainstorm
 
