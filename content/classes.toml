@@ -40,7 +40,87 @@ ranks = [
   { from = 70, title = "Arch-Colonel" },
 ]
 
+# The Warden (design/warden.md): a tough, low-fighting class whose companion hits hard.
+[[class]]
+number   = 17
+name     = "Warden"
+hp       = "7-11"
+exp      = 140
+magic    = "None"
+fighting = 3
+weapons  = "AnyTwoHand"
+armour   = "StuddedRigidLeather"
+abilities = [
+  { name = "Bash" },
+  { name = "ChainmailAtLevel", value = 10 },
+  { name = "ScalemailAtLevel", value = 20 },
+  { name = "RangedWeapons" },
+]
+
+[class.titles]
+block = 3020
+ranks = [
+  { from = 1 , title = "Cub" },
+  { from = 2 , title = "Scout" },
+  { from = 5 , title = "Tenderfoot" },
+  { from = 10, title = "Venturer" },
+  { from = 15, title = "Star Scout" },
+  { from = 20, title = "Life Scout" },
+  { from = 25, title = "Explorer" },
+  { from = 30, title = "Rover" },
+  { from = 35, title = "Pioneer" },
+  { from = 40, title = "Frontiersman" },
+  { from = 45, title = "Voyageur" },
+  { from = 50, title = "Long Hunter" },
+  { from = 55, title = "Pathfinder" },
+  { from = 60, title = "Bush Ranger" },
+  { from = 65, title = "High Tracker" },
+  { from = 70, title = "Huntsman" },
+]
+
 # Later: warlocks get the base Spellstrike.
 # [[class_change]]
 # name = "Warlock"
 # add_abilities = [{ name = "Spellstrike", value = 30 }]
+
+# The Avenger (design/stealth-casters.md): a fighter-leaning stealth priest who opens with
+# a spell from the shadows and can vanish again mid-fight.
+[[class]]
+number   = 18
+name     = "Avenger"
+hp       = "4-8"
+exp      = 200
+magic    = "Priest-1"
+fighting = 3
+weapons  = "AnyBlunt"
+armour   = "StuddedRigidLeather"
+abilities = [
+  { name = "ClassStealth" },
+  { name = "BackstabMin",          value = 5 },
+  { name = "BackstabMax",          value = 5 },
+  { name = "SpellBackstab",        value = 100 }, # damage raise, percent
+  { name = "SpellBackstabStealth", value = 20 },  # stealth roll penalty; hidden
+  { name = "Vanish",               value = 20 },  # hide chance penalty
+  { name = "BluntBackstab" },
+]
+
+[class.titles]
+block = 3021
+ranks = [
+  { from = 1 , title = "Acolyte" },
+  { from = 2 , title = "Initiate" },
+  { from = 5 , title = "Watcher" },
+  { from = 10, title = "Penitent" },
+  { from = 15, title = "Seeker" },
+  { from = 20, title = "Pursuer" },
+  { from = 25, title = "Inquisitor" },
+  { from = 30, title = "Zealot" },
+  { from = 35, title = "Templar Shade" },
+  { from = 40, title = "Vindicator" },
+  { from = 45, title = "Judicator" },
+  { from = 50, title = "Hand of Wrath" },
+  { from = 55, title = "Shadow Templar" },
+  { from = 60, title = "Grand Inquisitor" },
+  { from = 65, title = "Avatar of Vengeance" },
+  { from = 70, title = "Avenger" },
+]

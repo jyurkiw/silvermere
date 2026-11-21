@@ -99,8 +99,11 @@ fn names_in_game(world: &World) -> BTreeMap<SessionId, String> {
         .iter()
         .filter(|(_, s)| s.is_in_game())
         .filter_map(|(&id, s)| {
-            s.player()
-                .map(|p| (id, format!("{} {}", p.firstname, p.lastname)))
+            s.player().map(|p| {
+                let base = format!("{} {}", p.firstname, p.lastname);
+                // Fork: the companion with its Warden (design/warden.md)
+                (id, crate::combat::pet::shown_name(world, id, &base))
+            })
         })
         .collect()
 }
@@ -120,8 +123,10 @@ fn list_stands(world: &World, list: &UserList, live: &BTreeMap<SessionId, String
     let editing = |id: &SessionId, name: &String| {
         world.session(*id).is_some_and(|s| {
             s.state == SessionState::NewChar(NewCharStep::Stats)
-                && s.player()
-                    .is_some_and(|p| format!("{} {}", p.firstname, p.lastname) == *name)
+                && s.player().is_some_and(|p| {
+                    let base = format!("{} {}", p.firstname, p.lastname);
+                    crate::combat::pet::shown_name(world, *id, &base) == *name
+                })
         })
     };
     live.iter().all(|(id, n)| list.names.get(id) == Some(n))
@@ -167,7 +172,9 @@ fn reputation(world: &World, plr: &Character) -> &'static str {
 /// One player's line, `None` for a missing record (the original printed `ERROR in users!`
 /// for a channel without one; a session in the game here always has its character).
 fn row(world: &World, plr: &Character, technical: bool, namelen: usize) -> Msg {
-    let name = format!("{} {}", plr.firstname, plr.lastname);
+    let base = format!("{} {}", plr.firstname, plr.lastname);
+    // Fork: the companion with its Warden (design/warden.md)
+    let name = crate::combat::pet::shown_name_of(world, &plr.firstname, &base);
     let edited = if plr.immortal != 0 { "EDITED" } else { " " };
     let level = legal_level(plr.evil);
     if technical {

@@ -322,6 +322,10 @@ pub fn cast_command(
             return Handled::Done;
         }
     }
+    // Fork (spell backstab): whether the caster was unseen as the spell was begun
+    let from_stealth = combat::player(world, id)
+        .is_some_and(|p| p.hidden != 0 || p.status.contains(PlayerStatus::SNEAKING));
+    world.ambush.remove(&id);
     // casting gives the caster away
     if let Some(p) = combat::player_mut(world, id) {
         p.status.remove(PlayerStatus::SNEAKING);
@@ -426,6 +430,9 @@ pub fn cast_command(
             return Handled::Done;
         }
     };
+    if matches!(target, CastTarget::User(_) | CastTarget::Monster(_)) {
+        crate::combat::ambush::prepare(world, id, &spl, from_stealth);
+    }
     let r = cast(world, Caster::Player(id), spl.number, target, opts);
     apply_engage(world, id, &r);
     Handled::Done

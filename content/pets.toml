@@ -1,0 +1,43 @@
+# Kinds of pet (design/warden.md). A character's PetKind ability names one by number.
+# damage is the range at level 0; per_level adds [least, most] per level, in hundredths.
+# energy_per_blow: a round gives 1000 (1000 = a blow a round, 333 = three, 2000 = every
+# other round). The numbers are placeholders for the balance sim to tune.
+
+[[pet_kind]]
+number = 1
+name = "hunting hound"
+hit_verb = "bites"
+miss_verb = "snaps at"
+energy_per_blow = 1000
+damage = "2-8"
+per_level = [50, 200]
+
+[[pet_kind]]
+number = 2
+name = "hawkling"
+hit_verb = "rakes"
+miss_verb = "swoops at"
+energy_per_blow = 333
+damage = "1-4"
+per_level = [15, 60]
+accuracy = 5
+
+[[pet_kind]]
+number = 3
+name = "trained rattlesnake"
+hit_verb = "bites"
+miss_verb = "strikes at"
+energy_per_blow = 1000
+damage = "1-4"
+per_level = [28, 100]
+poison = 5
+
+[[pet_kind]]
+number = 4
+name = "drop bear"
+hit_verb = "mauls"
+miss_verb = "swipes at"
+energy_per_blow = 2000
+damage = "3-16"
+per_level = [100, 400]
+accuracy = -5

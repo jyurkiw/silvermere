@@ -536,6 +536,8 @@ async fn login_for(db: &Db, account: Account) -> anyhow::Result<Login> {
         may_gossip: has_permission(&account, Perm::Gossip),
         may_auction: has_permission(&account, Perm::Auction),
         sysop_keys: sysop_keys(&account),
+        // Fork: the account's pets (design/warden.md)
+        pets: db.pets().of_account(account.id).await?,
     })
 }
 

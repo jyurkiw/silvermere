@@ -24,8 +24,8 @@ use silvermere_types::ids::{
 };
 use silvermere_types::records::{ActiveMonster, ActiveSpell, Character, Coins, Spell};
 
-const ROOM: u32 = 2140;
-const WAR_MAGE: ClassNo = ClassNo(16);
+pub(crate) const ROOM: u32 = 2140;
+pub(crate) const WAR_MAGE: ClassNo = ClassNo(16);
 const PLAIN_MAGE: ClassNo = ClassNo(12);
 const HUMAN: RaceNo = RaceNo(1);
 const MMIS: SpellNo = SpellNo(1);
@@ -87,7 +87,7 @@ fn class(n: ClassNo, spellstrike: bool) -> silvermere_types::records::Class {
     c
 }
 
-fn world() -> World {
+pub(crate) fn world() -> World {
     let mut s = tiny_snapshot();
     s.spells = vec![
         spell(1, "magic missile", SpellTarget::MonsterOrSingle),
@@ -120,12 +120,12 @@ fn world() -> World {
     w
 }
 
-fn plr(w: &mut World, id: SessionId) -> &mut Character {
+pub(crate) fn plr(w: &mut World, id: SessionId) -> &mut Character {
     w.session_mut(id).unwrap().character.as_mut().unwrap()
 }
 
 /// A level 10 caster of `class` in the room, armed unless `armed` is false.
-fn caster(w: &mut World, class: ClassNo, armed: bool) -> SessionId {
+pub(crate) fn caster(w: &mut World, class: ClassNo, armed: bool) -> SessionId {
     let id = enter(w, "Gorin", ROOM, MessageLevel::Low);
     let c = plr(w, id);
     c.settings = PlayerSettings::VALIDATED | PlayerSettings::CANCAST;
@@ -149,7 +149,7 @@ fn caster(w: &mut World, class: ClassNo, armed: bool) -> SessionId {
     id
 }
 
-fn spawn(w: &mut World) -> ActiveMonsterId {
+pub(crate) fn spawn(w: &mut World) -> ActiveMonsterId {
     let k = w.monsters.get(&DUMMY).unwrap().clone();
     let number = ActiveMonsterId(1);
     w.active_monsters.insert(ActiveMonster {
@@ -200,7 +200,7 @@ fn spawn(w: &mut World) -> ActiveMonsterId {
     number
 }
 
-fn lines(w: &mut World, id: SessionId) -> Vec<String> {
+pub(crate) fn lines(w: &mut World, id: SessionId) -> Vec<String> {
     let prompt = silvermere_engine::tell::prompt_bytes(w, id);
     let palette = silvermere_engine::tell::palette_of(w, id);
     let s = w.session_mut(id).unwrap();

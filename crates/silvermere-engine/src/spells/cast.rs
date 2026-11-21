@@ -1911,6 +1911,8 @@ pub fn cast_user_target(
     let Some(spl) = world.spells.get(&spell).cloned() else {
         return res;
     };
+    // Fork: a spell backstab's waiting stealth roll is taken at the auto-combat cast
+    let mut ambush = opts.autocombat && crate::combat::ambush::take(world, id);
     if plr(world, id).is_none() || plr(world, tid).is_none() {
         return res;
     }
@@ -2152,6 +2154,8 @@ pub fn cast_user_target(
     while !done && !killed && tries < MAXTRIES {
         let mut told = Told::default();
         let mut resisted = immune;
+        // Fork: only the first try can be a spell backstab
+        let this_ambush = std::mem::take(&mut ambush);
         tries += 1;
         if manual {
             done = true;
@@ -2280,7 +2284,10 @@ pub fn cast_user_target(
                 charge_failure(world, id, &spl);
             } else {
                 charge(world, id, i32::from(spl.energy), i32::from(spl.mana).max(0));
-                let rolled = roll_amount(&spl, caster.level, &mut world.rng);
+                let mut rolled = roll_amount(&spl, caster.level, &mut world.rng);
+                if this_ambush {
+                    rolled = crate::combat::ambush::strike(world, id, &spl, rolled);
+                }
                 let amount = (i64::from(rolled) * i64::from(100 - modifier) / 100) as i32;
                 let mut state = CastState::new();
                 // Remove spell / Terminate Spell
@@ -2735,6 +2742,8 @@ pub fn cast_monster_target(
         return res;
     };
     let manual = opts.mode == CastMode::Item;
+    // Fork: a spell backstab's waiting stealth roll is taken at the auto-combat cast
+    let mut ambush = opts.autocombat && crate::combat::ambush::take(world, id);
     // the target is looked up first, whatever stops the cast after
     let _ = combat::monster(world, mon);
     let engage_m = |res: &mut CastResult, mon: ActiveMonsterId| {
@@ -2919,6 +2928,8 @@ pub fn cast_monster_target(
     let mut endchance = 100;
     while !done && !killed && tries < MAXTRIES {
         let mut told = Told::default();
+        // Fork: only the first try can be a spell backstab
+        let this_ambush = std::mem::take(&mut ambush);
         if manual {
             done = true;
         } else {
@@ -3042,7 +3053,10 @@ pub fn cast_monster_target(
                         p.mana -= spl.mana.max(0);
                     }
                 }
-                let rolled = roll_amount(&spl, caster.level, &mut world.rng);
+                let mut rolled = roll_amount(&spl, caster.level, &mut world.rng);
+                if this_ambush {
+                    rolled = crate::combat::ambush::strike(world, id, &spl, rolled);
+                }
                 let power = (i64::from(rolled) * i64::from(100 - resval) / 100) as i32;
                 let mut state = CastState::new();
                 for slot in effects.iter() {

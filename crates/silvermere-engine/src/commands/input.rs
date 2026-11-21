@@ -177,6 +177,17 @@ pub fn execute_input(world: &mut World, id: SessionId, line: &str, queued: bool)
         return Outcome::Continue;
     }
 
+    // Fork: PET and PET NAME from a character with a companion (design/warden.md)
+    if super::pet::try_pet(world, id, &cl) {
+        prompt(world, id);
+        return Outcome::Continue;
+    }
+    // Fork: VANISH from a class that can vanish (design/stealth-casters.md)
+    if super::vanish::try_vanish(world, id, &cl) {
+        prompt(world, id);
+        return Outcome::Continue;
+    }
+
     // Stage 6: the parser and the handlers.
     match handle_commands(world, id, &cl) {
         Handled::Wait => return Outcome::Continue,

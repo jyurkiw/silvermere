@@ -193,6 +193,10 @@ pub fn forget(world: &mut World, id: SessionId) {
         .ring
         .retain(|r| *r != RingItem::Session(id));
     world.autocombat.entries.remove(&id);
+    // Fork: the stealth casters' state (design/stealth-casters.md)
+    world.ambush.remove(&id);
+    world.vanish_wait.remove(&id);
+    world.vanish_skip.remove(&id);
 }
 
 /// The entry takes the target, the move `mv` (the attack in progress) and the spell, and
@@ -534,6 +538,11 @@ pub fn do_autocombat_for_user(world: &mut World, id: SessionId) -> bool {
         display_autocombat_broken(world, id, false);
         return false;
     }
+    // Fork: a failed VANISH took this round's blows; the fight goes on next round
+    if world.vanish_skip.remove(&id) {
+        world.autocombat.ring.push_back(RingItem::Session(id));
+        return true;
+    }
     // the stored move, every round
     let e = world.autocombat.entry(id);
     world.atkmove = e.mv;
@@ -552,6 +561,12 @@ pub fn do_autocombat_for_user(world: &mut World, id: SessionId) -> bool {
             }
         }
         Some(AutoTarget::Monster(m)) => {
+            // Fork: the companion strikes first, before its owner (design/warden.md); a
+            // monster it kills leaves its owner nothing to strike this round
+            super::pet::pet_round(world, id, m);
+            if monster(world, m).is_none() {
+                return true;
+            }
             if e.casting {
                 // Fork: a Spellstrike class casts through its weapon (design/war-mage.md)
                 if super::spellstrike::try_round(world, id, e.spell, m) {
@@ -690,6 +705,8 @@ pub fn background_energy(world: &mut World) -> bool {
         energy_update_character(world, id);
     }
     energy_update_monsters(world);
+    // Fork: the round's passing shortens the wait for the next VANISH
+    crate::commands::vanish::round_passed(world);
     do_backstab_autocombat(world);
     let players_first = world.rng.range(0, 100) < PLAYERS_FIRST;
     if players_first {
