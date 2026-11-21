@@ -138,7 +138,13 @@ A spellstrike round:
 7. **No after-cast extra.** Stock makes a blow cost 10% more after its attacker has cast
    in the same round. A spellstrike's blows don't pay it, and neither does the cast.
    Outside a spellstrike the stock rule is unchanged.
-8. One cast per round. The spell doesn't repeat the way a stock casting round does.
+8. **Out of mana.** If the caster can't pay the spell's mana when a spellstrike round
+   starts, the stock line `You do not have enough mana to cast that spell` is shown once,
+   and the fight carries on as plain melee: that round is a normal melee round, not lost.
+   It stays melee for the rest of the fight, even if mana comes back. Spellstrike starts
+   again only when the player types CAST again. (Stock casters short of mana in auto-combat
+   lose the round instead and keep trying.)
+9. One cast per round. The spell doesn't repeat the way a stock casting round does.
 
 Energy charged for the cast, as a share of one blow's cost. The discount is taken after
 the 200 floor, so a discounted cast can cost under 200.
@@ -346,6 +352,11 @@ always makes spellstrike rounds instead of casting rounds. There's no option to 
 off. A warlock who wants a stock casting round (the spell repeated while energy lasts)
 unwields the weapon first, or casts an area spell.
 
+**Never for stealth classes.** Spellstrike is for the battle-mage line. No class with
+stealth ever gets it: not Bards, Gypsies, Missionaries or Rangers, even though they cast,
+and not Mystics, Ninjas or Thieves. (These are the stock classes with the Class Stealth
+ability.)
+
 ## Fitting it into silvermere
 
 The fork stays mergeable with upstream, so the change keeps to new files plus a few small,
@@ -392,6 +403,11 @@ tests and the differential harness still pass on stock data.
 11. **Speed bonus to the cast.** Decided: in a spellstrike round the fast-blow bonus goes
     to the cast first. Only the part that would take the cast chance past 98% goes to the
     round's blows as critical chance. Outside a spellstrike, blows keep it as stock.
+12. **Out of mana.** Decided: a spellstrike that can't pay its mana switches the fight to
+    plain melee for the rest of the fight, with no lost round, and doesn't switch back on
+    its own ([The round](#the-round), step 8).
+13. **No Spellstrike for stealth classes.** Decided: no class with Class Stealth ever gets
+    Spellstrike: Bards, Gypsies, Missionaries, Rangers, Mystics, Ninjas and Thieves.
 
 ## Brainstorm
 
