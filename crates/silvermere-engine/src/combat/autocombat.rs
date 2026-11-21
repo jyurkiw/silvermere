@@ -561,6 +561,8 @@ pub fn do_autocombat_for_user(world: &mut World, id: SessionId) -> bool {
             } else {
                 attack_user_monster(world, id, m, e.mv, e.mv, Mode::Auto);
             }
+            // Fork: the companion strikes after its owner (design/warden.md)
+            super::pet::pet_round(world, id, m);
         }
         None => {
             if e.casting && world.spells.contains_key(&e.spell) {

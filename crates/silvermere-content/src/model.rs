@@ -118,3 +118,36 @@ pub struct Topic {
     /// The text, printed as written.
     pub text: String,
 }
+
+/// `content/pets.toml`: kinds of pet (design/warden.md).
+#[derive(Debug, Clone, Default, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PetsFile {
+    /// `[[pet_kind]]`: one kind.
+    #[serde(default)]
+    pub pet_kind: Vec<PetKindEntry>,
+}
+
+/// One kind of pet, as written.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PetKindEntry {
+    /// The kind's number, the value of a character's `PetKind` ability.
+    pub number: u16,
+    /// Its name before it's given one: "hunting hound".
+    pub name: String,
+    /// The verbs of a hit and a miss: "bites", "snaps at".
+    pub hit_verb: String,
+    pub miss_verb: String,
+    /// Blows a round, as energy per blow (a round gives 1000).
+    pub energy_per_blow: u16,
+    /// Damage as `"2-8"` at level 0, and what each level adds to each end, in hundredths.
+    pub damage: String,
+    pub per_level: [i16; 2],
+    /// Added to the owner's attack value.
+    #[serde(default)]
+    pub accuracy: i16,
+    /// Poison a hit leaves.
+    #[serde(default)]
+    pub poison: i16,
+}

@@ -26,6 +26,7 @@ pub mod experience_split;
 pub mod kill_monster;
 pub mod kill_user;
 pub mod messages;
+pub mod pet;
 pub mod rob;
 pub mod spellstrike;
 

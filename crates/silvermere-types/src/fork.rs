@@ -5,6 +5,8 @@
 //! later can't collide with one of these. Content (`content/`) names them by
 //! [`FORK_ABILITIES`]; the engine matches on the constants.
 
+use serde::{Deserialize, Serialize};
+
 use crate::enums::Ability;
 
 /// Spellstrike: a single-target attack spell cast with a weapon wielded takes the place of
@@ -64,6 +66,42 @@ pub fn is_hidden_ability(ability: Ability) -> bool {
         .any(|&(_, a, hidden)| hidden && a == ability)
 }
 
+/// A kind of pet (design/warden.md): a hunting hound, a hawkling, ... Content
+/// (`content/pets.toml`) defines them; a character's [`PET_KIND`] names one.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct PetKind {
+    /// The kind's number, the value of a character's [`PET_KIND`].
+    pub number: u16,
+    /// What it's called before it has a name: "hunting hound".
+    pub name: String,
+    /// The verb of a hit: "bites" ("Fang bites the rat for 9 damage!").
+    pub hit_verb: String,
+    /// The verb of a miss: "snaps at" ("Fang snaps at the rat!").
+    pub miss_verb: String,
+    /// The energy one blow costs; a round gives 1000 (1000: a blow a round, 333: three,
+    /// 2000: one every other round).
+    pub energy_per_blow: u16,
+    /// Least damage at level 0, and what each level adds, in hundredths.
+    pub min_base: i16,
+    pub min_per_level: i16,
+    /// Most damage at level 0, and what each level adds, in hundredths.
+    pub max_base: i16,
+    pub max_per_level: i16,
+    /// Added to the owner's attack value for the pet's blows.
+    pub accuracy: i16,
+    /// Poison a hit leaves on the target (0 none).
+    pub poison: i16,
+}
+
+impl PetKind {
+    /// The damage range of a blow for an owner of `level`.
+    pub fn damage(&self, level: u16) -> (i32, i32) {
+        let at = |base: i16, per: i16| i32::from(base) + i32::from(level) * i32::from(per) / 100;
+        let max = at(self.max_base, self.max_per_level).max(0);
+        (at(self.min_base, self.min_per_level).clamp(0, max), max)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -88,5 +126,27 @@ mod tests {
         }
         assert!(is_hidden_ability(SPELLSTRIKE_FAIL_OFF));
         assert!(!is_hidden_ability(SPELLSTRIKE));
+    }
+
+    // design/warden.md: the hunting hound, 2-10 at level 1 to 17-68 at level 30
+    #[test]
+    fn pet_damage_grows_with_level() {
+        let hound = PetKind {
+            number: 1,
+            name: "hunting hound".into(),
+            hit_verb: "bites".into(),
+            miss_verb: "snaps at".into(),
+            energy_per_blow: 1000,
+            min_base: 2,
+            min_per_level: 50,
+            max_base: 8,
+            max_per_level: 200,
+            accuracy: 0,
+            poison: 0,
+        };
+        assert_eq!(hound.damage(1), (2, 10));
+        assert_eq!(hound.damage(10), (7, 28));
+        assert_eq!(hound.damage(20), (12, 48));
+        assert_eq!(hound.damage(30), (17, 68));
     }
 }

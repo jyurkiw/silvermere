@@ -63,6 +63,7 @@ mod output_order;
 mod panic;
 mod parse_command;
 mod pending_commands;
+mod pets;
 mod player_record;
 mod progression;
 mod room_display;

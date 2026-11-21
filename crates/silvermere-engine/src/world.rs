@@ -273,6 +273,12 @@ pub struct World {
     /// Fork (Spellstrike, design/war-mage.md): while a spellstrike round's blows are
     /// struck, the critical chance its cast took from them. `None` outside one.
     pub spellstrike_crit_cut: Option<i32>,
+    /// Fork (pets, design/warden.md): the kinds of pet, from the content.
+    pub pet_kinds: BTreeMap<u16, silvermere_types::fork::PetKind>,
+    /// Fork (pets): each fighting character's companion's energy carried between rounds.
+    pub pet_energy: std::collections::HashMap<SessionId, i32>,
+    /// Fork (pets): each character's companion's name, while the character is in the game.
+    pub pet_names: std::collections::HashMap<SessionId, String>,
     /// Pending gang invitations.
     pub gang_invites: Vec<GangInvite>,
     /// The background cycles' own state and hooks (T-037).
@@ -410,6 +416,9 @@ impl World {
             evil_timers: Vec::new(),
             cast_teleport: (0, 0),
             spellstrike_crit_cut: None,
+            pet_kinds: BTreeMap::new(),
+            pet_energy: std::collections::HashMap::new(),
+            pet_names: std::collections::HashMap::new(),
             gang_invites: Vec::new(),
             cycles: crate::cycles::CycleState::default(),
             autocombat: Default::default(),
