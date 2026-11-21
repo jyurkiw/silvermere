@@ -139,7 +139,7 @@ A spellstrike round:
    in the same round. A spellstrike's blows don't pay it, and neither does the cast.
    Outside a spellstrike the stock rule is unchanged.
 8. **Out of mana.** If the caster can't pay the spell's mana when a spellstrike round
-   starts, the stock line `You do not have enough mana to cast that spell` is shown once,
+   starts, the stock line `You do not have enough mana to cast that spell.` is shown once,
    and the fight carries on as plain melee: that round is a normal melee round, not lost.
    It stays melee for the rest of the fight, even if mana comes back. Spellstrike starts
    again only when the player types CAST again. (Stock casters short of mana in auto-combat

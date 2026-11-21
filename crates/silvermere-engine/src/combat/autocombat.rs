@@ -214,6 +214,32 @@ pub fn engage(
     ac.ring.push_back(RingItem::Session(id));
 }
 
+/// Fork (Spellstrike): the player keeps only the first of the places a round gave him in
+/// the ring. A spellstrike round both casts and strikes, and each queues him again.
+pub(crate) fn keep_one_queued(world: &mut World, id: SessionId) {
+    let mut seen = false;
+    world.autocombat.ring.retain(|r| {
+        if *r != RingItem::Session(id) {
+            return true;
+        }
+        let keep = !seen;
+        seen = true;
+        keep
+    });
+}
+
+/// Fork (Spellstrike): while the player is still queued, his entry goes on casting `spell`
+/// (the round's blows left it as a melee entry).
+pub(crate) fn resume_casting(world: &mut World, id: SessionId, spell: SpellNo) {
+    if !world.autocombat.queued(id) {
+        return;
+    }
+    let e = world.autocombat.entry_mut(id);
+    e.casting = true;
+    e.spell = spell;
+    e.mv = Move::Attack;
+}
+
 /// Every slot the player holds is freed and energy above one round is cut (every caller
 /// passes `reset` 1). Nothing is said.
 pub fn kill_autocombat(world: &mut World, id: SessionId) {
@@ -527,7 +553,9 @@ pub fn do_autocombat_for_user(world: &mut World, id: SessionId) -> bool {
         }
         Some(AutoTarget::Monster(m)) => {
             if e.casting {
-                if world.spells.contains_key(&e.spell) {
+                // Fork: a Spellstrike class casts through its weapon (design/war-mage.md)
+                if super::spellstrike::try_round(world, id, e.spell, m) {
+                } else if world.spells.contains_key(&e.spell) {
                     HOOKS.cast(world, id, e.spell, e.target);
                 }
             } else {

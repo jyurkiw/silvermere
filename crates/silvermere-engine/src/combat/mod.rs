@@ -27,6 +27,7 @@ pub mod kill_monster;
 pub mod kill_user;
 pub mod messages;
 pub mod rob;
+pub mod spellstrike;
 
 use silvermere_rules::abilities::{AbilityLookup, CharacterAbilities, MonsterAbilities};
 use silvermere_rules::combat::{

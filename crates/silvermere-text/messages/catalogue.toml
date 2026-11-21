@@ -4503,6 +4503,21 @@ text = "{@ANSI_CLRLINE}{@ANSI_CYAN}{who} attempted to cast {spell} at {target}, 
 pattern = "other_cast_failed"
 example = { who = "Bob", spell = "chill", target = "Ann" }
 
+[messages.spellstrike_lead_in]
+text = "{@ANSI_CLRLINE}{@ANSI_CYAN}You channel {spell} through your {weapon}!\r"
+example = { spell = "magic missile", weapon = "longsword" }
+note = "Fork (design/war-mage.md): the line before a Spellstrike's cast, to the caster."
+
+[messages.spellstrike_lead_in_room]
+text = "{@ANSI_CLRLINE}{@ANSI_CYAN}{who} channels {spell} through {his} {weapon}!\r"
+example = { who = "Gorin", spell = "magic missile", his = "his", weapon = "longsword" }
+note = "Fork (design/war-mage.md): the room's line before a Spellstrike's cast."
+
+[messages.spellstrike_lead_in_you]
+text = "{@ANSI_CLRLINE}{@ANSI_CYAN}{who} channels {spell} through {his} {weapon} at you!\r"
+example = { who = "Gorin", spell = "magic missile", his = "his", weapon = "longsword" }
+note = "Fork (design/war-mage.md): a player target's line before a Spellstrike's cast."
+
 [messages.cast_resisted]
 text = "{@ANSI_CLRLINE}{@ANSI_CYAN}You attempt to cast {spell} at {target}, but the spell is resisted.\r"
 pattern = "cast_resisted"
