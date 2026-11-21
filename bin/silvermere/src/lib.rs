@@ -305,6 +305,12 @@ pub async fn serve_snapshot_in_process(
     };
     let max_sessions = u16::try_from(cfg.server.max_sessions).unwrap_or(u16::MAX);
     let mut world = World::load(cfg.game.clone(), max_sessions, snapshot)?;
+    // Fork: the kinds of pet, from the content built into this binary (design/warden.md)
+    world.pet_kinds = silvermere_content::Content::embedded()?
+        .pet_kinds
+        .into_iter()
+        .map(|k| (k.number, k))
+        .collect();
     // The `FILE DESCRIPTION` room files (T-025); without them those rooms show no title.
     let assets = cfg.data_dir.join("assets");
     match silvermere_engine::display::Assets::load_dir(&assets) {

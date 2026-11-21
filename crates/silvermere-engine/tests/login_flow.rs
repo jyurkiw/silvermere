@@ -118,6 +118,7 @@ impl Harness {
                 may_gossip: true,
                 may_auction: true,
                 sysop_keys: silvermere_engine::commands::sysop::Keys::empty(),
+                pets: Vec::new(),
             }),
         });
     }

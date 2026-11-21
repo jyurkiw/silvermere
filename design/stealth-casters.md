@@ -144,11 +144,17 @@ with a spell instead:
 
 | Stealth | Cast | Result |
 |---|---|---|
-| kept | lands | **spell backstab**: the spell's damage raised by the class's `SpellBackstab` percentage (proposed 100: double) plus its `BackstabMin` / `BackstabMax` |
+| kept | lands | **spell backstab**: built as a melee backstab, with the spell's roll in the weapon's place (see below) |
 | lost | lands | a normal cast: normal damage |
 | kept | fails | a failed cast: the ambush is wasted |
 | lost | fails | a failed cast |
 
+- **The damage** follows the stock melee backstab: the spell's roll raised by `SpellBackstab`
+  (100: doubled), plus twice the level, a tenth of the stealth and the `BackstabMin` /
+  `BackstabMax` roll, then all of it raised by the level in percent. A level-50 godstrike
+  averages about 380 before the target's resistance, against 200 and more for a good
+  weapon's backstab; a level-1 harm, about 35. *(Play-testing showed that doubling the
+  spell plus 5 fell far behind a weapon backstab at high level.)*
 - **Why it's fair:** a Mage-1 or Priest-1 caster with modest Intellect or Willpower won't land
   both rolls often until the higher levels, so the big damage is worth it when it comes.
 - **Messages:** a lead-in like "You strike from the shadows with godstrike!" (and the room's
@@ -210,6 +216,8 @@ exactly BACKSTAB.
 6. Neither gets Spellstrike (stealth classes).
 7. The proposed titles and lore stand (they can change later).
 8. Spell backstab works against players too, under PvP's usual rules.
+9. A spell backstab's damage is built as a melee backstab's, so it keeps pace with weapon
+   backstabs at every level.
 
 ## Open questions
 

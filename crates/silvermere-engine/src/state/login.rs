@@ -42,6 +42,8 @@ pub struct Login {
     pub may_auction: bool,
     /// The `SYS_*` INI keys and the developer gate the account holds (T-055).
     pub sysop_keys: crate::commands::sysop::Keys,
+    /// Fork: the account's pets (design/warden.md).
+    pub pets: Vec<silvermere_types::fork::Pet>,
 }
 
 /// The user behind `id` has logged in. The channel's game state is reset (`clear_player`,
@@ -62,6 +64,20 @@ pub fn logged_in(world: &mut World, id: SessionId, login: Login) {
         }
         world.logoff(id);
         return;
+    }
+    // Fork: the companion's name, and no carried pet energy (design/warden.md)
+    world.pet_energy.remove(&id);
+    match login
+        .pets
+        .iter()
+        .find(|p| p.source == silvermere_types::fork::PET_SOURCE_CLASS && !p.name.is_empty())
+    {
+        Some(p) => {
+            world.pet_names.insert(id, p.name.clone());
+        }
+        None => {
+            world.pet_names.remove(&id);
+        }
     }
     // T-075: the record the engine queued last for the account wins over the gate's
     // read, which may have come before the store wrote it

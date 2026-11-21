@@ -1577,6 +1577,11 @@ forgive_refused
   palette 1: The gods refuse to forgive him for his actions.\r\n
   palette 2: The gods refuse to forgive him for his actions.\r\n
   palette 3: The gods refuse to forgive him for his actions.\r\n
+fork_text
+  palette 0: \x1b[79D\x1b[K\x1b[0;32mYour hunting hound is now called Fang.\r\n
+  palette 1: \x1b[79D\x1b[K\x1b[0;32mYour hunting hound is now called Fang.\r\n
+  palette 2: \x1b[79D\x1b[K\x1b[0;32mYour hunting hound is now called Fang.\r\n
+  palette 3: \x1b[79D\x1b[K\x1b[0;32mYour hunting hound is now called Fang.\r\n
 game_full
   palette 0: \x1b[1;37m\r\nWe\'re sorry, but the game is currently full.\r\n\r\n
   palette 1: \x1b[1;37m\r\nWe\'re sorry, but the game is currently full.\r\n\r\n
@@ -4527,6 +4532,21 @@ sneaking
   palette 1: \x1b[79D\x1b[K\x1b[0;37mSneaking...\r\n
   palette 2: \x1b[79D\x1b[K\x1b[0;37mSneaking...\r\n
   palette 3: \x1b[79D\x1b[K\x1b[0;37mSneaking...\r\n
+spell_backstab_lead_in
+  palette 0: \x1b[79D\x1b[K\x1b[0;36mYou strike from the shadows with godstrike!\r\n
+  palette 1: \x1b[79D\x1b[K\x1b[0;36mYou strike from the shadows with godstrike!\r\n
+  palette 2: \x1b[79D\x1b[K\x1b[0;36mYou strike from the shadows with godstrike!\r\n
+  palette 3: \x1b[79D\x1b[K\x1b[0;36mYou strike from the shadows with godstrike!\r\n
+spell_backstab_lead_in_room
+  palette 0: \x1b[79D\x1b[K\x1b[0;36mGorin strikes from the shadows with godstrike!\r\n
+  palette 1: \x1b[79D\x1b[K\x1b[0;36mGorin strikes from the shadows with godstrike!\r\n
+  palette 2: \x1b[79D\x1b[K\x1b[0;36mGorin strikes from the shadows with godstrike!\r\n
+  palette 3: \x1b[79D\x1b[K\x1b[0;36mGorin strikes from the shadows with godstrike!\r\n
+spell_backstab_spotted
+  palette 0: \x1b[79D\x1b[K\x1b[0;36mYour foe spots you as you begin to cast!\r\n
+  palette 1: \x1b[79D\x1b[K\x1b[0;36mYour foe spots you as you begin to cast!\r\n
+  palette 2: \x1b[79D\x1b[K\x1b[0;36mYour foe spots you as you begin to cast!\r\n
+  palette 3: \x1b[79D\x1b[K\x1b[0;36mYour foe spots you as you begin to cast!\r\n
 spell_ending
   palette 0: \x1b[79D\x1b[K\x1b[0;33mThe vines wither and fall away.\r\n
   palette 1: \x1b[79D\x1b[K\x1b[0;33mThe vines wither and fall away.\r\n
@@ -5742,6 +5762,31 @@ validating_wait
   palette 1: Validating your name, please wait.\r\n 
   palette 2: Validating your name, please wait.\r\n 
   palette 3: Validating your name, please wait.\r\n 
+vanish_done
+  palette 0: \x1b[79D\x1b[K\x1b[0;32mYou slip away and melt into the shadows.\r\n
+  palette 1: \x1b[79D\x1b[K\x1b[0;32mYou slip away and melt into the shadows.\r\n
+  palette 2: \x1b[79D\x1b[K\x1b[0;32mYou slip away and melt into the shadows.\r\n
+  palette 3: \x1b[79D\x1b[K\x1b[0;32mYou slip away and melt into the shadows.\r\n
+vanish_done_room
+  palette 0: \x1b[79D\x1b[K\x1b[0;32mGorin slips away into the shadows!\r\n
+  palette 1: \x1b[79D\x1b[K\x1b[0;32mGorin slips away into the shadows!\r\n
+  palette 2: \x1b[79D\x1b[K\x1b[0;32mGorin slips away into the shadows!\r\n
+  palette 3: \x1b[79D\x1b[K\x1b[0;32mGorin slips away into the shadows!\r\n
+vanish_failed
+  palette 0: \x1b[79D\x1b[K\x1b[0;32mYou try to slip away, but your foe keeps you in sight.\r\n
+  palette 1: \x1b[79D\x1b[K\x1b[0;32mYou try to slip away, but your foe keeps you in sight.\r\n
+  palette 2: \x1b[79D\x1b[K\x1b[0;32mYou try to slip away, but your foe keeps you in sight.\r\n
+  palette 3: \x1b[79D\x1b[K\x1b[0;32mYou try to slip away, but your foe keeps you in sight.\r\n
+vanish_not_fighting
+  palette 0: \x1b[79D\x1b[K\x1b[0;32mYou can only vanish in the middle of a fight; try HIDE.\r\n
+  palette 1: \x1b[79D\x1b[K\x1b[0;32mYou can only vanish in the middle of a fight; try HIDE.\r\n
+  palette 2: \x1b[79D\x1b[K\x1b[0;32mYou can only vanish in the middle of a fight; try HIDE.\r\n
+  palette 3: \x1b[79D\x1b[K\x1b[0;32mYou can only vanish in the middle of a fight; try HIDE.\r\n
+vanish_wait
+  palette 0: \x1b[79D\x1b[K\x1b[0;32mYou can\'t vanish again so soon.\r\n
+  palette 1: \x1b[79D\x1b[K\x1b[0;32mYou can\'t vanish again so soon.\r\n
+  palette 2: \x1b[79D\x1b[K\x1b[0;32mYou can\'t vanish again so soon.\r\n
+  palette 3: \x1b[79D\x1b[K\x1b[0;32mYou can\'t vanish again so soon.\r\n
 verbose_set
   palette 0: Verbose mode set\r\n
   palette 1: Verbose mode set\r\n

@@ -16,6 +16,7 @@ round, pet names in output), and that's accepted for this one.
 - [The pet in output text](#the-pet-in-output-text)
 - [Weapons: two-handed and ranged](#weapons-two-handed-and-ranged)
 - [Fitting it into silvermere](#fitting-it-into-silvermere)
+- [Follow-up: room renovations](#follow-up-room-renovations)
 - [Decisions](#decisions)
 - [Open questions](#open-questions)
 - [Brainstorm](#brainstorm)
@@ -115,7 +116,7 @@ sex. Huntsman runs to level 110 like the stock last ranks. The block is a new te
 ## The pet's attack
 
 **The Warden's companion: one heavy blow a round.** "Attacks less, but you feel
-it": rather than an energy pool, the companion makes exactly one blow each round, after
+it": rather than an energy pool, the companion makes exactly one blow each round, before
 the Warden's, at the Warden's target. All the scaling is in its damage:
 
 | Warden level | Companion's blow (proposed) |
@@ -262,6 +263,11 @@ ammunition and no special rules. Real ranged combat can hang off the same marker
 | Bonding | room scripts (stock clauses) setting the fork character ability `PetKind`; no code |
 | `PetKind` | read by the pet's attack to pick the companion's kind |
 
+**Faithfulness tests.** The stable's door gives the Village Entrance (1/2140) an east exit
+the original's recordings don't have. The recording comparisons
+(`silvermere-testkit` `capture_compare::without_fork_differences`) put that one exits line
+back as the original sent it before comparing; everything else is compared as before.
+
 ## Decisions
 
 1. Pets get their own table, not a hiding place in the character record.
@@ -301,6 +307,34 @@ ammunition and no special rules. Real ranged combat can hang off the same marker
    the balance lever; the balance sim ([testing.md](testing.md)) can measure it.
 6. ~~The "Also here:" line.~~ **Decided:** it shows "Devin and Fang" too, checked against
    MegaMud in play-testing.
+
+## Follow-up: room renovations
+
+Once the Warden is built: **room renovations**, starting with **trainers for the War Mage
+and the Warden.**
+
+How training picks classes: a training shop's `trainclass` is one class number, and 0 means
+every class (`commands/training.rs`, `progression/train.rs`). So **universal trainers
+already train every class**, the new ones included; that must stay true. The stock
+trainers:
+
+| Levels | Stock trainers |
+|---|---|
+| 1-10 | a room per class, plus a universal Training Room |
+| 11 | **only per-class "Super ... Trainer" rooms**, one per stock class |
+| 12-20 | universal (High Level Trainer) |
+| 21+ | universal (Titan, Rhudaur, Dwarven, Amazon, ...) |
+
+Checked in the Warden PR: the two universal trainers a new character meets, **Newhaven's
+Adventurer's Guild (1/2147)** and the **Adventurer's Guild Universal Trainer (1/1376)**
+(both shop 38, levels 1-10), train War Mages and Wardens (live test
+`the_universal_trainers_train_war_mages_and_wardens`). Class trainer NPCs come in the next
+PR.
+
+The gap is **level 11**: no universal trainer covers it, so War Mages and Wardens can't
+train it today. The renovations add, at least, a level-11 trainer for each new class (or one
+universal level-11 trainer), and their own level 1-10 training rooms for parity with the
+stock classes, through the content overlay.
 
 ## Brainstorm
 

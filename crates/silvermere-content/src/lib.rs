@@ -16,9 +16,10 @@
 pub mod help;
 pub mod install;
 pub mod model;
+pub mod world;
 
 use silvermere_types::enums::{Ability, ArmourType, Magery, WeaponClass};
-use silvermere_types::fork::fork_ability;
+use silvermere_types::fork::{PetKind, fork_ability};
 use silvermere_types::ids::{ClassNo, TextBlockNo};
 use silvermere_types::records::{AbilitySlot, Class, TextBlock};
 use silvermere_types::sizes::NRECABILS;
@@ -83,6 +84,10 @@ pub struct Content {
     pub class_edits: Vec<ClassEdit>,
     /// The HELP file as written.
     pub help: model::HelpFile,
+    /// Kinds of pet.
+    pub pet_kinds: Vec<PetKind>,
+    /// New rooms, monsters, shops, items and text blocks, and changes to stock ones.
+    pub world: model::WorldFile,
 }
 
 impl Content {
@@ -101,6 +106,15 @@ impl Content {
                     content.add_classes(name, &f)?;
                 }
                 "help.toml" => content.help = parse(name, text)?,
+                "world.toml" => {
+                    let f: model::WorldFile = parse(name, text)?;
+                    world::check(&f).map_err(|e| bad(name, "world", e))?;
+                    content.world = f;
+                }
+                "pets.toml" => {
+                    let f: model::PetsFile = parse(name, text)?;
+                    content.add_pets(name, &f)?;
+                }
                 other => return Err(bad(other, "file", "not a known content file")),
             }
         }
@@ -126,6 +140,50 @@ impl Content {
             self.class_edits.push(ClassEdit {
                 name: ch.name.clone(),
                 abilities,
+            });
+        }
+        Ok(())
+    }
+
+    fn add_pets(&mut self, file: &str, f: &model::PetsFile) -> Result<(), ContentError> {
+        for p in &f.pet_kind {
+            let what = p.name.as_str();
+            if p.number == 0 || self.pet_kinds.iter().any(|k| k.number == p.number) {
+                return Err(bad(
+                    file,
+                    what,
+                    "a pet kind's number is above 0 and used once",
+                ));
+            }
+            if p.energy_per_blow == 0 {
+                return Err(bad(file, what, "energy_per_blow is above 0"));
+            }
+            let (lo, hi) = p
+                .damage
+                .split_once('-')
+                .and_then(|(a, b)| {
+                    Some((a.trim().parse::<i16>().ok()?, b.trim().parse::<i16>().ok()?))
+                })
+                .filter(|&(lo, hi)| lo >= 0 && hi >= lo)
+                .ok_or_else(|| bad(file, what, format!("damage `{}` is not like 2-8", p.damage)))?;
+            if p.name.trim().is_empty()
+                || p.hit_verb.trim().is_empty()
+                || p.miss_verb.trim().is_empty()
+            {
+                return Err(bad(file, what, "a pet kind needs a name and both verbs"));
+            }
+            self.pet_kinds.push(PetKind {
+                number: p.number,
+                name: p.name.clone(),
+                hit_verb: p.hit_verb.clone(),
+                miss_verb: p.miss_verb.clone(),
+                energy_per_blow: p.energy_per_blow,
+                min_base: lo,
+                min_per_level: p.per_level[0],
+                max_base: hi,
+                max_per_level: p.per_level[1],
+                accuracy: p.accuracy,
+                poison: p.poison,
             });
         }
         Ok(())
