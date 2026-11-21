@@ -239,6 +239,10 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" is marked on the 
 
 Both abilities are general: a later archer class, say, reuses them.
 
+**For now `Ranged` is only a marker.** It decides who may use the weapon and nothing else:
+a ranged weapon still fights exactly like the melee item it is in stock, with no range, no
+ammunition and no special rules. Real ranged combat can hang off the same marker later.
+
 ## Fitting it into silvermere
 
 | Piece | Where |
