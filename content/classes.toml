@@ -1,0 +1,46 @@
+# The fork's classes, installed into the database at every server start
+# (design/content-overlay.md). Stats are written as the class help shows them.
+
+# The War Mage (design/war-mage.md).
+[[class]]
+number   = 16
+name     = "War Mage"
+hp       = "5-9"          # HP per level
+exp      = 220            # percent; a Warrior is 100
+magic    = "Mage-1"
+fighting = 4              # 1-5; a Warrior is 4
+weapons  = "All"
+armour   = "Chainmail"
+abilities = [
+  { name = "Bash" },
+  { name = "Spellstrike",           value = 30 },  # base failure discount, percent
+  { name = "SpellstrikeSuccessOff", value = 10 },  # hidden
+  { name = "SpellstrikeFailOff",    value = 40 },  # hidden
+  { name = "NoOffHand" },
+]
+
+[class.titles]
+block = 3019
+ranks = [
+  { from = 1,  title = "Apprentice Recruit" },
+  { from = 2,  title = "Apprentice Soldat" },
+  { from = 5,  title = "Arcane Brigadier" },
+  { from = 10, title = "Runic Brigadier" },
+  { from = 15, title = "Runic Corporal" },
+  { from = 20, title = "Arcane Sergeant" },
+  { from = 25, title = "Chief Sergeant" },
+  { from = 30, title = "Arcane Adjutant" },
+  { from = 35, title = "Major Artilerist" },
+  { from = 40, title = "Arcane Aspirant" },
+  { from = 45, title = "Sub-Lieutenant" },
+  { from = 50, title = "Lieutenant" },
+  { from = 55, title = "Arcane Captain" },
+  { from = 60, title = "Commandant" },
+  { from = 65, title = "Colonel Arcane" },
+  { from = 70, title = "Arch-Colonel" },
+]
+
+# Later: warlocks get the base Spellstrike.
+# [[class_change]]
+# name = "Warlock"
+# add_abilities = [{ name = "Spellstrike", value = 30 }]

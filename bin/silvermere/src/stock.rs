@@ -180,8 +180,42 @@ fn existing_path(dir: &Path, name: &str) -> Option<PathBuf> {
 /// Installs the game's long text from `<data_dir>/assets/` for this process (the first
 /// install wins); logs a warning when it cannot be read.
 pub fn install_text(data_dir: &Path) {
-    let assets = data_dir.join("assets");
-    if let Err(e) = silvermere_text::package::load_and_install(&assets) {
-        tracing::warn!("the game's text is not installed: {e}");
+    use silvermere_text::package::{self, PackageText};
+    if package::installed().is_some() {
+        return;
     }
+    let assets = data_dir.join("assets");
+    let mut text = match PackageText::load(&assets) {
+        Ok(t) => t,
+        Err(e) => {
+            tracing::warn!("the game's text is not installed: {e}");
+            return;
+        }
+    };
+    // Fork: the content's HELP topics join the game's own (design/content-overlay.md).
+    let topics = silvermere_content::Content::embedded()
+        .map_err(|e| e.to_string())
+        .and_then(|c| silvermere_content::help::topics(&c));
+    match topics {
+        Ok(topics) => {
+            if let Err(e) = text.add_help_topics(topics) {
+                tracing::warn!("the content's help topics are not installed: {e}");
+            }
+        }
+        Err(e) => tracing::warn!("the content's help topics are not installed: {e}"),
+    }
+    package::install(text);
+}
+
+/// Fork: installs the content built into this binary (`content/`) into `db`, unless the
+/// database has no world yet. A failure stops the start: a world without its classes
+/// would load characters of a class that isn't there.
+pub async fn install_content(db: &silvermere_db::Db) -> anyhow::Result<()> {
+    if db.classes().all().await?.is_empty() {
+        tracing::debug!("no world in the database yet; content not installed");
+        return Ok(());
+    }
+    let content = silvermere_content::Content::embedded()?;
+    silvermere_content::install(db, &content).await?;
+    Ok(())
 }

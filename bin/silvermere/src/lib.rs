@@ -296,6 +296,9 @@ pub async fn serve_snapshot_in_process(
     let db = Db::connect_and_migrate(&cfg.database.url)
         .await
         .with_context(|| format!("opening {}", cfg.database_shown()))?;
+    // Fork: the content of content/ goes back into the world at every start, after any
+    // import (design/content-overlay.md).
+    stock::install_content(&db).await?;
     let snapshot = match snapshot {
         Some(s) => s,
         None => bridge::load_snapshot(&db).await?,
