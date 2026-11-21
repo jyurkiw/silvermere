@@ -99,3 +99,37 @@ fn bad_content_is_refused() {
     );
     assert!(Content::from_files(&[("rooms.toml", "")]).is_err());
 }
+
+#[test]
+fn the_warden_record_matches_the_design() {
+    let c = Content::embedded().unwrap();
+    let w = c.classes.iter().find(|c| c.name == "Warden").unwrap();
+    assert_eq!(w.number, ClassNo(17));
+    assert_eq!((w.basehp, w.hplevel), (7, 4), "7-11 HP per level");
+    assert_eq!(w.exp, 40, "140% experience");
+    assert_eq!((w.magery, w.magelvl), (Magery::None, 0));
+    assert_eq!(w.combat, 5, "fighting 3");
+    assert_eq!(w.weapon, WeaponClass::AnyTwoHand);
+    assert_eq!(w.armour, ArmourType::StuddedRigidLeather);
+    assert_eq!(w.titles, TextBlockNo(3020));
+    assert!(w.abilities.contains(&(fork::CHAINMAIL_AT_LEVEL, 10)));
+    assert!(w.abilities.contains(&(fork::SCALEMAIL_AT_LEVEL, 20)));
+    assert!(w.abilities.contains(&(fork::RANGED_WEAPONS, 0)));
+    let block = c
+        .titles
+        .iter()
+        .find(|t| t.number == TextBlockNo(3020))
+        .unwrap();
+    let lines: Vec<&str> = block.text.lines().collect();
+    assert_eq!(
+        (lines[0], lines[1], lines[69]),
+        ("Cub", "Scout", "Huntsman")
+    );
+    let topics = help::topics(&c).unwrap();
+    let t = topics.iter().find(|t| t.words == "Wardens").unwrap();
+    assert!(
+        t.text.contains(
+            "HP/Level: 7-11  Magic: None  Combat: Average  Weapons: 2-H  Armour: Leather"
+        )
+    );
+}

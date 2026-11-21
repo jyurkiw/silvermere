@@ -40,6 +40,44 @@ ranks = [
   { from = 70, title = "Arch-Colonel" },
 ]
 
+# The Warden (design/warden.md): a tough, low-fighting class whose companion hits hard.
+[[class]]
+number   = 17
+name     = "Warden"
+hp       = "7-11"
+exp      = 140
+magic    = "None"
+fighting = 3
+weapons  = "AnyTwoHand"
+armour   = "StuddedRigidLeather"
+abilities = [
+  { name = "Bash" },
+  { name = "ChainmailAtLevel", value = 10 },
+  { name = "ScalemailAtLevel", value = 20 },
+  { name = "RangedWeapons" },
+]
+
+[class.titles]
+block = 3020
+ranks = [
+  { from = 1 , title = "Cub" },
+  { from = 2 , title = "Scout" },
+  { from = 5 , title = "Tenderfoot" },
+  { from = 10, title = "Venturer" },
+  { from = 15, title = "Star Scout" },
+  { from = 20, title = "Life Scout" },
+  { from = 25, title = "Explorer" },
+  { from = 30, title = "Rover" },
+  { from = 35, title = "Pioneer" },
+  { from = 40, title = "Frontiersman" },
+  { from = 45, title = "Voyageur" },
+  { from = 50, title = "Long Hunter" },
+  { from = 55, title = "Pathfinder" },
+  { from = 60, title = "Bush Ranger" },
+  { from = 65, title = "High Tracker" },
+  { from = 70, title = "Huntsman" },
+]
+
 # Later: warlocks get the base Spellstrike.
 # [[class_change]]
 # name = "Warlock"

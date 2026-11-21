@@ -30,3 +30,34 @@ buys blows as usual. A failed cast counts as a missed blow and costs less than a
 Out of mana, the fight carries on as plain melee until you CAST again. Area spells, and
 casting with no weapon in hand, work as they always have.
 '''
+
+[[class_topic]]
+class = "Warden"
+words = "Wardens"
+text = '''
+Wardens keep the wild places beyond the walls, and none of them walks alone. Each is bonded
+to an animal companion: a hunting hound, a hawkling, a trained rattlesnake or, for the
+brave, a drop bear. Warden and companion fight as one, and share one life between them.
+
+Wardens are hardy rather than skilled: they swing less often than a warrior, but their
+companion's strike comes every round and lands hard. They fight with two-handed and
+ranged weapons and travel light, in leather; seasoned Wardens may take to chainmail, and
+veterans to scale. A new Warden finds the stable in Newhaven, chooses a companion's leash
+there and uses it to bond.
+'''
+abilities = "Animal companion, ranged weapons."
+
+[[topic]]
+words = "Companions"
+text = '''
+Companions
+
+A Warden's companion fights beside them. Each round, after the Warden's own blows, it
+strikes the Warden's foe on its own: a hunting hound once, a hawkling several times for
+less, a trained rattlesnake once with a poisoned bite, and a drop bear every other round
+with great force. Its strength grows with the Warden's level. It shares the Warden's life
+and needs no gear.
+
+Choose a companion at the Newhaven stable: get its leash there and USE it in the stable.
+PET shows your companion; PET NAME <name> names it.
+'''

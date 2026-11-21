@@ -306,10 +306,24 @@ ammunition and no special rules. Real ranged combat can hang off the same marker
 ## Follow-up: room renovations
 
 Once the Warden is built: **room renovations**, starting with **trainers for the War Mage
-and the Warden.** Stock training halls are shops tied to classes (a shop's `trainclass`
-field), so neither new class may be able to train levels until it has a trainer. Check how
-training picks the classes it serves, then add trainers (new rooms or changes to existing
-halls) through the content overlay.
+and the Warden.**
+
+How training picks classes: a training shop's `trainclass` is one class number, and 0 means
+every class (`commands/training.rs`, `progression/train.rs`). So **universal trainers
+already train every class**, the new ones included; that must stay true. The stock
+trainers:
+
+| Levels | Stock trainers |
+|---|---|
+| 1-10 | a room per class, plus a universal Training Room |
+| 11 | **only per-class "Super ... Trainer" rooms**, one per stock class |
+| 12-20 | universal (High Level Trainer) |
+| 21+ | universal (Titan, Rhudaur, Dwarven, Amazon, ...) |
+
+The gap is **level 11**: no universal trainer covers it, so War Mages and Wardens can't
+train it today. The renovations add, at least, a level-11 trainer for each new class (or one
+universal level-11 trainer), and their own level 1-10 training rooms for parity with the
+stock classes, through the content overlay.
 
 ## Brainstorm
 
