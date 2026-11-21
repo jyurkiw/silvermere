@@ -7,7 +7,7 @@ Status: **draft, in design.** Nothing here is implemented. Fork-only.
 - [The Avenger](#the-avenger)
 - [The Assassin](#the-assassin)
 - [Shared rules](#shared-rules)
-- [Spell backstab (the Assassin)](#spell-backstab-the-assassin)
+- [Spell backstab](#spell-backstab)
 - [Vanish (the Avenger)](#vanish-the-avenger)
 - [Fitting it into silvermere](#fitting-it-into-silvermere)
 - [Decisions](#decisions)
@@ -19,11 +19,13 @@ Status: **draft, in design.** Nothing here is implemented. Fork-only.
 Two fighter-leaning stealth casters. Unlike the Gypsy and the Missionary (fighting 2,
 magic level 2), they fight first and cast second: fighting 3, magic level 1.
 
-- **The Avenger** (Priest-1, blunt weapons): the hidden hand of the temples. Its signature
-  is **vanish**: dropping back into hiding in the middle of a fight, to strike again from
-  the shadows.
-- **The Assassin** (Mage-1, sharp weapons): an arcane killer. Its signature is **spell
-  backstab**: opening from hiding with an attack spell that lands like a backstab.
+- **Both** can **spell backstab**: open from hiding with an attack spell that lands like a
+  backstab, if they keep their stealth and land the cast.
+- **The Avenger** (Priest-1, blunt weapons): the hidden hand of the temples. It can also
+  **vanish**: drop back into hiding in the middle of a fight, to strike again from the
+  shadows. (Backstabbing with godstrike is the point.)
+- **The Assassin** (Mage-1, sharp weapons): an arcane killer, whose craft is the opening
+  spell.
 
 Both are stealth classes, so neither ever gets Spellstrike
 ([war-mage.md, Decision 13](war-mage.md#decisions)).
@@ -51,7 +53,7 @@ Both are stealth classes, so neither ever gets Spellstrike
 | fighting | 3 | `combat` 5 |
 | weapons | any blunt | `AnyBlunt` |
 | armour | leather | `StuddedRigidLeather`, the stealth classes' limit |
-| abilities | stealth, backstab, **blunt backstab**, **vanish** | see [Shared rules](#shared-rules) and [Vanish](#vanish-the-avenger) |
+| abilities | stealth, backstab, **spell backstab**, **vanish**, **blunt backstab** | see [Spell backstab](#spell-backstab), [Vanish](#vanish-the-avenger) |
 | titles | text block 3021 | below |
 
 **Lore (proposed).** When a temple names someone an enemy of the faith and no court will
@@ -90,7 +92,7 @@ alignment (13), godstrike (20).
 | fighting | 3 | `combat` 5 |
 | weapons | any sharp | `AnySharp` |
 | armour | leather | `StuddedRigidLeather` |
-| abilities | stealth, backstab, **spell backstab** | see [Spell backstab](#spell-backstab-the-assassin) |
+| abilities | stealth, backstab, **spell backstab** | see [Spell backstab](#spell-backstab) |
 | titles | text block 3022 | below |
 
 **Lore (proposed).** The Assassins learned their magic the way they learned their knives:
@@ -125,27 +127,38 @@ sunbolt (13), eldritch bolt (20).
   and Missionary keep those.
 - **No Spellstrike**, ever (stealth classes).
 
-## Spell backstab (the Assassin)
+## Spell backstab
 
-Stock backstab works only with a melee blow, from hiding or sneaking. The Assassin can open
+Stock backstab works only with a melee blow, from hiding or sneaking. Both classes can open
 with a spell instead:
 
-- **When:** casting a single-target attack spell at a monster (or player) from hiding or
-  sneaking, at a target that isn't already fighting the Assassin: the opening cast of a
-  fight, the spell's equivalent of BACKSTAB.
-- **What it does:** the spell's damage gets the caster's backstab bonus: it's raised by a
-  percentage (a fork class ability, `SpellBackstab`, proposed 100: double damage), and the
-  caster's `BackstabMin` / `BackstabMax` are added, as a backstab blow's are.
-- **It still has to be cast:** the stock cast roll applies, and a failed cast is a failed
-  ambush; the Assassin is revealed either way.
-- **After it:** the Assassin is out of hiding and the fight goes on as normal (auto-combat
-  with the spell, or melee).
-- **Messages:** a lead-in like "You strike from the shadows with magic missile!" and the
-  room's version, before the stock cast lines.
+- **When:** casting a single-target attack spell from hiding or sneaking at a target that
+  isn't already fighting the caster: the opening cast of a fight, the spell's equivalent of
+  BACKSTAB. One attempt: whatever happens, the caster is revealed and the fight is on.
+- **Two rolls, independent of each other:**
+  - **the stealth roll**: did the caster stay unseen until the spell left their hands? The
+    stock sneak/hide chance, with a penalty for the casting (proposed −20, tunable as the
+    `SpellBackstab` ability's companion value);
+  - **the cast roll**: the stock cast chance, unchanged.
+- **The outcomes:**
+
+| Stealth | Cast | Result |
+|---|---|---|
+| kept | lands | **spell backstab**: the spell's damage raised by the class's `SpellBackstab` percentage (proposed 100: double) plus its `BackstabMin` / `BackstabMax` |
+| lost | lands | a normal cast: normal damage |
+| kept | fails | a failed cast: the ambush is wasted |
+| lost | fails | a failed cast |
+
+- **Why it's fair:** a Mage-1 or Priest-1 caster with modest Intellect or Willpower won't land
+  both rolls often until the higher levels, so the big damage is worth it when it comes.
+- **Messages:** a lead-in like "You strike from the shadows with godstrike!" (and the room's
+  version) when stealth is kept, before the stock cast lines; when stealth is lost, "Your foe
+  spots you as you begin to cast!" and then a normal cast.
 
 How it works with stock: the cast path learns one new condition, "cast from stealth by a
-class with `SpellBackstab`, at a target not fighting the caster", and applies the damage
-bonus to the rolled amount. Everything else is the stock cast.
+class with `SpellBackstab`, at a target not fighting the caster", makes the stealth roll, and
+applies the damage bonus to the rolled amount when both rolls succeed. Everything else is
+the stock cast.
 
 ## Vanish (the Avenger)
 
@@ -163,10 +176,15 @@ Stock HIDE always fails in a fight. The Avenger can **VANISH** instead:
 - **Cooldown:** once every few rounds (proposed: 5 combat rounds), so it's a rhythm, not a
   permanent invisibility.
 
-**Blunt backstab.** A stock backstab with a weapon needs "Alter Backstab Attack Value" on
-the weapon, which blunt weapons rarely have, so an Avenger would almost never backstab.
-A fork class ability, `BluntBackstab`, lets the class backstab with any blunt weapon it can
-wield, as if it carried that ability. Without it, vanish has nothing to set up.
+**Blunt backstab** (decided, for flavour). A stock backstab with a weapon needs "Alter
+Backstab Attack Value" on the weapon, which blunt weapons rarely have. A fork class ability,
+`BluntBackstab`, lets the Avenger backstab with any blunt weapon it can wield, as if it
+carried that ability. The Avenger's main opener is still the spell backstab; this lets a
+mace do the same job.
+
+*If blunt backstab turns out awkward*, the fallback is **SAP**: a separate command that works
+only with blunt, non-ranged weapons (the `Ranged` marker the Warden added) and is otherwise
+exactly BACKSTAB.
 
 ## Fitting it into silvermere
 
@@ -174,7 +192,7 @@ wield, as if it carried that ability. Without it, vanish has nothing to set up.
 |---|---|
 | Both classes, titles and HELP | content (`content/classes.toml`, `content/help.toml`), like the War Mage and the Warden |
 | Fork abilities `SpellBackstab`, `Vanish`, `BluntBackstab` | `silvermere-types` `fork` |
-| Spell backstab | one hook in the cast path where an attack spell's amount is rolled |
+| Spell backstab | one hook in the cast path where an attack spell's amount is rolled, with its own stealth roll |
 | VANISH | a new command (an input hook like `PET`), using the stock hide roll and auto-combat break-off |
 | Blunt backstab | one condition in `cmd_backstab` |
 | Vanish cooldown | a per-session counter in the engine |
@@ -183,19 +201,22 @@ wield, as if it carried that ability. Without it, vanish has nothing to set up.
 
 1. Two fighter-leaning stealth casters: fighting 3, magic level 1, leather, 4-8 HP, 200%.
 2. The Avenger is Priest-1 with blunt weapons; the Assassin is Mage-1 with sharp weapons.
-3. Signatures: the Assassin's spell backstab, the Avenger's vanish.
-4. Neither gets Spellstrike (stealth classes).
+3. Both have spell backstab: a stealth roll and a cast roll, independent, one attempt.
+   Stealth kept and cast landed: backstab damage; stealth lost: a normal cast.
+4. The Avenger also has vanish (−20 to the hide chance, every 5 rounds; to be balance
+   tested) and blunt backstab (with SAP as the fallback).
+5. Neither has thievery, traps or picklocks; those stay with the Thief, Ninja, Missionary
+   and Gypsy.
+6. Neither gets Spellstrike (stealth classes).
+7. The proposed titles and lore stand (they can change later).
 
 ## Open questions
 
-1. **Titles and lore:** the proposals above, for you to edit or replace.
-2. **Spell backstab's strength:** double damage plus `BackstabMin` / `BackstabMax`, or
-   something else? Against players too, or monsters only?
-3. **Vanish's numbers:** the −20 penalty and the 5-round cooldown.
-4. **Blunt backstab:** add it (so the Avenger can backstab after vanishing), or keep stock
-   backstab rules and let vanish be an escape?
-5. **Thievery, traps and picklocks:** none for either, as proposed, or some?
-6. **Class numbers:** 18 (Avenger) and 19 (Assassin), titles in blocks 3021 and 3022.
+1. **Spell backstab against players:** monsters only, or players too (with PvP's usual
+   rules)?
+2. **The numbers to balance-test:** spell backstab's +100% and −20 stealth penalty, vanish's
+   −20 and 5 rounds, the backstab bonus of 5.
+3. **Class numbers:** 18 (Avenger) and 19 (Assassin), titles in blocks 3021 and 3022.
 
 ## Brainstorm
 
