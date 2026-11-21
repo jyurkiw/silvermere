@@ -27,8 +27,9 @@ fn stock_dir() -> PathBuf {
 
 /// What the shared database templates are made from: the stock `.VIR` files, and the sources of
 /// the code that imports them and creates characters in them (the workspace's crates, this
-/// binary's code, these helpers, the migrations and the lock file). One template serves every
-/// test binary of a build.
+/// binary's code, these helpers, the migrations and the lock file), and the fork's content,
+/// which every server start installs into them. One template serves every test binary of a
+/// build.
 pub fn template_sources() -> Vec<PathBuf> {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let mut v = vec![stock_dir()];
@@ -38,6 +39,7 @@ pub fn template_sources() -> Vec<PathBuf> {
         "bin/silvermere/Cargo.toml",
         "bin/silvermere/tests/common",
         "migrations",
+        "content",
         "patches",
         "Cargo.lock",
         "Cargo.toml",

@@ -1,0 +1,258 @@
+# New rooms, monsters, shops, items and text blocks (design/warden.md). New records copy a
+# stock one (`like`) and live in fork ranges: rooms 9000+, monsters 9000+, items 9000+,
+# shops 900+, text blocks 20000+.
+#
+# The Newhaven stable: east of the Village Entrance (1/2140), the stable yard with Old
+# Bannon, then the Warden Stables with Deel Barmny and the leashes.
+
+[[room_change]]
+room = "1/2140"
+exits = { east = 9000 }
+
+[[room]]
+room = "1/9000"
+like = "1/2140"
+name = "Newhaven, Stable Yard"
+desc = [
+  "A wide yard of packed earth opens east of the village gate, fenced with",
+  "split rails and churned by hooves, paws and claws. Water troughs stand",
+  "along the fence, and a weathered barn rises to the east, its great doors",
+  "propped open. The air carries the warm, heavy smell of animals.",
+]
+exits = { west = 2140, east = 9001 }
+kind = "Normal"
+specmon = 9000
+
+[[room]]
+room = "1/9001"
+like = "1/2141"
+name = "Newhaven, Warden Stables"
+desc = [
+  "Pens line both walls of this long barn, each holding an animal of some",
+  "kind: hounds pace and whine, small hawks shift on their perches, coiled",
+  "snakes lie still in straw-lined crates, and something large and furred",
+  "snores in the far stall. The stables are thick with the smell of offal,",
+  "hair and hay, and loud with the noises of the animals.",
+]
+exits = { west = 9000 }
+kind = "Shop"
+shop = 900
+specmon = 9001
+script = 20030
+
+[[monster]]
+number = 9000
+like = 74
+name = "Old Bannon"
+desc = [
+  "A mellow old man with grey hair and a lazy eye leans on the fence, a corn",
+  "cob pipe clamped in his teeth. He looks like he has things to say about",
+  "PETS to anyone who just ASKS.",
+]
+talk = 20001
+
+[[monster]]
+number = 9001
+like = 74
+name = "Deel Barmny"
+desc = [
+  "A broad, sunburnt stablehand with straw in his hair and scratches up both",
+  "arms. He keeps half an eye on the pens at all times. He'd likely tell you",
+  "about LEASHES if you asked.",
+]
+talk = 20010
+
+[[shop]]
+number = 900
+like = 45
+name = "Warden Stables"
+items = [9000, 9001, 9002, 9003]
+
+[[item]]
+number = 9000
+like = 191
+name = "hound's leash"
+desc = [
+  "A sturdy leather leash with a brass clip, sized for a hunting hound.",
+  "A Warden can USE it at a Warden Stables to bond the hound.",
+]
+abilities = [{ name = "RoomUse" }]
+
+[[item]]
+number = 9001
+like = 191
+name = "hawkling's leash"
+desc = [
+  "A thin jess of soft leather with a falconer's swivel, for a young hawk.",
+  "A Warden can USE it at a Warden Stables to bond the hawkling.",
+]
+abilities = [{ name = "RoomUse" }]
+
+[[item]]
+number = 9002
+like = 191
+name = "rattlesnake's leash"
+desc = [
+  "A handler's pole loop and a padded collar, for a trained rattlesnake.",
+  "A Warden can USE it at a Warden Stables to bond the rattlesnake.",
+]
+abilities = [{ name = "RoomUse" }]
+
+[[item]]
+number = 9003
+like = 191
+name = "drop bear's leash"
+desc = [
+  "A heavy harness of thick straps and iron rings. Whatever wears this is",
+  "not small. A Warden can USE it at a Warden Stables to bond the drop bear.",
+]
+abilities = [{ name = "RoomUse" }]
+
+# Old Bannon: ASK OLD BANNON ABOUT PETS (or wardens); greeting.
+[[text]]
+number = 20001
+text = """
+PET:20002
+WARDEN:20002
+"""
+link = 20003
+
+[[text]]
+number = 20002
+text = """
+Old Bannon takes the pipe from his mouth and squints at you with his good eye.
+
+"Pets, is it? Most folk keep a dog and call it done. But the Wardens, now, they
+bind animals to their service proper, with a leash. Not just any strap, mind:
+a Warden's leash, used at a Warden's stables, and the beast is theirs for life,
+fighting at their side.
+
+"If you've the look of a Warden about you, go and talk to Deel Barmny, inside
+the stables. Ask him about leashes."
+"""
+
+[[text]]
+number = 20003
+text = """
+Old Bannon nods slowly and puffs on his corn cob pipe.
+"""
+
+# Deel Barmny: ASK DEEL BARMNY ABOUT LEASHES; greeting.
+[[text]]
+number = 20010
+text = """
+LEASH:20011
+PET:20011
+"""
+link = 20012
+
+[[text]]
+number = 20011
+text = """
+Deel Barmny wipes his hands on his trousers.
+
+"Leashes? Different animals, different qualities. Birds are fast. Reptiles are
+venomous, often as not. Hogs and bears are slow but strong, and dogs sit right
+in the middle. LIST and see what I've got.
+
+"Mind, a leash only works at a Warden Stables, like this one. Use it here and
+it'll bind the beast to you, if you're strong enough to hold it. One starter
+beast to a Warden: the rest you earn out there."
+"""
+
+[[text]]
+number = 20012
+text = """
+Deel Barmny glances up from a pen and gives you a nod.
+"""
+
+# The stables' script. Patterns spell out the whole line; `*` marks where it may be
+# abbreviated (`buy ho*und's leash` matches `buy hound`). A purchase is handed to the script after it's made: the first
+# starter leash is kept and marks StarterLeash (1012); any further one is taken back. A
+# leash used here bonds the companion: a Warden (class 17) who hasn't bonded a starter
+# (StarterBonded, 1011) gives up the leash and gets the PetKind (1005). (No removeability:
+# it stops a line when the ability is absent, and a first bond has none to remove.)
+[[text]]
+number = 20030
+text = """
+buy ho*und's leash:failability 1012:giveability 1012 1
+buy ho*und's leash:takeitem 9000 0:text 20037
+buy ha*wkling's leash:failability 1012:giveability 1012 1
+buy ha*wkling's leash:takeitem 9001 0:text 20037
+buy r*attlesnake's leash:failability 1012:giveability 1012 1
+buy r*attlesnake's leash:takeitem 9002 0:text 20037
+buy d*rop bear's leash:failability 1012:giveability 1012 1
+buy d*rop bear's leash:takeitem 9003 0:text 20037
+use ho*und's leash:class 17:failability 1011:takeitem 9000 0:giveability 1005 1:giveability 1011 1:text 20031
+use ho*und's leash:class 17:failability 1011:text 20039
+use ho*und's leash:class 17:text 20035
+use ho*und's leash:text 20036
+use ha*wkling's leash:class 17:failability 1011:takeitem 9001 0:giveability 1005 2:giveability 1011 1:text 20032
+use ha*wkling's leash:class 17:failability 1011:text 20039
+use ha*wkling's leash:class 17:text 20035
+use ha*wkling's leash:text 20036
+use r*attlesnake's leash:class 17:failability 1011:takeitem 9002 0:giveability 1005 3:giveability 1011 1:text 20033
+use r*attlesnake's leash:class 17:failability 1011:text 20039
+use r*attlesnake's leash:class 17:text 20035
+use r*attlesnake's leash:text 20036
+use d*rop bear's leash:class 17:failability 1011:takeitem 9003 0:giveability 1005 4:giveability 1011 1:text 20034
+use d*rop bear's leash:class 17:failability 1011:text 20039
+use d*rop bear's leash:class 17:text 20035
+use d*rop bear's leash:text 20036
+"""
+
+[[text]]
+number = 20031
+text = """
+You clip the leash to a hunting hound's collar. It sniffs your hand, then sits at
+your heel, tail thumping the straw. The hound is yours. (PET NAME <name> names it.)
+"""
+
+[[text]]
+number = 20032
+text = """
+You hold out your arm and the hawkling hops onto it, gripping hard as you fasten
+the jess. It ruffles its feathers and settles. The hawkling is yours. (PET NAME
+<name> names it.)
+"""
+
+[[text]]
+number = 20033
+text = """
+Deel lifts the rattlesnake from its crate with the pole and lowers it to you. It
+tastes the air, then coils loosely around your arm. The rattlesnake is yours.
+(PET NAME <name> names it.)
+"""
+
+[[text]]
+number = 20034
+text = """
+The snoring in the far stall stops. Something heavy drops from the rafters and
+lands beside you with a thud, and you buckle the harness around it before it
+changes its mind. The drop bear is yours. (PET NAME <name> names it.)
+"""
+
+[[text]]
+number = 20035
+text = """
+Deel shakes his head. "You've bonded your starter beast already. Any more you'll
+have to earn out there."
+"""
+
+[[text]]
+number = 20036
+text = """
+The animals ignore the leash entirely. Only a Warden can bond a beast with it.
+"""
+
+[[text]]
+number = 20037
+text = """
+Deel takes the leash back with a grin. "One starter beast to a Warden, friend."
+"""
+
+[[text]]
+number = 20039
+text = """
+You don't have that leash.
+"""

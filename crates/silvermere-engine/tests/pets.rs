@@ -181,3 +181,36 @@ fn others_see_the_warden_with_the_companion() {
         "{out:?}"
     );
 }
+
+#[test]
+fn stable_script_patterns_match() {
+    use silvermere_engine::scripts::wildcard_match;
+    assert!(wildcard_match(
+        "buy ha*wkling's leash",
+        "buy hawkling's leash"
+    ));
+    assert!(wildcard_match("buy ho*und's leash", "buy hound"));
+    assert!(!wildcard_match(
+        "buy ho*und's leash",
+        "buy hawkling's leash"
+    ));
+}
+
+#[test]
+fn stable_script_lines_run() {
+    use silvermere_engine::scripts::{LineResult, pattern_lines, perform_matched_action};
+    let (mut w, id, _) = fight(0);
+    let text = "buy ho*und's leash:failability 1012:giveability 1012 1\nbuy ho*und's leash:takeitem 9000 0:text 20037\n";
+    let lines = pattern_lines(text);
+    assert_eq!(lines.len(), 2, "{lines:?}");
+    assert_eq!(lines[0].pattern, "buy ho*und's leash");
+    let r = perform_matched_action(&mut w, id, &lines[0].action);
+    assert_eq!(r, LineResult::Ok, "{:?}", lines[0].action);
+    let has = plr(&mut w, id)
+        .abils
+        .iter()
+        .any(|s| s.0 == fork::STARTER_LEASH && s.1 == 1);
+    assert!(has);
+    let r = perform_matched_action(&mut w, id, &lines[0].action);
+    assert_eq!(r, LineResult::Stop, "already marked");
+}

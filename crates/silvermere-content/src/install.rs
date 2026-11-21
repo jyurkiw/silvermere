@@ -36,6 +36,8 @@ pub struct InstallReport {
     pub titles: usize,
     /// Stock classes changed.
     pub changes: usize,
+    /// World records written (rooms, monsters, shops, items, text blocks).
+    pub world: usize,
 }
 
 /// Installs `content` into `db`.
@@ -70,6 +72,7 @@ pub async fn install(db: &Db, content: &Content) -> Result<InstallReport, Instal
         db.classes().put(class).await?;
         report.classes += 1;
     }
+    report.world = crate::world::install_world(db, &content.world).await?;
     for edit in &content.class_edits {
         apply_edit(db, edit).await?;
         report.changes += 1;
@@ -78,6 +81,7 @@ pub async fn install(db: &Db, content: &Content) -> Result<InstallReport, Instal
         classes = report.classes,
         titles = report.titles,
         changes = report.changes,
+        world = report.world,
         "content installed"
     );
     Ok(report)

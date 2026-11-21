@@ -62,6 +62,18 @@ pub fn cmd_use(world: &mut World, id: SessionId, cmd: Cmd, line: &CommandLine) -
         show_options(world, id, &f.options);
         return Handled::Done;
     }
+    // Fork: an item marked RoomUse (a Warden's leash) is offered to the room's script
+    // first; a room that doesn't handle it leaves the stock use (design/warden.md)
+    let room_use = f
+        .item
+        .and_then(|n| world.items.get(&n))
+        .is_some_and(|i| crate::combat::item_has(i, silvermere_types::fork::ROOM_USE));
+    if room_use && crate::scripts::room_command(world, id, &line.raw) {
+        if let Some(s) = world.session_mut(id) {
+            s.push_prompt();
+        }
+        return Handled::Done;
+    }
     let Some(plr) = player(world, id) else {
         return Handled::NotCommand;
     };

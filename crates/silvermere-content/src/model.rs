@@ -151,3 +151,117 @@ pub struct PetKindEntry {
     #[serde(default)]
     pub poison: i16,
 }
+
+/// `content/world.toml`: new rooms, monsters, shops, items and text blocks, and changes to
+/// stock rooms and items (design/warden.md: the Newhaven stable). A new record copies a
+/// stock one (`like`) and overrides what it names.
+#[derive(Debug, Clone, Default, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct WorldFile {
+    #[serde(default)]
+    pub room: Vec<RoomSpec>,
+    #[serde(default)]
+    pub room_change: Vec<RoomChange>,
+    #[serde(default)]
+    pub monster: Vec<MonsterSpec>,
+    #[serde(default)]
+    pub shop: Vec<ShopSpec>,
+    #[serde(default)]
+    pub item: Vec<ItemSpec>,
+    #[serde(default)]
+    pub item_change: Vec<ItemChange>,
+    #[serde(default)]
+    pub text: Vec<TextSpec>,
+}
+
+/// A new room.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct RoomSpec {
+    /// `"1/9000"`: map and room.
+    pub room: String,
+    /// The stock room it copies, `"1/2140"`.
+    pub like: String,
+    pub name: String,
+    /// Up to 7 lines.
+    pub desc: Vec<String>,
+    /// Exits by direction (`north`, `east`, `ne`, `up`, ...) to rooms on the same map.
+    #[serde(default)]
+    pub exits: std::collections::BTreeMap<String, u32>,
+    /// `Normal`, `Shop`, ... (the copied room's when left out).
+    pub kind: Option<String>,
+    /// The shop the room is (0 none).
+    pub shop: Option<i32>,
+    /// The monster always in the room (an NPC).
+    pub specmon: Option<i32>,
+    /// The text block of the room's commands (its script).
+    pub script: Option<i32>,
+}
+
+/// New exits on a room already in the world.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct RoomChange {
+    pub room: String,
+    pub exits: std::collections::BTreeMap<String, u32>,
+}
+
+/// A new known monster (an NPC).
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct MonsterSpec {
+    pub number: i32,
+    pub like: i32,
+    pub name: String,
+    /// Up to 4 lines.
+    pub desc: Vec<String>,
+    /// Its talk block (`KEYWORDS:block` lines, linking to its greeting).
+    pub talk: Option<i32>,
+}
+
+/// A new shop.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ShopSpec {
+    pub number: i32,
+    pub like: i32,
+    pub name: String,
+    /// What it sells: item numbers, each kept in stock.
+    pub items: Vec<i32>,
+}
+
+/// A new item.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ItemSpec {
+    pub number: i32,
+    pub like: i32,
+    pub name: String,
+    /// Up to 6 lines.
+    pub desc: Vec<String>,
+    /// Its price, in the copied item's currency.
+    #[serde(default)]
+    pub cost: u16,
+    #[serde(default)]
+    pub abilities: Vec<AbilityEntry>,
+}
+
+/// Abilities added to an item already in the world (marking stock ranged weapons).
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ItemChange {
+    pub number: i32,
+    pub add_abilities: Vec<AbilityEntry>,
+}
+
+/// A text block: a talk block, an answer, a room's script.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct TextSpec {
+    pub number: i32,
+    /// Lines; part 0 only, at most 1999 bytes.
+    pub text: String,
+    /// The block it links to (a talk block's greeting).
+    #[serde(default)]
+    pub link: i32,
+}

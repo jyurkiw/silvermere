@@ -16,6 +16,7 @@
 pub mod help;
 pub mod install;
 pub mod model;
+pub mod world;
 
 use silvermere_types::enums::{Ability, ArmourType, Magery, WeaponClass};
 use silvermere_types::fork::{PetKind, fork_ability};
@@ -85,6 +86,8 @@ pub struct Content {
     pub help: model::HelpFile,
     /// Kinds of pet.
     pub pet_kinds: Vec<PetKind>,
+    /// New rooms, monsters, shops, items and text blocks, and changes to stock ones.
+    pub world: model::WorldFile,
 }
 
 impl Content {
@@ -103,6 +106,11 @@ impl Content {
                     content.add_classes(name, &f)?;
                 }
                 "help.toml" => content.help = parse(name, text)?,
+                "world.toml" => {
+                    let f: model::WorldFile = parse(name, text)?;
+                    world::check(&f).map_err(|e| bad(name, "world", e))?;
+                    content.world = f;
+                }
                 "pets.toml" => {
                     let f: model::PetsFile = parse(name, text)?;
                     content.add_pets(name, &f)?;

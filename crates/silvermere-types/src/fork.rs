@@ -29,6 +29,16 @@ pub const SCALEMAIL_AT_LEVEL: Ability = Ability::Unknown(1007);
 pub const RANGED: Ability = Ability::Unknown(1008);
 /// On a class: may use any item marked [`RANGED`], whatever its weapon type.
 pub const RANGED_WEAPONS: Ability = Ability::Unknown(1009);
+/// On an item: USE offers the line to the room's script first, even when the user carries
+/// the item (stock USE does that only for items the user lacks). A Warden's leash, used in
+/// a stable.
+pub const ROOM_USE: Ability = Ability::Unknown(1010);
+/// On a character: has bonded a starter companion at a stable, which allows one. Set and
+/// checked by content scripts (`giveability`, `failability`). Hidden.
+pub const STARTER_BONDED: Ability = Ability::Unknown(1011);
+/// On a character: has bought a starter leash; a stable takes back any further one. Set and
+/// checked by content scripts. Hidden.
+pub const STARTER_LEASH: Ability = Ability::Unknown(1012);
 
 /// The fork's abilities by the name content uses, and whether players are shown them.
 pub const FORK_ABILITIES: &[(&str, Ability, bool)] = &[
@@ -41,6 +51,9 @@ pub const FORK_ABILITIES: &[(&str, Ability, bool)] = &[
     ("ScalemailAtLevel", SCALEMAIL_AT_LEVEL, false),
     ("Ranged", RANGED, false),
     ("RangedWeapons", RANGED_WEAPONS, false),
+    ("RoomUse", ROOM_USE, false),
+    ("StarterBonded", STARTER_BONDED, true),
+    ("StarterLeash", STARTER_LEASH, true),
 ];
 
 /// A fork ability by its content name.
