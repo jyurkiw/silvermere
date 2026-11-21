@@ -132,29 +132,32 @@ stop is a **stable** in Newhaven.
 - **A stablemaster NPC**, a permanent monster in the stable. Players can `ask stablemaster
   about wardens` (and about each companion) for the lore and the choices. That's the stock
   talk mechanism: the NPC's record names a talk text block of `KEYWORDS:text` lines.
-- **The stable is a shop.** `LIST` shows four sets of **reins**, each priced at nothing:
+- **The stable is a shop.** `LIST` shows four **leashes**, each priced at nothing:
 
-| Reins | Companion | Character |
+| Leash | Companion | Character |
 |---|---|---|
-| hound's reins | **hunting hound** | average: the baseline companion |
-| hawkling's jesses | **hawkling** | a low-level bird: strikes several times a round, little damage each |
-| snake handler's pouch | **trained rattlesnake** | low damage, but its bite poisons |
-| drop bear harness | **Drop Bear** | slow (a blow every other round) but hits very hard |
+| hound's leash | **hunting hound** | average: the baseline companion |
+| hawkling's leash | **hawkling** | a low-level bird: strikes several times a round, little damage each |
+| rattlesnake's leash | **trained rattlesnake** | low damage, but its bite poisons |
+| drop bear's leash | **Drop Bear** | slow (a blow every other round) but hits very hard |
 
 - **Bonding is a room script, in the stable.** Stock rooms can react to what players type
   there and run script clauses, and those already cover bonding: check the player's class,
-  check for and take an item, add or remove an ability, show text. Typing `bond hound` in
-  the stable runs:
+  check for and take an item, add or remove an ability, show text.  You buy (or are given) a **leash** and **use it in the
+  stable**: stock `USE` offers the line to the room's script first, so `use hound's leash`
+  there runs:
 
   ```
-  class is Warden? -> takeitem hound's reins -> removeability PetKind ->
+  class is Warden? -> takeitem hound's leash -> removeability PetKind ->
   addability PetKind 1 -> text "You bond with your hunting hound."
   ```
+
+  Used anywhere else, a leash does nothing special.
 
   The companion's kind lives on the character as a fork ability, `PetKind`, which saves
   with the character like any ability; the combat code reads it to know which companion
   fights. **No new code for bonding.** A Warden who changes their mind comes back for
-  another set of reins and bonds again.
+  another leash and bonds again.
 - **All pet acquisition is content:** shops (like the stable) or retrieval quests whose
   script ends with the same clauses. A quest that rewards a new companion needs no code.
 - Until a Warden bonds a companion, it fights alone.
@@ -211,7 +214,7 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
 | Displayed name | one helper in the engine, used by the who list and the arrival and departure lines |
 | The Warden class | content, like the War Mage |
 | Naming | a command after bonding ([open question 3](#open-questions)) |
-| The stable | content: new Newhaven rooms, the stablemaster (a talking monster and its text blocks), the stable shop, four reins items. Needs the overlay to grow to rooms, monsters, shops, items and text blocks |
+| The stable | content: new Newhaven rooms, the stablemaster (a talking monster and its text blocks), the stable shop, four leash items. Needs the overlay to grow to rooms, monsters, shops, items and text blocks |
 | Bonding | room scripts (stock clauses) setting the fork character ability `PetKind`; no code |
 | `PetKind` | read by the pet's attack to pick the companion's kind |
 
@@ -227,8 +230,8 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
 6. The Warden wears leather (chain from level 10, scale from 20) and uses two-handed or
    ranged weapons.
 8. The companion is chosen in game, at a new stable in Newhaven: a stablemaster to ask, and
-   four free reins (hound, hawkling, rattlesnake, Drop Bear). Bonding is a room script
-   in the stable that takes the reins and sets the character's `PetKind` ability.
+   four free leashes (hound, hawkling, rattlesnake, Drop Bear). You use the leash in the
+   stable, whose room script takes it and sets the character's `PetKind` ability.
 9. All pet acquisition is content: shops or retrieval quests, ending in the same script
    clauses. No code for acquiring pets.
 7. The Warden has high HP and low fighting (3): it swings less, and its companion hits
