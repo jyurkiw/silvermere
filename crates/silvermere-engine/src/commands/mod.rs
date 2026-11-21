@@ -43,6 +43,7 @@ pub mod misc;
 pub mod movement;
 pub mod parse;
 pub mod pending;
+pub mod pet;
 pub mod rest;
 pub mod settings;
 pub mod shop;

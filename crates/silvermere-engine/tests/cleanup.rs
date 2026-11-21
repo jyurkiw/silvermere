@@ -338,6 +338,7 @@ impl Harness {
                 may_gossip: true,
                 may_auction: true,
                 sysop_keys: silvermere_engine::commands::sysop::Keys::empty(),
+                pets: Vec::new(),
             }),
         });
         self.line(id, "M");
@@ -1279,6 +1280,7 @@ mod account_delete {
                 may_gossip: true,
                 may_auction: true,
                 sysop_keys: silvermere_engine::commands::sysop::Keys::empty(),
+                pets: Vec::new(),
             }),
         });
         assert!(h.log[mark..].contains(&EngineOutput::Close { id }));

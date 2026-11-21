@@ -102,6 +102,34 @@ impl PetKind {
     }
 }
 
+/// A character's pet (design/warden.md): the `pets` table's row. Keyed by account, as
+/// characters are.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Pet {
+    /// The owner's account.
+    pub account: crate::ids::AccountId,
+    /// Where it came from: `class` for a Warden's companion.
+    pub source: String,
+    /// Its kind's number.
+    pub kind: u16,
+    /// Its name; empty until named.
+    pub name: String,
+    /// Out with its owner now.
+    pub summoned: bool,
+    /// Can't die; `dead` is then ignored.
+    pub immortal: bool,
+    /// Killed, until raised.
+    pub dead: bool,
+}
+
+/// The `source` of a class companion (the Warden's).
+pub const PET_SOURCE_CLASS: &str = "class";
+
+/// Whether `name` is a valid pet name: one word of letters, 1-10 long.
+pub fn valid_pet_name(name: &str) -> bool {
+    (1..=10).contains(&name.len()) && name.chars().all(|c| c.is_ascii_alphabetic())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

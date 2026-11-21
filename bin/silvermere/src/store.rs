@@ -283,6 +283,10 @@ async fn handle(
                 })
                 .await?;
         }
+        // Fork: a pet is written at once; names change rarely (design/warden.md)
+        Job::Persist(PersistRequest::Pet(pet)) => {
+            db.pets().put(&pet).await?;
+        }
         Job::Persist(PersistRequest::EvilPoints { account, record }) => {
             persist.send(Write::EvilPoints { account, record }).await?;
         }

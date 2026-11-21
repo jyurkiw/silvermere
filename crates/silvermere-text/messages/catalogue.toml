@@ -4503,6 +4503,11 @@ text = "{@ANSI_CLRLINE}{@ANSI_CYAN}{who} attempted to cast {spell} at {target}, 
 pattern = "other_cast_failed"
 example = { who = "Bob", spell = "chill", target = "Ann" }
 
+[messages.fork_text]
+text = "{@ANSI_CLRLINE}{@ANSI_GREEN}{text}\r"
+example = { text = "Your hunting hound is now called Fang." }
+note = "Fork: a line of the fork's own commands (PET), its text made by the engine."
+
 [messages.spellstrike_lead_in]
 text = "{@ANSI_CLRLINE}{@ANSI_CYAN}You channel {spell} through your {weapon}!\r"
 example = { spell = "magic missile", weapon = "longsword" }

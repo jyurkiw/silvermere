@@ -606,6 +606,12 @@ impl World {
         }
     }
 
+    /// The outputs queued in the event being handled, before the flush: for tests and
+    /// tooling that drive the world directly.
+    pub fn queued_outputs(&self) -> &[crate::event_loop::EngineOutput] {
+        &self.outbox
+    }
+
     /// Announces the session the engine opened for `conn`; goes out before any write of
     /// the same event.
     pub fn opened(&mut self, conn: crate::event_loop::ConnId, id: SessionId) {

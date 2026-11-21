@@ -167,6 +167,10 @@ impl Db {
     pub fn evil_points(&self) -> EvilPoints<'_> {
         EvilPoints::new(self)
     }
+    /// Fork: pets (design/warden.md).
+    pub fn pets(&self) -> crate::repo::Pets<'_> {
+        crate::repo::Pets::new(self)
+    }
     /// Bank books.
     pub fn bank_books(&self) -> BankBooks<'_> {
         BankBooks::new(self)

@@ -303,6 +303,8 @@ pub enum PersistRequest {
         account: silvermere_types::ids::AccountId,
         book: silvermere_types::records::BankBook,
     },
+    /// Fork: save a pet (design/warden.md). The store writes it at once.
+    Pet(Box<silvermere_types::fork::Pet>),
     /// Save a room's live state.
     RoomState(Box<crate::world::RoomState>),
     /// Save a shop's stock levels (marked dirty, written back when its buffer is saved).

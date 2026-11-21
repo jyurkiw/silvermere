@@ -106,3 +106,49 @@ fn a_named_companion_goes_by_its_name() {
     let out = round(&mut w, id);
     assert!(out.iter().any(|l| l.starts_with("Fang ")), "{out:?}");
 }
+
+fn say(w: &mut World, id: SessionId, line: &str) -> Vec<String> {
+    lines(w, id);
+    silvermere_engine::commands::input::execute_input(w, id, line, false);
+    lines(w, id)
+}
+
+#[test]
+fn pet_shows_and_pet_name_names_the_companion() {
+    let (mut w, id, _) = fight(1);
+    w.session_mut(id).unwrap().account = Some(silvermere_engine::player_session::AccountRef {
+        id: silvermere_types::ids::AccountId(7),
+        username: "gorin".into(),
+        sysop: false,
+        gameop: false,
+        sex: b'M',
+    });
+    let out = say(&mut w, id, "pet");
+    assert!(
+        out.iter()
+            .any(|l| l.starts_with("Your hunting hound fights at your side")),
+        "{out:?}"
+    );
+    let out = say(&mut w, id, "pet name fANG");
+    assert_eq!(out[0], "Your hunting hound is now called Fang.", "{out:?}");
+    assert_eq!(w.pet_names.get(&id).map(String::as_str), Some("Fang"));
+    let saved = w.queued_outputs().iter().any(|o| {
+        matches!(o, silvermere_engine::EngineOutput::Persist(
+            silvermere_engine::PersistRequest::Pet(p)) if p.name == "Fang" && p.kind == 1)
+    });
+    assert!(saved, "the name is saved");
+    let out = say(&mut w, id, "pet name Fang2");
+    assert_eq!(
+        out[0],
+        "A companion's name is one word of letters, up to 10 long."
+    );
+    assert_eq!(w.pet_names.get(&id).map(String::as_str), Some("Fang"));
+}
+
+#[test]
+fn pet_is_left_alone_without_a_companion() {
+    let (mut w, id, _) = fight(0);
+    let out = say(&mut w, id, "pet name Fang");
+    assert!(!out.iter().any(|l| l.contains("now called")), "{out:?}");
+    assert!(w.pet_names.is_empty());
+}
