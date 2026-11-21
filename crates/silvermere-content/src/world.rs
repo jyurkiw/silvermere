@@ -7,7 +7,7 @@
 //! overwritten; nothing else is.
 
 use silvermere_db::Db;
-use silvermere_db::repo::StateWrite;
+use silvermere_db::repo::{MonsterState, StateWrite};
 use silvermere_types::enums::{Ability, Direction, ExitType, RoomType};
 use silvermere_types::ids::{
     ActiveMonsterId, ItemNo, MonsterNo, RoomId, RoomKey, ShopNo, TextBlockNo,
@@ -277,6 +277,11 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
         db.items().put_many(&[item], StateWrite::Untouched).await?;
         n += 1;
     }
+    let live = if w.monster.is_empty() {
+        Vec::new()
+    } else {
+        db.active_monsters().all().await?
+    };
     for m in &w.monster {
         let Some(mut mon) = db.monsters().get(MonsterNo(m.like)).await? else {
             skipped(format!("monster {}", m.like));
@@ -288,8 +293,25 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
         if let Some(t) = m.talk {
             mon.talktext = TextBlockNo(t);
         }
+        // a copy starts with none alive, whatever its template had: the template's count
+        // would stop a unique copy (max alive 1) from ever appearing
+        mon.curalive = 0;
+        mon.killed_at = 0;
         db.monsters()
             .put_many(&[mon], StateWrite::CreateMissing)
+            .await?;
+        // and its count is what's really in the world, so a world that installed an earlier
+        // copy with the template's count is set right, and a live NPC isn't doubled
+        let alive = live
+            .iter()
+            .filter(|a| a.knownnum == MonsterNo(m.number))
+            .count();
+        db.monster_state()
+            .put(&MonsterState {
+                number: MonsterNo(m.number),
+                curalive: u16::try_from(alive).unwrap_or(u16::MAX),
+                killed_at: 0,
+            })
             .await?;
         n += 1;
     }

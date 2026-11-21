@@ -138,3 +138,54 @@ async fn the_universal_trainers_train_war_mages_and_wardens() {
         }
     }
 }
+
+/// Fork: a world where an earlier install copied the NPCs with their template's alive count
+/// (Nathaniel's 1, of 1 allowed) still gets them: the next start sets the count to what is
+/// really in the world, and they appear as a player walks in.
+#[tokio::test]
+async fn the_stable_npcs_appear_on_a_world_with_a_stale_alive_count() {
+    let (_dir, url) = team_db();
+    place(&url, "Aldric", 2140).await;
+    let db = Db::connect_and_migrate(&url).await.unwrap();
+    for n in [9000, 9001] {
+        db.monster_state()
+            .put(&silvermere_db::repo::MonsterState {
+                number: silvermere_types::ids::MonsterNo(n),
+                curalive: 1,
+                killed_at: 0,
+            })
+            .await
+            .unwrap();
+    }
+    db.close().await;
+    let r = start_reading_the_world(&url).await;
+    let mut a = Player::enter(&r, "Aldric").await;
+    let out = a.walk_ticking(&r, "e", "Stable Yard").await;
+    assert!(out.contains("Old Bannon"), "{out}");
+    let out = a.walk_ticking(&r, "e", "Warden Stables").await;
+    assert!(out.contains("Deel Barmny"), "{out}");
+    a.leave_ticking(&r).await;
+    r.stop().await.unwrap();
+}
+
+/// Starts the server as a real start does: the content installed, then the world read from
+/// the database. (The shared helpers hand the server a world read once per template, before
+/// any start's install, which can't show what an install corrects.) Ticks come from the test.
+async fn start_reading_the_world(url: &str) -> silvermere::Running {
+    let mut cfg = silvermere::config::Config::default();
+    cfg.server.telnet_bind = "127.0.0.1:0".into();
+    cfg.server.admin_bind = "127.0.0.1:0".into();
+    cfg.database.url = url.to_owned();
+    cfg.data_dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../data");
+    cfg.game.sec_fast = 86_400;
+    silvermere_text::package::load_and_install(&silvermere_testkit::stock::assets_dir())
+        .expect("the stock package's text");
+    silvermere::serve_snapshot_in_process(
+        cfg,
+        None,
+        silvermere_engine::SystemClock,
+        silvermere_engine::SeededRng::new(7),
+    )
+    .await
+    .expect("starts")
+}
