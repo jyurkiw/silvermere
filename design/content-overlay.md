@@ -1,6 +1,6 @@
 # Content overlay
 
-Status: **design settled, not implemented.** Fork-only.
+Status: **built** on branch `feature/war-mage` (classes, titles and HELP topics). Fork-only.
 
 - [Summary](#summary)
 - [Why it's needed](#why-its-needed)
@@ -47,19 +47,22 @@ every start (silvermere serve):     database ──► install content/ ──�
 1. `serve` opens and migrates the database as it does today.
 2. **Install.** For each record in the built-in `content/`:
    - **a new record** (`[[class]]`) is written whole, by its number;
-   - **a change** (`[[class.change]]`) reads the stock record, changes only the fields it
+   - **a change** (`[[class_change]]`) reads the stock record, changes only the fields it
      names, and writes it back.
 
    Writing the same content twice gives the same database, so installing at every start is
    safe. It's a handful of records, so it doesn't slow the start down.
-3. The install is recorded in a new table, `content_installs`: which records the overlay
-   owns, and a hash of the content (see [Checks](#checks-and-failures)).
+3. Ownership is checked by name: a new class's number held by a class of another name (a
+   sysop's own class 16 from a world editor) is refused, and so is its titles block when
+   the class wasn't already there. No table records the install. (As built: the design
+   first had a `content_installs` table; the name check does the same job without a
+   schema change.)
 4. The world loads from the database as it does today. From here on nothing knows the
    content came from the overlay: the War Mage is a class like any other, and appears in
    the class list at character creation without code changes, because that list is built
    from the classes in the database.
 
-`silvermere content install` runs the same step without serving (for checking a change
+*Not built yet:* `silvermere content install` would run the same step without serving (for checking a change
 before a restart), and `silvermere content check` checks the files without touching a
 database. The server holds a single lock on the database, so `install` needs it stopped, as
 `import` does.
@@ -89,8 +92,8 @@ armour    = "Chainmail"
 abilities = [
   { name = "Bash" },
   { name = "Spellstrike",           value = 30 },   # base failure discount, percent
-  { name = "SpellstrikeSuccessOff", value = 10, hidden = true },
-  { name = "SpellstrikeFailOff",    value = 40, hidden = true },
+  { name = "SpellstrikeSuccessOff", value = 10 },
+  { name = "SpellstrikeFailOff",    value = 40 },
   { name = "NoOffHand" },
 ]
 
@@ -118,7 +121,7 @@ ranks = [
 ]
 
 # Later: warlocks get the base Spellstrike.
-# [[class.change]]
+# [[class_change]]
 # name = "Warlock"
 # add_abilities = [{ name = "Spellstrike", value = 30 }]
 ```
@@ -170,7 +173,7 @@ no help entry.
 |---|---|---|
 | The TOML parses, every name is known, every value is in range | build (a test) and `content check` | the build's tests fail |
 | A change names a record that exists | install | the server doesn't start, and says which record |
-| A new record's number (a class, or a titles text block) isn't used by content the overlay doesn't own (a sysop's own class 16 from a world editor) | install, against `content_installs` | the server doesn't start, and says which number |
+| A new record's number (a class, or a titles text block) isn't used by content the overlay doesn't own (a sysop's own class 16 from a world editor) | install, by the class's name | the server doesn't start, and says which number |
 | The content hash matches the last install | install | not a failure: a different hash is logged as "content updated" |
 
 Refusing to start is deliberate. A server that starts without the War Mage would load War
@@ -187,9 +190,8 @@ records the overlay owns but no longer lists.
 | The TOML files | new `content/` | none |
 | Built into the program | a build script, as `silvermere-web` builds in `docs/` | none |
 | Reading, checking, installing | a new crate, `silvermere-content`, depending on `-types` and `-db` like the importer | add it to the workspace lists |
-| `content_installs` table | a new migration in `migrations/sqlite` and `migrations/postgres` | none |
 | Install at start | one call in `serve` after the migrate step | a few lines |
-| `content install` / `content check` | a new subcommand in `bin/silvermere` | the CLI list, and `docs/cli.md` (its docs check fails otherwise) |
+| `content install` / `content check` | not built yet: the install runs at start and the checks run as tests | |
 | Overlay help topics | one call where the help topics are loaded | a few lines in `silvermere-text`'s package loading |
 
 The importer, the stock files and the engine are untouched. The engine changes the War

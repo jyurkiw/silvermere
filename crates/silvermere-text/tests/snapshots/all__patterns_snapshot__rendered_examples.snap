@@ -4582,6 +4582,21 @@ spells_none
   palette 1: You have no spells.\r\n
   palette 2: You have no spells.\r\n
   palette 3: You have no spells.\r\n
+spellstrike_lead_in
+  palette 0: \x1b[79D\x1b[K\x1b[0;36mYou channel magic missile through your longsword!\r\n
+  palette 1: \x1b[79D\x1b[K\x1b[0;36mYou channel magic missile through your longsword!\r\n
+  palette 2: \x1b[79D\x1b[K\x1b[0;36mYou channel magic missile through your longsword!\r\n
+  palette 3: \x1b[79D\x1b[K\x1b[0;36mYou channel magic missile through your longsword!\r\n
+spellstrike_lead_in_room
+  palette 0: \x1b[79D\x1b[K\x1b[0;36mGorin channels magic missile through his longsword!\r\n
+  palette 1: \x1b[79D\x1b[K\x1b[0;36mGorin channels magic missile through his longsword!\r\n
+  palette 2: \x1b[79D\x1b[K\x1b[0;36mGorin channels magic missile through his longsword!\r\n
+  palette 3: \x1b[79D\x1b[K\x1b[0;36mGorin channels magic missile through his longsword!\r\n
+spellstrike_lead_in_you
+  palette 0: \x1b[79D\x1b[K\x1b[0;36mGorin channels magic missile through his longsword at you!\r\n
+  palette 1: \x1b[79D\x1b[K\x1b[0;36mGorin channels magic missile through his longsword at you!\r\n
+  palette 2: \x1b[79D\x1b[K\x1b[0;36mGorin channels magic missile through his longsword at you!\r\n
+  palette 3: \x1b[79D\x1b[K\x1b[0;36mGorin channels magic missile through his longsword at you!\r\n
 st_blank
   palette 0: \r\n
   palette 1: \r\n

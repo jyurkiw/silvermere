@@ -1,6 +1,7 @@
 # War Mage and Spellstrike
 
-Status: **design settled, not implemented.** Every open question is decided. The class
+Status: **built** on branch `feature/war-mage`, against monsters (a spellstrike at a
+player target falls through to the stock cast for now). Every open question is decided. The class
 record and help topic depend on the content overlay, designed in [content-overlay.md](content-overlay.md). Fork-only: this departs from
 MajorMUD 1.11p, so it never goes upstream to jnfisher/silvermere.
 
