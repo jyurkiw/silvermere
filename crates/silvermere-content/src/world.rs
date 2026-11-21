@@ -175,17 +175,64 @@ pub fn check(w: &WorldFile) -> Result<(), String> {
     Ok(())
 }
 
-fn missing(what: String) -> InstallError {
-    InstallError::Change(format!("{what} to copy is not in this world"))
+/// A record whose stock template isn't in this world (a test's small world, a realm that
+/// isn't the stock one) is left out, with a warning, rather than stopping the start.
+fn skipped(what: String) {
+    tracing::warn!("content: {what} is not in this world; the world content is left out");
 }
 
 fn bad(e: String) -> InstallError {
     InstallError::Change(e)
 }
 
+/// The first stock record the world file copies or changes that `db` doesn't have.
+async fn first_missing(db: &Db, w: &WorldFile) -> Result<Option<String>, InstallError> {
+    for i in &w.item {
+        if db.items().get(ItemNo(i.like)).await?.is_none() {
+            return Ok(Some(format!("item {}", i.like)));
+        }
+    }
+    for c in &w.item_change {
+        if db.items().get(ItemNo(c.number)).await?.is_none() {
+            return Ok(Some(format!("item {}", c.number)));
+        }
+    }
+    for m in &w.monster {
+        if db.monsters().get(MonsterNo(m.like)).await?.is_none() {
+            return Ok(Some(format!("monster {}", m.like)));
+        }
+    }
+    for s in &w.shop {
+        if db.shops().get(ShopNo(s.like)).await?.is_none() {
+            return Ok(Some(format!("shop {}", s.like)));
+        }
+    }
+    for (what, key) in w
+        .room
+        .iter()
+        .map(|r| &r.like)
+        .chain(w.room_change.iter().map(|c| &c.room))
+        .map(|k| (k, room_key(k)))
+    {
+        let Some(key) = key else {
+            return Ok(Some(format!("room {what}")));
+        };
+        if db.rooms().get(key).await?.is_none() {
+            return Ok(Some(format!("room {what}")));
+        }
+    }
+    Ok(None)
+}
+
 /// Writes the world file into `db`: text blocks, items, monsters, shops, new rooms, then the
 /// changes to stock rooms and items. Returns how many records it wrote.
 pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError> {
+    // all or nothing: a world without every stock record the file builds on (a test's small
+    // world, a realm that isn't the stock one) gets none of it, rather than half a stable
+    if let Some(what) = first_missing(db, w).await? {
+        skipped(what);
+        return Ok(0);
+    }
     let mut n = 0;
     for t in &w.text {
         let mut text = t.text.clone();
@@ -203,11 +250,10 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
         n += 1;
     }
     for i in &w.item {
-        let mut item = db
-            .items()
-            .get(ItemNo(i.like))
-            .await?
-            .ok_or_else(|| missing(format!("item {}", i.like)))?;
+        let Some(mut item) = db.items().get(ItemNo(i.like)).await? else {
+            skipped(format!("item {}", i.like));
+            continue;
+        };
         item.number = ItemNo(i.number);
         item.name = i.name.clone();
         item.desc = lines(&i.desc);
@@ -219,11 +265,10 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
         n += 1;
     }
     for c in &w.item_change {
-        let mut item = db
-            .items()
-            .get(ItemNo(c.number))
-            .await?
-            .ok_or_else(|| missing(format!("item {}", c.number)))?;
+        let Some(mut item) = db.items().get(ItemNo(c.number)).await? else {
+            skipped(format!("item {}", c.number));
+            continue;
+        };
         set_abilities(
             &mut item.abilities,
             &abilities(&c.add_abilities).map_err(bad)?,
@@ -233,11 +278,10 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
         n += 1;
     }
     for m in &w.monster {
-        let mut mon = db
-            .monsters()
-            .get(MonsterNo(m.like))
-            .await?
-            .ok_or_else(|| missing(format!("monster {}", m.like)))?;
+        let Some(mut mon) = db.monsters().get(MonsterNo(m.like)).await? else {
+            skipped(format!("monster {}", m.like));
+            continue;
+        };
         mon.number = MonsterNo(m.number);
         mon.name = m.name.clone();
         mon.desc = lines(&m.desc);
@@ -250,11 +294,10 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
         n += 1;
     }
     for s in &w.shop {
-        let mut shop = db
-            .shops()
-            .get(ShopNo(s.like))
-            .await?
-            .ok_or_else(|| missing(format!("shop {}", s.like)))?;
+        let Some(mut shop) = db.shops().get(ShopNo(s.like)).await? else {
+            skipped(format!("shop {}", s.like));
+            continue;
+        };
         shop.number = ShopNo(s.number);
         shop.name = s.name.clone();
         for (i, slot) in shop.stock.iter_mut().enumerate() {
@@ -285,11 +328,10 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
     for r in &w.room {
         let key = room_key(&r.room).ok_or_else(|| bad(format!("room `{}`", r.room)))?;
         let like = room_key(&r.like).ok_or_else(|| bad(format!("room `{}`", r.like)))?;
-        let mut room = db
-            .rooms()
-            .get(like)
-            .await?
-            .ok_or_else(|| missing(format!("room {}", r.like)))?;
+        let Some(mut room) = db.rooms().get(like).await? else {
+            skipped(format!("room {}", r.like));
+            continue;
+        };
         room.key = key;
         // a new room starts empty: none of the copied room's floor, coins or monsters
         let empty = RoomItem {
@@ -328,6 +370,9 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
         if let Some(t) = r.script {
             room.cmdtext = TextBlockNo(t);
         }
+        if let Some(m) = r.max_monsters {
+            room.maxmonsters = m;
+        }
         db.rooms()
             .put_many(&[room], StateWrite::CreateMissing)
             .await?;
@@ -335,11 +380,10 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
     }
     for c in &w.room_change {
         let key = room_key(&c.room).ok_or_else(|| bad(format!("room `{}`", c.room)))?;
-        let mut room = db
-            .rooms()
-            .get(key)
-            .await?
-            .ok_or_else(|| missing(format!("room {}", c.room)))?;
+        let Some(mut room) = db.rooms().get(key).await? else {
+            skipped(format!("room {}", c.room));
+            continue;
+        };
         for (d, to) in exits(&c.exits).map_err(bad)? {
             room.exits[d] = exit_to(to);
         }

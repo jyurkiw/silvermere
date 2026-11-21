@@ -22,6 +22,7 @@ desc = [
 exits = { west = 2140, east = 9001 }
 kind = "Normal"
 specmon = 9000
+max_monsters = 0
 
 [[room]]
 room = "1/9001"
@@ -36,6 +37,7 @@ desc = [
 ]
 exits = { west = 9000 }
 kind = "Shop"
+max_monsters = 0
 shop = 900
 specmon = 9001
 script = 20030

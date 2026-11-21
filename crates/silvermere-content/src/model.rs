@@ -196,6 +196,8 @@ pub struct RoomSpec {
     pub specmon: Option<i32>,
     /// The text block of the room's commands (its script).
     pub script: Option<i32>,
+    /// Random monsters the room may hold (the copied room's when left out; 0 for a safe room).
+    pub max_monsters: Option<u8>,
 }
 
 /// New exits on a room already in the world.
