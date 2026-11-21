@@ -132,8 +132,8 @@ sunbolt (13), eldritch bolt (20).
 Stock backstab works only with a melee blow, from hiding or sneaking. Both classes can open
 with a spell instead:
 
-- **When:** casting a single-target attack spell from hiding or sneaking at a target that
-  isn't already fighting the caster: the opening cast of a fight, the spell's equivalent of
+- **When:** casting a single-target attack spell from hiding or sneaking at a target (a
+  monster or, under PvP's usual rules, a player) that isn't already fighting the caster: the opening cast of a fight, the spell's equivalent of
   BACKSTAB. One attempt: whatever happens, the caster is revealed and the fight is on.
 - **Two rolls, independent of each other:**
   - **the stealth roll**: did the caster stay unseen until the spell left their hands? The
@@ -209,11 +209,12 @@ exactly BACKSTAB.
    and Gypsy.
 6. Neither gets Spellstrike (stealth classes).
 7. The proposed titles and lore stand (they can change later).
+8. Spell backstab works against players too, under PvP's usual rules.
 
 ## Open questions
 
-1. **Spell backstab against players:** monsters only, or players too (with PvP's usual
-   rules)?
+1. ~~Spell backstab against players.~~ **Decided:** players too, under PvP's usual rules
+   (evil points, lawful and level-range checks, as any attack spell at a player).
 2. **The numbers to balance-test:** spell backstab's +100% and −20 stealth penalty, vanish's
    −20 and 5 rounds, the backstab bonus of 5.
 3. **Class numbers:** 18 (Avenger) and 19 (Assassin), titles in blocks 3021 and 3022.
