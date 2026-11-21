@@ -8,6 +8,7 @@ round, pet names in output), and that's accepted for this one.
 - [The pet model](#the-pet-model)
 - [How the model covers each case](#how-the-model-covers-each-case)
 - [The Warden](#the-warden)
+- [Level titles](#level-titles)
 - [The pet's attack](#the-pets-attack)
 - [The Newhaven stable: choosing a companion](#the-newhaven-stable-choosing-a-companion)
 - [The pet in output text](#the-pet-in-output-text)
@@ -81,7 +82,7 @@ Decided: a tough Warden that swings less often, with a slow companion that hits 
 | magic | none | none | its pet is not a spell |
 | experience | 100% | **140%** | the Priest's and Mage's, just above the Witchunter (130%); you set it around 130-140%; the balance sim checks it |
 | abilities | Bash | Bash; a companion at creation; the armour steps | fork abilities |
-| titles | | *open* | |
+| titles | | text block 3020 | [below](#level-titles) |
 
 **Armour by level.** A class record holds one armour limit, so armour that improves with
 level is a new fork rule, the same kind as `NoOffHand`: two fork abilities,
@@ -91,6 +92,23 @@ level 10 the limit is the class's own (leather); from 10 chain; from 20 scale.
 A new Warden bonds its companion at the Newhaven stable
 ([below](#the-newhaven-stable-choosing-a-companion)): `source` = class, `immortal`,
 `summoned`.
+
+### Level titles
+
+Sixteen ranks, in the same level bands as every stock class, the same title for either
+sex. Huntsman runs to level 110 like the stock last ranks. The block is a new text block,
+3020, after the War Mage's 3019.
+
+| Levels | Title | Levels | Title |
+|---|---|---|---|
+| 1 | Cub | 35-39 | Pioneer |
+| 2-4 | Scout | 40-44 | Frontiersman |
+| 5-9 | Tenderfoot | 45-49 | Voyageur |
+| 10-14 | Venturer | 50-54 | Long Hunter |
+| 15-19 | Star Scout | 55-59 | Pathfinder |
+| 20-24 | Life Scout | 60-64 | Bush Ranger |
+| 25-29 | Explorer | 65-69 | High Tracker |
+| 30-34 | Rover | 70-110 | Huntsman |
 
 ## The pet's attack
 
@@ -232,6 +250,7 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
 8. The companion is chosen in game, at a new stable in Newhaven: a stablemaster to ask, and
    four free leashes (hound, hawkling, rattlesnake, Drop Bear). You use the leash in the
    stable, whose room script takes it and sets the character's `PetKind` ability.
+10. Titles: Cub to Huntsman, sixteen ranks, in text block 3020.
 9. All pet acquisition is content: shops or retrieval quests, ending in the same script
    clauses. No code for acquiring pets.
 7. The Warden has high HP and low fighting (3): it swings less, and its companion hits
