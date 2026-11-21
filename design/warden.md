@@ -227,13 +227,17 @@ MegaMud test.
 
 Two-handed is a stock weapon class (`AnyTwoHand`). Stock has no ranged combat: slings,
 bows and crossbows are ordinary weapon items with missile names and weapon types (a sling
-is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
+is one-handed blunt, a crossbow two-handed sharp). So "ranged" is marked on the items:
 
-- **a fork item ability**, `Ranged`, on those items (set by content), with a Warden rule
-  that allows two-handed weapons or `Ranged` ones; or
-- **Class Item Inclusion** for the Warden on each one-handed ranged item, with no new rule.
+- **A fork item ability, `Ranged`.** Content marks the stock slings, bows, crossbows and
+  other missile weapons with it (an item change in the overlay; the missile weapon shops,
+  such as Jael's Missile Weapons, Rhudaur's and Arlysia's, list most of them).
+- **A fork class ability, `RangedWeapons`.** A class with it may use any item marked
+  `Ranged`, whatever the item's weapon type, on top of its own weapon class.
+- **The Warden's weapon class is `AnyTwoHand`**, plus `RangedWeapons`: every two-hander,
+  and every ranged weapon, even a one-handed sling.
 
-[Open question 4](#open-questions).
+Both abilities are general: a later archer class, say, reuses them.
 
 ## Fitting it into silvermere
 
@@ -241,6 +245,7 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
 |---|---|
 | `pet_kinds` | content (`content/pets.toml`), installed by the overlay, grown to cover pet kinds |
 | Armour by level | two fork abilities checked in `items/can_use.rs` |
+| Ranged weapons | the fork item ability `Ranged` (set on stock items by content) and the class ability `RangedWeapons`, checked in `items/can_use.rs` |
 | `pets` table | a migration (SQLite and PostgreSQL), a repository in `silvermere-db`, `docs/schema.md` regenerated |
 | Pets in the world | loaded with the characters, saved through the persistence worker when they change |
 | The pet's blows | `silvermere-engine`, after the owner's blows in the round; a pet fighter built in `silvermere-rules` from its kind |
@@ -265,6 +270,8 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
 8. The companion is chosen in game, at a new stable in Newhaven: a stablemaster to ask, and
    four free leashes (hound, hawkling, rattlesnake, Drop Bear). You use the leash in the
    stable, whose room script takes it and sets the character's `PetKind` ability.
+12. Ranged weapons are marked with a fork `Ranged` item ability; the Warden's
+    `RangedWeapons` class ability allows them beside its two-handers.
 11. The companion is named with `PET NAME`; `PET` shows it.
 10. Titles: Cub to Huntsman, sixteen ranks, in text block 3020.
 9. All pet acquisition is content: shops or retrieval quests, ending in the same script
@@ -281,7 +288,8 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
    effect.
 3. ~~Naming.~~ **Decided:** a `PET NAME` command after bonding
    ([Naming the companion](#naming-the-companion)).
-4. **Ranged weapons:** a `Ranged` item ability, or Class Item Inclusion per item?
+4. ~~Ranged weapons.~~ **Decided:** a fork `Ranged` item ability, and a `RangedWeapons`
+   class ability that allows those items.
 5. **How strong is the pet?** Its damage per round against a Warrior's at the same level is
    the balance lever; the balance sim ([testing.md](testing.md)) can measure it.
 6. **The "Also here:" line:** show "Devin and Fang" there after a MegaMud test, or never?
