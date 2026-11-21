@@ -19,7 +19,7 @@ use super::{
     check_kill_monster, monster, monster_mut, monster_side, player, player_side, room_of,
     user_ability, user_group,
 };
-use crate::tell::{Noise, TellBlind, tell_room, tell_user};
+use crate::tell::{Noise, TellBlind, tell_room};
 use crate::world::World;
 
 /// The kind of companion a character has bonded, if any.
@@ -153,18 +153,33 @@ pub fn pet_round(world: &mut World, id: SessionId, mon: ActiveMonsterId) {
                 (miss(&to_owner), miss(&to_room))
             }
         };
-        tell_user(world, id, mine);
+        // as a fighter's blow is told: the line with a prompt behind it (which also ends its
+        // colour, so a death line after it reads as the game prints it), and the room's
+        if let Some(s) = world.session_mut(id) {
+            s.output.push(mine);
+            s.push_joined_prompt();
+        }
         tell_room(
             world,
             room,
             [Some(id), None],
-            Noise::Medium,
+            Noise::Always,
             TellBlind::All,
-            false,
+            true,
             None,
             &theirs,
         );
-        if check_kill_monster(world, mon, Some(id)) {
+        // the kill, as the owner's own: death lines, experience and the end of the fight
+        if matches!(res.outcome, Outcome::Hit { .. }) && check_kill_monster(world, mon, Some(id)) {
+            super::kill_monster::distribute_experience(
+                world,
+                Some(id),
+                res.exp,
+                None,
+                Some(mon),
+                room,
+            );
+            super::kill_autocombat_against_monster(world, mon);
             world.pet_energy.remove(&id);
             return;
         }

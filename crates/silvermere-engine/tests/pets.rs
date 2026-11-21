@@ -215,3 +215,28 @@ fn stable_script_lines_run() {
     let r = perform_matched_action(&mut w, id, &lines[0].action);
     assert_eq!(r, LineResult::Stop, "already marked");
 }
+
+// A kill by the companion is its owner's kill, told as one: the death lines, experience, and
+// the end of the fight, with the hit line's prompt (and its colour reset) before them.
+#[test]
+fn a_companion_kill_gives_experience_and_ends_the_fight() {
+    let (mut w, id, m) = fight(1);
+    let mon = w.active_monsters.by_number_mut(m).unwrap();
+    mon.hp = 1;
+    mon.exp = 10;
+    mon.level = 1;
+    let before = (plr(&mut w, id).exprem, plr(&mut w, id).expbil);
+    // the hound may miss: a few rounds until it lands
+    let mut out = Vec::new();
+    for _ in 0..20 {
+        out = round(&mut w, id);
+        if w.active_monsters.values().all(|x| x.number != m) {
+            break;
+        }
+    }
+    assert!(w.active_monsters.values().all(|x| x.number != m), "killed");
+    let after = (plr(&mut w, id).exprem, plr(&mut w, id).expbil);
+    assert!(after > before, "experience gained: {before:?} -> {after:?}");
+    assert!(out.iter().any(|l| l.contains("experience")), "{out:?}");
+    assert!(!w.autocombat.queued(id), "the fight is over");
+}
