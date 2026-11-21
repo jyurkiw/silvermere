@@ -68,9 +68,9 @@ Two tables: pet **kinds** are content, each character's **pets** are play state.
 
 ## The Warden
 
-Proposed: a tough Warden that swings less often, with a slow companion that hits hard.
+Decided: a tough Warden that swings less often, with a slow companion that hits hard.
 
-| Field | Warrior | Warden (proposed) | Note |
+| Field | Warrior | Warden | Note |
 |---|---|---|---|
 | class number | 1 | 17 | the next after the War Mage |
 | HP per level | 6-10 | **7-11** | more than any stock class |
@@ -92,7 +92,7 @@ to be decided, and names it ([open question 3](#open-questions)).
 
 ## The pet's attack
 
-**Proposed for the Warden's companion: one heavy blow a round.** "Attacks less, but you feel
+**The Warden's companion: one heavy blow a round.** "Attacks less, but you feel
 it": rather than an energy pool, the companion makes exactly one blow each round, after
 the Warden's, at the Warden's target. All the scaling is in its damage:
 
@@ -173,13 +173,12 @@ is one-handed blunt, a crossbow two-handed sharp). So "ranged" has to be marked:
 6. The Warden wears leather (chain from level 10, scale from 20) and uses two-handed or
    ranged weapons.
 7. The Warden has high HP and low fighting (3): it swings less, and its companion hits
-   hard.
+   hard. 7-11 HP, 140% experience, one companion blow a round.
 
 ## Open questions
 
-1. **Stats:** proposed above: 7-11 HP, fighting 3, leather then chain (10) and scale (20),
-   140%, and a companion with one heavy blow a round. Experience set to around 130-140% at
-   your request (140% for now); the rest waiting for your review.
+1. ~~Stats.~~ **Decided:** 7-11 HP, fighting 3, 140% experience, leather then chain (10)
+   and scale (20), and a companion with one heavy blow a round (damage to be tuned).
 2. **Pet kinds at launch:** one kind for every Warden, or a choice of a few (wolf, bear,
    hawk, snake)? Do kinds differ only in flavour, or in speed and damage too?
 3. **Naming:** at character creation (touches the creation screens) or a `PET NAME` command
