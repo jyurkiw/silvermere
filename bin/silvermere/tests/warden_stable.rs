@@ -105,3 +105,36 @@ async fn the_stable_yard_and_old_bannon() {
     assert_eq!(yard.exits[2].target.0, 9000, "east of the Village Entrance");
     db.close().await;
 }
+
+/// Fork: the universal trainers a new character meets, Newhaven's Adventurer's Guild (1/2147)
+/// and the Adventurer's Guild Universal Trainer (1/1376), train the fork's classes too: a
+/// War Mage and a Warden each train level 2 at both.
+#[tokio::test]
+async fn the_universal_trainers_train_war_mages_and_wardens() {
+    for (class, title) in [(16, "Apprentice Soldat"), (17, "Scout")] {
+        for room in [2147, 1376] {
+            let (_dir, url) = team_db();
+            edit_char(&url, "Aldric", |c| {
+                c.class = ClassNo(class);
+                c.level = 1;
+                c.expbil = 0;
+                c.exprem = 1_000_000;
+                c.coins.gold = 1_000;
+            })
+            .await;
+            place(&url, "Aldric", room).await;
+            let r = start_manual(&url).await;
+            let mut a = Player::enter(&r, "Aldric").await;
+            let out = a.cmd("train").await;
+            assert!(
+                out.contains("receive training to attain level 2"),
+                "class {class} at 1/{room}: {out}"
+            );
+            a.leave_ticking(&r).await;
+            r.stop().await.unwrap();
+            let c = stored(&url, "Aldric").await;
+            assert_eq!(c.level, 2, "class {class} at 1/{room}");
+            assert_eq!(c.title, title, "class {class}: its own level 2 title");
+        }
+    }
+}

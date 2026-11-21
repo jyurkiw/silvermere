@@ -320,6 +320,12 @@ trainers:
 | 12-20 | universal (High Level Trainer) |
 | 21+ | universal (Titan, Rhudaur, Dwarven, Amazon, ...) |
 
+Checked in the Warden PR: the two universal trainers a new character meets, **Newhaven's
+Adventurer's Guild (1/2147)** and the **Adventurer's Guild Universal Trainer (1/1376)**
+(both shop 38, levels 1-10), train War Mages and Wardens (live test
+`the_universal_trainers_train_war_mages_and_wardens`). Class trainer NPCs come in the next
+PR.
+
 The gap is **level 11**: no universal trainer covers it, so War Mages and Wardens can't
 train it today. The renovations add, at least, a level-11 trainer for each new class (or one
 universal level-11 trainer), and their own level 1-10 training rooms for parity with the
