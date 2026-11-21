@@ -263,6 +263,11 @@ ammunition and no special rules. Real ranged combat can hang off the same marker
 | Bonding | room scripts (stock clauses) setting the fork character ability `PetKind`; no code |
 | `PetKind` | read by the pet's attack to pick the companion's kind |
 
+**Faithfulness tests.** The stable's door gives the Village Entrance (1/2140) an east exit
+the original's recordings don't have. The recording comparisons
+(`silvermere-testkit` `capture_compare::without_fork_differences`) put that one exits line
+back as the original sent it before comparing; everything else is compared as before.
+
 ## Decisions
 
 1. Pets get their own table, not a hiding place in the character record.

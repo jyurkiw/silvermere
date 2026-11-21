@@ -13,6 +13,24 @@ use crate::captures::{Capture, ScriptMask, apply_script_masks, text_to_lines};
 use crate::normalise::{Difference, MaskSpec, diff_events, normalise};
 use crate::patterns::{Event, PatternSet, Rx};
 
+/// Fork: what this fork's server sends that the original's recordings can't have, put back
+/// as the original sent it before comparing. Only the server's side is touched, and only
+/// these exact shapes.
+///
+/// - The Village Entrance (1/2140) has an east exit to the fork's Newhaven stable
+///   (design/warden.md): its exits line `north, south, east, west, southeast` is compared
+///   without the `east`.
+pub fn without_fork_differences(actual: &[u8]) -> Vec<u8> {
+    static ENTRANCE: std::sync::OnceLock<regex::bytes::Regex> = std::sync::OnceLock::new();
+    let re = ENTRANCE.get_or_init(|| {
+        regex::bytes::Regex::new(
+            r"(?-u)(Obvious exits: n.\x08orth, s.\x08outh, )e.\x08ast, (w.\x08est, s.\x08outheast\r)",
+        )
+        .expect("a valid pattern")
+    });
+    re.replace_all(actual, &b"$1$2"[..]).into_owned()
+}
+
 /// What the capture's step `index` made the server send: its raw bytes, from the step's
 /// recorded offset to the next step's (or to the end of `raw.bin`).
 pub fn step_output(capture: &Capture, index: usize) -> Vec<u8> {
@@ -225,6 +243,7 @@ pub fn assert_matches_capture(
 ) {
     let masks = masks_for(capture, extra_masks);
     let expected = from_mbbsemu(&step_output(capture, step));
+    let actual = &without_fork_differences(actual)[..];
     assert!(
         !expected.is_empty(),
         "capture {} step {step} has no output",
@@ -311,7 +330,7 @@ pub async fn replay_steps(
             let _ = client.read(std::time::Duration::from_secs_f64(quiet)).await;
         }
         if problem.is_none() {
-            let actual = client.raw()[at..].to_vec();
+            let actual = without_fork_differences(&client.raw()[at..]);
             let expected = from_mbbsemu(&step_output(capture, index));
             let diffs = compare_events(&expected, &actual, &masks, &patterns, &fields);
             // text first; then, with the ANSI colours kept, the escapes too
@@ -357,4 +376,21 @@ pub fn assert_clean(what: &str, reports: &[StepReport]) {
         bad.join("\n")
     );
     assert!(!reports.is_empty(), "{what}: no steps were replayed");
+}
+
+#[cfg(test)]
+mod fork_tests {
+    use super::without_fork_differences;
+
+    #[test]
+    fn only_the_village_entrance_exits_line_loses_its_east() {
+        let ours =
+            b"Obvious exits: nA\x08orth, sB\x08outh, eC\x08ast, wD\x08est, sE\x08outheast\r\n";
+        assert_eq!(
+            without_fork_differences(ours),
+            b"Obvious exits: nA\x08orth, sB\x08outh, wD\x08est, sE\x08outheast\r\n".to_vec()
+        );
+        let other = b"Obvious exits: nA\x08orth, eC\x08ast, wD\x08est\r\n";
+        assert_eq!(without_fork_differences(other), other.to_vec());
+    }
 }
