@@ -20,6 +20,7 @@ pub mod config;
 pub mod enums;
 pub mod fixed;
 pub mod flags;
+pub mod fork;
 pub mod ids;
 pub mod names;
 pub mod records;

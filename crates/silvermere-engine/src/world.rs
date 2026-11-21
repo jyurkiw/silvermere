@@ -270,6 +270,9 @@ pub struct World {
     /// pair for every cast, as the game keeps it: a cast made inside another (a text
     /// block's `cast`) leaves its destination for the outer cast to find.
     pub cast_teleport: (i32, i32),
+    /// Fork (Spellstrike, design/war-mage.md): while a spellstrike round's blows are
+    /// struck, the critical chance its cast took from them. `None` outside one.
+    pub spellstrike_crit_cut: Option<i32>,
     /// Pending gang invitations.
     pub gang_invites: Vec<GangInvite>,
     /// The background cycles' own state and hooks (T-037).
@@ -406,6 +409,7 @@ impl World {
             restock: Vec::new(),
             evil_timers: Vec::new(),
             cast_teleport: (0, 0),
+            spellstrike_crit_cut: None,
             gang_invites: Vec::new(),
             cycles: crate::cycles::CycleState::default(),
             autocombat: Default::default(),

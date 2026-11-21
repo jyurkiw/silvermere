@@ -1,0 +1,32 @@
+# The fork's HELP topics, added to the game's own when the server loads its text.
+
+[[class_topic]]
+class = "War Mage"
+words = "War Mages"
+text = '''
+War Mages are the soldiers of the King's Battle-Mage corps who would rather not keep a
+hand free. Where their warlock comrades direct their spells from an open hand, War Mages
+drive the magic through their weapon at close range, striking with blade and spell in the
+same moment. They fight as well as any warrior and wear chainmail, but the weapon takes
+both their hands and their attention: they carry no shield, and their command of magic
+is the most basic of the Mage arts.
+
+In combat, a War Mage who casts an attack spell with a weapon in hand makes a
+Spellstrike: the spell takes the place of the first blow, the rest of the round is
+fought as normal, and a spell that fails is no worse than a missed blow.
+'''
+abilities = "Spellstrike."
+
+[[topic]]
+words = "Spellstrike"
+text = '''
+Spellstrike
+
+A War Mage who casts a single-target attack spell in combat with a weapon wielded
+channels the spell through the weapon. The cast takes the place of the round's first
+blow and costs the energy of one blow, less a discount; the rest of the round's energy
+buys blows as usual. A failed cast counts as a missed blow and costs less than a success.
+
+Out of mana, the fight carries on as plain melee until you CAST again. Area spells, and
+casting with no weapon in hand, work as they always have.
+'''

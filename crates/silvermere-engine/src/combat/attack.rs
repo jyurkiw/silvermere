@@ -295,8 +295,9 @@ pub fn attack_user_monster(
     if plr.room != mon.room {
         return None;
     }
-    // a round starts only with a full pool
-    if mode == Mode::Auto && plr.energy < plr.maxenergy {
+    // a round starts only with a full pool (Fork: a spellstrike round's blows come after
+    // its cast has spent some)
+    if mode == Mode::Auto && plr.energy < plr.maxenergy && world.spellstrike_crit_cut.is_none() {
         engage_autocombat(world, id, AutoTarget::Monster(monnum), mv);
         return None;
     }
@@ -469,6 +470,10 @@ pub fn attack_user_monster(
     // both sides for the first blow
     pick_random_attack_move(&mut world.rng);
     let (mut atk, verbs) = player_side(world, id, &plr, mv, mtype, AlignGroup::Neutral)?;
+    // Fork: a spellstrike's cast took part of the fast-blow bonus (design/war-mage.md)
+    if let Some(cut) = world.spellstrike_crit_cut {
+        atk.crit = (atk.crit - cut).max(1);
+    }
     let (mut def, _) = monster_side(world, &mon, 0, mv, user_group(&plr))?;
     let penalty = world.config.smash_penalty as i32;
     // a smashed monster counts down its rounds on the floor

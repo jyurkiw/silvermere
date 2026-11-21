@@ -73,6 +73,7 @@ mod session_ids;
 mod settings;
 mod shutdown;
 mod spawning;
+mod spellstrike;
 mod startup_passes;
 mod stealth_commands;
 mod suicide;

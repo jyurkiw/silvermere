@@ -4,6 +4,7 @@ members = [
     "bin/silvermere",
     "crates/silvermere-api",
     "crates/silvermere-auth",
+    "crates/silvermere-content",
     "crates/silvermere-db",
     "crates/silvermere-engine",
     "crates/silvermere-fsd",
@@ -32,6 +33,7 @@ unsafe_code = "forbid"
 [workspace.dependencies]
 silvermere-api = { path = "crates/silvermere-api" }
 silvermere-auth = { path = "crates/silvermere-auth" }
+silvermere-content = { path = "crates/silvermere-content" }
 silvermere-db = { path = "crates/silvermere-db" }
 silvermere-engine = { path = "crates/silvermere-engine" }
 silvermere-fsd = { path = "crates/silvermere-fsd" }

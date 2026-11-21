@@ -2117,6 +2117,7 @@ dependencies = [
  "serde_json",
  "silvermere-api",
  "silvermere-auth",
+ "silvermere-content",
  "silvermere-db",
  "silvermere-engine",
  "silvermere-import",
@@ -2170,6 +2171,21 @@ dependencies = [
  "sqlx",
  "thiserror",
  "tokio",
+ "tracing",
+]
+
+[[package]]
+name = "silvermere-content"
+version = "0.1.18"
+dependencies = [
+ "serde",
+ "silvermere-db",
+ "silvermere-text",
+ "silvermere-types",
+ "sqlx",
+ "thiserror",
+ "tokio",
+ "toml 1.1.8+spec-1.1.0",
  "tracing",
 ]
 

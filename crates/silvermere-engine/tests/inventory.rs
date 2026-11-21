@@ -1429,3 +1429,30 @@ fn ownership_and_floor_writes_are_queued() {
 fn currency_words() {
     assert_eq!(Currency::Gold.singular_name(), Some("gold crown"));
 }
+
+// Fork (design/war-mage.md): a class with NoOffHand may not use an off-hand item, though
+// it may wield any weapon; Class Item Inclusion still names it in.
+#[test]
+fn no_off_hand_refuses_shields() {
+    let mut c = silvermere_engine::clear_player();
+    c.class = ClassNo(16);
+    c.race = RaceNo(1);
+    c.level = 5;
+    let plain = class(16, WeaponClass::All);
+    let mut war_mage = class(16, WeaponClass::All);
+    war_mage.abilities[0] = (silvermere_types::fork::NO_OFF_HAND, 0);
+    let mut shield = armour(900, "small shield", 50, WornLocation::OffHand);
+    let helm = armour(901, "leather cap", 10, WornLocation::Head);
+    assert_eq!(can_use(&c, &shield, &check(&plain, false)), Ok(()));
+    assert_eq!(
+        can_use(&c, &shield, &check(&war_mage, false)),
+        Err(CantUse::Armour)
+    );
+    assert_eq!(can_use(&c, &helm, &check(&war_mage, false)), Ok(()));
+    shield.abilities[0] = (Ability::ClassItem, 16);
+    assert_eq!(
+        can_use(&c, &shield, &check(&war_mage, false)),
+        Ok(()),
+        "Class Item Inclusion overrides"
+    );
+}

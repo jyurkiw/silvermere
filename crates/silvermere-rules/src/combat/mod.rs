@@ -19,6 +19,7 @@
 mod attack;
 mod energy;
 mod fighter;
+pub mod spellstrike;
 
 #[cfg(test)]
 mod tests;

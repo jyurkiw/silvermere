@@ -554,6 +554,26 @@ impl PackageText {
         &self.help
     }
 
+    /// Adds topics the fork's content brings (`silvermere-content`), before the `Help ?`
+    /// end marker. A topic with the same words as one already there replaces its text.
+    /// The topics are checked as the file's are; on an error nothing changes.
+    pub fn add_help_topics(&mut self, topics: Vec<HelpTopic>) -> Result<(), PackageError> {
+        let mut help = self.help.clone();
+        for t in topics {
+            let same = |h: &HelpTopic| h.words.eq_ignore_ascii_case(&t.words);
+            if let Some(h) = help.topics.iter_mut().find(|h| same(h)) {
+                h.text = t.text;
+            } else {
+                let end = help.topics.len().saturating_sub(1);
+                help.topics.insert(end, t);
+            }
+        }
+        self.help = help
+            .validated()
+            .map_err(|e| error("content", e.to_string()))?;
+        Ok(())
+    }
+
     /// The text blocks of `WCCMMUD.MSG`.
     pub fn wccmmud(&self) -> &Catalogue {
         &self.wccmmud

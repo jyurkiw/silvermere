@@ -17,6 +17,7 @@ workspace = true
 [dependencies]
 silvermere-api.workspace = true
 silvermere-auth.workspace = true
+silvermere-content.workspace = true
 silvermere-db.workspace = true
 silvermere-engine.workspace = true
 silvermere-import.workspace = true

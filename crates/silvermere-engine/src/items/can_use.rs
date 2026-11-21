@@ -131,6 +131,16 @@ pub fn can_use(plr: &Character, item: &Item, check: &UseCheck<'_>) -> Result<(),
         }
         _ => true,
     };
+    // Fork: a class with NoOffHand (the War Mage) carries no shield
+    if ok
+        && item.worn == WornLocation::OffHand
+        && cls
+            .abilities
+            .iter()
+            .any(|s| s.0 == silvermere_types::fork::NO_OFF_HAND)
+    {
+        ok = false;
+    }
     let refusal = match item.item_type {
         ItemType::Weapon => CantUse::WeaponClass,
         _ => CantUse::Armour,
