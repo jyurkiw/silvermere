@@ -214,7 +214,8 @@ exactly BACKSTAB.
 ## Open questions
 
 1. ~~Spell backstab against players.~~ **Decided:** players too, under PvP's usual rules
-   (evil points, lawful and level-range checks, as any attack spell at a player).
+   (evil points, lawful and level-range checks, as any attack spell at a player). MajorMUD was
+   never balanced for PvP, so PvP balance isn't a goal here.
 2. **The numbers to balance-test:** spell backstab's +100% and −20 stealth penalty, vanish's
    −20 and 5 rounds, the backstab bonus of 5.
 3. **Class numbers:** 18 (Avenger) and 19 (Assassin), titles in blocks 3021 and 3022.
