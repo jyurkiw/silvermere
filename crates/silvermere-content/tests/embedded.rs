@@ -179,7 +179,7 @@ fn the_assassin_record_matches_the_design() {
     let a = c.classes.iter().find(|c| c.name == "Assassin").unwrap();
     assert_eq!(a.number, ClassNo(19));
     assert_eq!((a.basehp, a.hplevel), (4, 4), "4-8 HP per level");
-    assert_eq!(a.exp, 100, "200% experience");
+    assert_eq!(a.exp, 60, "160% experience");
     assert_eq!((a.magery, a.magelvl), (Magery::Mage, 1));
     assert_eq!(a.combat, 5, "fighting 3");
     assert_eq!(a.weapon, WeaponClass::AnySharp);

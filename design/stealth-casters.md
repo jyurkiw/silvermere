@@ -40,7 +40,7 @@ Both are stealth classes, so neither ever gets Spellstrike
 | Gypsy | Mage-2 | 2 | leather | 1-H | 4-7 | 220% |
 | Missionary | Priest-2 | 2 | leather | 1-H | 4-7 | 220% |
 | **Avenger** | **Priest-1** | **3** | **leather** | **blunt** | **4-8** | **200%** |
-| **Assassin** | **Mage-1** | **3** | **leather** | **sharp** | **4-8** | **200%** |
+| **Assassin** | **Mage-1** | **3** | **leather** | **sharp** | **4-8** | **160%** |
 
 ## The Avenger
 
@@ -87,7 +87,7 @@ alignment (13), godstrike (20).
 |---|---|---|
 | class number | 19 | |
 | HP per level | 4-8 | |
-| experience | 200% | |
+| experience | 160% | 40 below the Avenger, which also has VANISH |
 | magic | Mage-1 | |
 | fighting | 3 | `combat` 5 |
 | weapons | any sharp | `AnySharp` |
@@ -210,7 +210,8 @@ exactly BACKSTAB.
 
 ## Decisions
 
-1. Two fighter-leaning stealth casters: fighting 3, magic level 1, leather, 4-8 HP, 200%.
+1. Two fighter-leaning stealth casters: fighting 3, magic level 1, leather, 4-8 HP. The
+   Avenger costs 200% experience; the Assassin, without VANISH, 160%.
 2. The Avenger is Priest-1 with blunt weapons; the Assassin is Mage-1 with sharp weapons.
 3. Both have spell backstab: a stealth roll and a cast roll, independent, one attempt.
    Stealth kept and cast landed: backstab damage; stealth lost: a normal cast.
