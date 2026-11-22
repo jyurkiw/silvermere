@@ -517,6 +517,10 @@ pub fn remove_item_from_inventory(world: &mut World, id: SessionId, item: ItemNo
     if let Some(s) = world.session_mut(id) {
         s.character = Some(plr);
     }
+    // Fork: an emptied main hand takes the off-hand's weapon (design/dervish.md)
+    if charges.is_some() {
+        crate::combat::dual::settle_hands(world, id);
+    }
     charges
 }
 

@@ -509,11 +509,31 @@ pub fn attack_user_monster(
     let mut hurt = 0u8;
     let mut rounds = 0;
     let mut last = None;
-    while !done && !killed && rounds < MAX_BLOWS {
+    // Fork: a Dervish's off-hand takes turns with the main hand (design/dervish.md); the two
+    // keep their own count of blows
+    let mut hands = if mode == Mode::Auto {
+        super::dual::Hands::start(world, id, &plr, mv)
+    } else {
+        None
+    };
+    while !done && !killed && (hands.is_some() || rounds < MAX_BLOWS) {
         hurt = 0;
         rounds += 1;
+        let off = match hands.as_mut() {
+            None => false,
+            Some(h) => {
+                let energy = player(world, id).map_or(0, |p| i32::from(p.energy));
+                match h.next(energy, atk.energy as i32) {
+                    Some(hand) => hand == super::dual::Hand::Off,
+                    None => break,
+                }
+            }
+        };
         let mon = monster(world, monnum).cloned()?;
-        let res = resolve(&mut atk, &def, mv, &mut world.rng);
+        let res = match hands.as_mut() {
+            Some(h) if off => resolve(&mut h.atk, &def, Move::Attack, &mut world.rng),
+            _ => resolve(&mut atk, &def, mv, &mut world.rng),
+        };
         last = Some(res.outcome);
         // a backstab is only the first blow
         if mv == Move::Backstab {
@@ -522,17 +542,34 @@ pub fn attack_user_monster(
         }
         // the blow's energy
         let energy = player(world, id).map_or(0, |p| p.energy);
-        if res.energy > energy {
-            if mode == Mode::Command {
-                tell_user(world, id, Msg::CombatMustRestMon);
-                return None;
+        match hands.as_mut() {
+            // Fork: each hand pays from its own pool; a hand's first blow is always made,
+            // leaving it nothing when it couldn't afford it
+            Some(h) if off => h.pay(i32::from(res.energy)),
+            Some(_) => {
+                if let Some(p) = player_mut(world, id) {
+                    p.energy = p.energy.saturating_sub(res.energy);
+                }
             }
-            engage_autocombat(world, id, AutoTarget::Monster(monnum), mv);
-            return None;
+            None => {
+                if res.energy > energy {
+                    if mode == Mode::Command {
+                        tell_user(world, id, Msg::CombatMustRestMon);
+                        return None;
+                    }
+                    engage_autocombat(world, id, AutoTarget::Monster(monnum), mv);
+                    return None;
+                }
+                if let Some(p) = player_mut(world, id) {
+                    p.energy -= res.energy;
+                }
+            }
         }
-        if let Some(p) = player_mut(world, id) {
-            p.energy -= res.energy;
-        }
+        // the blow's verbs: the off-hand weapon's for an off-hand blow
+        let blow_verbs = match hands.as_ref() {
+            Some(h) if off => h.verbs.clone(),
+            _ => verbs.clone(),
+        };
         // the damage, at most the monster's hit points
         let mut damage = match res.outcome {
             Outcome::Hit { damage, .. } => damage,
@@ -563,7 +600,7 @@ pub fn attack_user_monster(
             }
             // the hit
             let CombatMsg { you, room, .. } =
-                player_on_monster(&name, &verbs, &mon.name, res.outcome);
+                player_on_monster(&name, &blow_verbs, &mon.name, res.outcome);
             say_prompt(world, id, you);
             room_say(world, key, [Some(id), None], Noise::Always, &room);
             // the kill
@@ -586,8 +623,11 @@ pub fn attack_user_monster(
             } else if eq_ignore_case(&mon.following, &name) {
                 break_charm(world, monnum);
             }
-            // the weapon's own powers
-            let wpn = player(world, id).map(|p| p.weapon).unwrap_or_default();
+            // the weapon's own powers: the off-hand weapon's for its blow
+            let wpn = match hands.as_ref() {
+                Some(h) if off => h.item,
+                _ => player(world, id).map(|p| p.weapon).unwrap_or_default(),
+            };
             if wpn.0 != 0
                 && !matches!(mv, Move::Punch | Move::Kick | Move::JumpKick)
                 && !killed
@@ -649,7 +689,8 @@ pub fn attack_user_monster(
                 Outcome::Hit { .. } => Outcome::Miss,
                 o => o,
             };
-            let CombatMsg { you, room, .. } = player_on_monster(&name, &verbs, &mon.name, shown);
+            let CombatMsg { you, room, .. } =
+                player_on_monster(&name, &blow_verbs, &mon.name, shown);
             match shown {
                 Outcome::Dodged => tell_user(world, id, you),
                 _ => say_prompt(world, id, you),
@@ -668,7 +709,13 @@ pub fn attack_user_monster(
             atk = a;
             def = d;
             verbs = v;
+            if let Some(h) = hands.as_mut() {
+                h.refresh(world, id)?;
+            }
         }
+    }
+    if let Some(h) = hands.take() {
+        h.finish(world, id);
     }
     // carry on in auto-combat unless someone died
     if !killed && hurt != 2 {

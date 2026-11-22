@@ -40,6 +40,7 @@ pub mod info;
 pub mod input;
 pub mod inventory;
 pub mod misc;
+pub mod offhand;
 pub mod movement;
 pub mod parse;
 pub mod pending;

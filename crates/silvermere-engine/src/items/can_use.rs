@@ -160,6 +160,10 @@ pub fn can_use(plr: &Character, item: &Item, check: &UseCheck<'_>) -> Result<(),
         }
         _ => true,
     };
+    // Fork: a class with DualWield (the Dervish) uses no ranged weapon (design/dervish.md)
+    if ok && class_value(silvermere_types::fork::DUAL_WIELD).is_some() && has(silvermere_types::fork::RANGED) {
+        ok = false;
+    }
     // Fork: a class with NoOffHand (the War Mage) carries no shield
     if ok
         && item.worn == WornLocation::OffHand

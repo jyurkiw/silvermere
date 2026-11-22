@@ -287,6 +287,9 @@ pub struct World {
     pub vanish_wait: std::collections::HashMap<SessionId, u8>,
     /// Fork (VANISH): characters whose next auto-combat round a failed vanish took.
     pub vanish_skip: std::collections::HashSet<SessionId>,
+    /// Fork (the Dervish, design/dervish.md): each character's off-hand energy carried
+    /// between rounds.
+    pub offhand_energy: std::collections::HashMap<SessionId, i32>,
     /// Pending gang invitations.
     pub gang_invites: Vec<GangInvite>,
     /// The background cycles' own state and hooks (T-037).
@@ -430,6 +433,7 @@ impl World {
             ambush: std::collections::HashMap::new(),
             vanish_wait: std::collections::HashMap::new(),
             vanish_skip: std::collections::HashSet::new(),
+            offhand_energy: std::collections::HashMap::new(),
             gang_invites: Vec::new(),
             cycles: crate::cycles::CycleState::default(),
             autocombat: Default::default(),

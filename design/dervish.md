@@ -1,6 +1,11 @@
 # The Dervish: two blades
 
-Status: **draft, in design.** Nothing here is implemented. Fork-only.
+Status: **implemented** (`feature/dervish`). Fork-only.
+
+As built: the off-hand weapon sits in a worn slot (any worn slot, since a weapon's own
+`worn` place is "nowhere"), which is how its bonuses count as a worn item's. `DualWield` is
+fork ability 1017. The two hands take turns only in auto-combat against monsters; a Dervish
+fighting a player uses its main hand alone for now.
 
 - [Summary](#summary)
 - [Where it sits](#where-it-sits)
@@ -153,7 +158,7 @@ stock room lines.
 | Piece | Where |
 |---|---|
 | The class, its titles and HELP | content (`content/classes.toml`, `content/help.toml`), like the War Mage and the Warden |
-| Fork ability `DualWield` (1013) | `silvermere-types` `fork` |
+| Fork ability `DualWield` (1017) | `silvermere-types` `fork` |
 | OFFHAND | a new command (an input hook, like `PET`), reusing WIELD's checks and the equip path into `worn[OffHand]` |
 | Moving the off-hand weapon over when the main one comes off | one hook wherever `weapon` is cleared (remove, drop, theft, breakage), in `items/equip.rs` |
 | Refusing two-handed and ranged off-hand weapons | `items/can_use.rs`, next to the War Mage's `NoOffHand` |
