@@ -230,7 +230,7 @@ fn the_dervish_record_matches_the_design() {
     let d = c.classes.iter().find(|c| c.name == "Dervish").unwrap();
     assert_eq!(d.number, ClassNo(20));
     assert_eq!((d.basehp, d.hplevel), (5, 4), "5-9 HP per level");
-    assert_eq!(d.exp, 30, "130% experience, the Witchunter's");
+    assert_eq!(d.exp, 100, "200% experience");
     assert_eq!((d.magery, d.magelvl), (Magery::None, 0));
     assert_eq!(d.combat, 7, "fighting 5");
     assert_eq!(d.weapon, WeaponClass::AnyOneHand);
