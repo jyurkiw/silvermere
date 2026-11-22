@@ -190,3 +190,23 @@ fn an_emptied_main_hand_takes_the_off_hand_weapon() {
     assert_eq!(p.weapon, DAGGER);
     assert!(!p.worn.contains(&DAGGER));
 }
+
+#[test]
+fn others_see_the_off_hand_weapon_worn_off_hand() {
+    let mut w = dervish_world();
+    let id = fighter(&mut w, DERVISH);
+    say(&mut w, id, "offhand dagger");
+    let bob = crate::common::enter(
+        &mut w,
+        "Bob",
+        crate::spellstrike::ROOM,
+        silvermere_types::enums::MessageLevel::Low,
+    );
+    plr(&mut w, bob).settings = silvermere_types::flags::PlayerSettings::VALIDATED;
+    let out = say(&mut w, bob, "look gorin");
+    let line = out.iter().find(|l| l.contains("dagger")).cloned();
+    assert!(
+        line.as_deref().is_some_and(|l| l.contains("(Off-Hand)") && !l.contains("Nowhere")),
+        "{out:?}"
+    );
+}

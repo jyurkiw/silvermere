@@ -42,6 +42,18 @@ pub fn offhand_weapon(world: &World, plr: &Character) -> Option<(usize, ItemNo)>
         .map(|(i, &w)| (i, w))
 }
 
+/// Where a worn item is shown worn: its location's name, and for a weapon (which can only be
+/// worn as an off-hand weapon, its own place being "Nowhere") the shield's place, "Off-Hand".
+pub fn worn_place(itm: &silvermere_types::records::Item) -> &'static str {
+    if itm.item_type == ItemType::Weapon {
+        silvermere_types::enums::WornLocation::OffHand
+            .name()
+            .unwrap_or("Off-Hand")
+    } else {
+        itm.worn.name().unwrap_or_default()
+    }
+}
+
 /// Which hand strikes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Hand {
