@@ -124,3 +124,43 @@ ranks = [
   { from = 65, title = "Avatar of Vengeance" },
   { from = 70, title = "Avenger" },
 ]
+
+# The Assassin (design/stealth-casters.md): a fighter-leaning stealth mage whose craft is
+# the opening spell.
+[[class]]
+number   = 19
+name     = "Assassin"
+hp       = "4-8"
+exp      = 160            # percent; no VANISH, so 40 below the Avenger
+magic    = "Mage-1"
+fighting = 3
+weapons  = "AnySharp"
+armour   = "StuddedRigidLeather"
+abilities = [
+  { name = "ClassStealth" },
+  { name = "BackstabMin",          value = 5 },
+  { name = "BackstabMax",          value = 5 },
+  { name = "SpellBackstab",        value = 100 }, # damage raise, percent
+  { name = "SpellBackstabStealth", value = 20 },  # stealth roll penalty; hidden
+]
+
+[class.titles]
+block = 3022
+ranks = [
+  { from = 1 , title = "Initiate" },
+  { from = 2 , title = "Footpad" },
+  { from = 5 , title = "Cutthroat" },
+  { from = 10, title = "Knifehand" },
+  { from = 15, title = "Hexknife" },
+  { from = 20, title = "Nightblade" },
+  { from = 25, title = "Silent Hand" },
+  { from = 30, title = "Shade" },
+  { from = 35, title = "Shadowcaster" },
+  { from = 40, title = "Deathwhisper" },
+  { from = 45, title = "Executioner" },
+  { from = 50, title = "Black Hand" },
+  { from = 55, title = "Master of Knives" },
+  { from = 60, title = "Spellslayer" },
+  { from = 65, title = "Master of Shadows" },
+  { from = 70, title = "Assassin" },
+]

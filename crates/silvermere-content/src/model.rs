@@ -200,12 +200,15 @@ pub struct RoomSpec {
     pub max_monsters: Option<u8>,
 }
 
-/// New exits on a room already in the world.
+/// Changes to a room already in the world: new exits, and the shop it is.
 #[derive(Debug, Clone, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct RoomChange {
     pub room: String,
+    #[serde(default)]
     pub exits: std::collections::BTreeMap<String, u32>,
+    /// The shop the room becomes (a fork shop that replaces a stock one).
+    pub shop: Option<i32>,
 }
 
 /// A new known monster (an NPC).
@@ -246,6 +249,14 @@ pub struct ItemSpec {
     pub cost: u16,
     #[serde(default)]
     pub abilities: Vec<AbilityEntry>,
+    /// A weapon's type, `OneHandSharp`, ... (the copied item's when left out).
+    pub weapon_type: Option<String>,
+    /// Damage and speed (the copied item's when left out).
+    pub mindmg: Option<i16>,
+    pub maxdmg: Option<i16>,
+    pub speed: Option<i16>,
+    /// The item whose hit and miss verbs it uses (the copied item's when left out).
+    pub verbs_like: Option<i32>,
 }
 
 /// Abilities added to an item already in the world (marking stock ranged weapons).

@@ -40,7 +40,7 @@ Both are stealth classes, so neither ever gets Spellstrike
 | Gypsy | Mage-2 | 2 | leather | 1-H | 4-7 | 220% |
 | Missionary | Priest-2 | 2 | leather | 1-H | 4-7 | 220% |
 | **Avenger** | **Priest-1** | **3** | **leather** | **blunt** | **4-8** | **200%** |
-| **Assassin** | **Mage-1** | **3** | **leather** | **sharp** | **4-8** | **200%** |
+| **Assassin** | **Mage-1** | **3** | **leather** | **sharp** | **4-8** | **160%** |
 
 ## The Avenger
 
@@ -87,7 +87,7 @@ alignment (13), godstrike (20).
 |---|---|---|
 | class number | 19 | |
 | HP per level | 4-8 | |
-| experience | 200% | |
+| experience | 160% | 40 below the Avenger, which also has VANISH |
 | magic | Mage-1 | |
 | fighting | 3 | `combat` 5 |
 | weapons | any sharp | `AnySharp` |
@@ -111,8 +111,13 @@ one that matters, and it is as likely to be a bolt of force as a blade.
 | 10-14 | Knifehand | 50-54 | Black Hand |
 | 15-19 | Hexknife | 55-59 | Master of Knives |
 | 20-24 | Nightblade | 60-64 | Spellslayer |
-| 25-29 | Silent Hand | 65-69 | Grandmaster of Shadows |
+| 25-29 | Silent Hand | 65-69 | Master of Shadows |
 | 30-34 | Shade | 70+ | Assassin |
+
+**Its first weapon.** Newhaven's weapon shop sells only the club and the quarterstaff, both
+blunt, so the fork replaces it with a copy (shop 901, at 1/2141) that also sells a free
+**secondhand dagger** (item 9004): the club sharpened, 3-7 and speed 900 (the club is 3-8,
+speed 1000), with the dagger's verbs.
 
 **Its spells,** the stock Mage-1 line: magic missile (1), frost jet (4), lightning bolt (8),
 sunbolt (13), eldritch bolt (20).
@@ -205,7 +210,8 @@ exactly BACKSTAB.
 
 ## Decisions
 
-1. Two fighter-leaning stealth casters: fighting 3, magic level 1, leather, 4-8 HP, 200%.
+1. Two fighter-leaning stealth casters: fighting 3, magic level 1, leather, 4-8 HP. The
+   Avenger costs 200% experience; the Assassin, without VANISH, 160%.
 2. The Avenger is Priest-1 with blunt weapons; the Assassin is Mage-1 with sharp weapons.
 3. Both have spell backstab: a stealth roll and a cast roll, independent, one attempt.
    Stealth kept and cast landed: backstab damage; stealth lost: a normal cast.

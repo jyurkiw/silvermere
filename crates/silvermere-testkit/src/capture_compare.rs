@@ -20,6 +20,8 @@ use crate::patterns::{Event, PatternSet, Rx};
 /// - The Village Entrance (1/2140) has an east exit to the fork's Newhaven stable
 ///   (design/warden.md): its exits line `north, south, east, west, southeast` is compared
 ///   without the `east`.
+/// - The Newhaven weapon shop (1/2141) sells the fork's secondhand dagger
+///   (design/stealth-casters.md): its `list` row is compared without that line.
 pub fn without_fork_differences(actual: &[u8]) -> Vec<u8> {
     static ENTRANCE: std::sync::OnceLock<regex::bytes::Regex> = std::sync::OnceLock::new();
     let re = ENTRANCE.get_or_init(|| {
@@ -28,7 +30,13 @@ pub fn without_fork_differences(actual: &[u8]) -> Vec<u8> {
         )
         .expect("a valid pattern")
     });
-    re.replace_all(actual, &b"$1$2"[..]).into_owned()
+    let out = re.replace_all(actual, &b"$1$2"[..]);
+    static DAGGER: std::sync::OnceLock<regex::bytes::Regex> = std::sync::OnceLock::new();
+    let row = DAGGER.get_or_init(|| {
+        regex::bytes::Regex::new(r"(?m-u)^[^\r\n]*secondhand dagger[^\r\n]*\r\n")
+            .expect("a valid pattern")
+    });
+    row.replace_all(&out, &b""[..]).into_owned()
 }
 
 /// What the capture's step `index` made the server send: its raw bytes, from the step's

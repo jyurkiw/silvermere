@@ -95,12 +95,17 @@ async fn spell_shop_list_matches_the_original() {
 /// appraisal and the sale name the same price, a second `sell club` finds
 /// none; the saved record holds the two quarterstaffs and no club, and after a restart the
 /// login shows the same `i`.
+/// The shop the Newhaven weapon shop (1/2141) sells from: the fork's copy of stock's 45.
+const WEAPON_SHOP: i32 = 901;
+
 #[tokio::test]
 async fn buy_twice_sell_once_appraise_once_and_persist() {
     let (_dir, url) = team_db();
     place(&url, "Aldric", 2141).await;
-    let before = stored_stock_total(&url, 45).await;
     let r = start(&url).await;
+    // Fork: the room sells from the fork's copy of the weapon shop (design/stealth-casters.md),
+    // which the server installs as it starts
+    let before = stored_stock_total(&url, WEAPON_SHOP).await;
     let mut p = Player::enter(&r, "Aldric").await;
     let mut seen = Vec::new();
     for _ in 0..2 {
@@ -144,7 +149,7 @@ async fn buy_twice_sell_once_appraise_once_and_persist() {
     assert_eq!(copies(&rec, 100), 2, "two quarterstaffs saved");
     assert_eq!(copies(&rec, 90), 0, "the club is sold");
     // the shelves: two quarterstaffs gone, the club bought and put back
-    assert_eq!(stored_stock_total(&url, 45).await, before - 2);
+    assert_eq!(stored_stock_total(&url, WEAPON_SHOP).await, before - 2);
     // restart: the same inventory screen
     let r = start(&url).await;
     let mut p = Player::enter(&r, "Aldric").await;
