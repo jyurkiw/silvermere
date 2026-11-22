@@ -1,6 +1,31 @@
 # Class trainers, the tomb quests and class weapons
 
-Status: **draft, in design.** Nothing here is implemented. Fork-only.
+Status: **implemented** (`feature/class-trainers`). Fork-only.
+
+**As built,** where it differs from the plan below:
+
+- **The Temple's catch and lever** use stock's own ordered puzzle, not a fork ability: the
+  foyer's north exit is a hidden exit with two blocks that must go in order, and `push
+  catch` and `pull lever` are two remote-action exits (in the foyer's free southeast and
+  southwest slots) that each take one block. The lever alone does nothing. Once both are
+  gone, the door shows for anyone for a while, as stock's push-button passage does.
+- **The class weapons are class-only through the item's class list.** Stock's "Class
+  Item" ability *lets* a class use an item it otherwise couldn't; it doesn't restrict it.
+- **The tombs and wing passages are dark,** as stock's are (light −175): a character needs a
+  light there, as in the stock Crypt.
+- **A refused class exit** says stock's "You may not go through this exit!".
+- **The answers that depend on class** (the preacher, the Dark Robed Figure, the spirits)
+  come after the NPC's lead-in line, as stock quest texts do. A script's fallback line
+  needs a `:` (stock reads no line without one), so it starts with an always-true
+  `maxlevel 9999`.
+- **Fork abilities:** `OffhandOnly` 1018, `CompanionAccuracy` 1019, `CompanionDamage` 1020,
+  `ClassWeaponGiven` 1021 (hidden). No catch ability was needed.
+- **The content overlay** gained: typed exits (any stock type, with its four parameters),
+  room changes that set a stock room's NPC and script, training-shop fields, monsters'
+  carried items, items' accuracy, strength and class list, messages (from 20000), and text
+  blocks longer than one record (stored in parts). A new room now holds **no random
+  monsters unless the content says so**: it has no monster group of its own, and a copied
+  limit with no group stalled the server as a player walked in.
 
 - [Summary](#summary)
 - [How stock does it](#how-stock-does-it)

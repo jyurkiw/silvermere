@@ -22,6 +22,7 @@ fn kind(number: u16, name: &str, energy_per_blow: u16, poison: i16) -> PetKind {
         max_per_level: 200,
         accuracy: 50,
         poison,
+        magic: 0,
     }
 }
 
@@ -239,4 +240,69 @@ fn a_companion_kill_gives_experience_and_ends_the_fight() {
     assert!(after > before, "experience gained: {before:?} -> {after:?}");
     assert!(out.iter().any(|l| l.contains("experience")), "{out:?}");
     assert!(!w.autocombat.queued(id), "the fight is over");
+}
+
+// Fork (design/class-trainers.md): a companion's Magic gates what it can hurt, as a weapon's.
+#[test]
+fn a_companion_without_magic_cannot_hurt_a_monster_that_needs_it() {
+    let (mut w, id, m) = fight(1);
+    let known = w.active_monsters.values().find(|x| x.number == m).unwrap().knownnum;
+    w.monsters.get_mut(&known).unwrap().abilities[0] = (silvermere_types::enums::Ability::Magical, 1);
+    let out = round(&mut w, id);
+    assert!(
+        out.iter().any(|l| l == "Your hunting hound can't hurt practice dummy!"),
+        "{out:?}"
+    );
+    assert_eq!(pet_lines(&out, "hunting hound"), 1, "only the refusal: {out:?}");
+    // with Magic 1 it can
+    w.pet_kinds.get_mut(&1).unwrap().magic = 1;
+    let out = round(&mut w, id);
+    assert!(
+        out.iter().any(|l| l.contains("bites practice dummy") || l.contains("snaps at practice dummy")),
+        "{out:?}"
+    );
+}
+
+// Fork: the owner's weapon may strengthen its companion (the Warden's arbalest).
+#[test]
+fn the_owners_weapon_strengthens_the_companion() {
+    let (mut w, id, _) = fight(1);
+    let weapon = plr(&mut w, id).weapon;
+    let item = w.items.get_mut(&weapon).unwrap();
+    item.abilities[0] = (fork::COMPANION_DAMAGE, 200);
+    item.abilities[1] = (fork::COMPANION_ACCURACY, 100);
+    let mut most = 0;
+    for _ in 0..30 {
+        for l in round(&mut w, id) {
+            if let Some(rest) = l.strip_prefix("Your hunting hound bites practice dummy for ") {
+                let n: i32 = rest.split(' ').next().unwrap().parse().unwrap();
+                most = most.max(n);
+            }
+        }
+    }
+    // 2-8 at level 10 (2-28), tripled
+    assert!(most > 28, "the hound hits harder: at most {most}");
+}
+
+// Fork: a script giving a new companion kind (a leash used) leaves it unnamed.
+#[test]
+fn a_new_companion_kind_is_unnamed() {
+    use silvermere_engine::scripts::perform_matched_action;
+    let (mut w, id, _) = fight(1);
+    w.session_mut(id).unwrap().account = Some(silvermere_engine::player_session::AccountRef {
+        id: silvermere_types::ids::AccountId(7),
+        username: "gorin".into(),
+        sysop: false,
+        gameop: false,
+        sex: b'M',
+    });
+    w.pet_names.insert(id, "Fang".into());
+    plr(&mut w, id).abils[0] = (silvermere_types::enums::Ability::None, 0);
+    perform_matched_action(&mut w, id, "giveability 1005 3");
+    assert!(w.pet_names.is_empty(), "the old name goes");
+    let saved = w.queued_outputs().iter().any(|o| {
+        matches!(o, silvermere_engine::EngineOutput::Persist(
+            silvermere_engine::PersistRequest::Pet(p)) if p.kind == 3 && p.name.is_empty())
+    });
+    assert!(saved, "saved unnamed");
 }

@@ -41,3 +41,60 @@ energy_per_blow = 2000
 damage = "3-16"
 per_level = [100, 400]
 accuracy = -5
+
+# The second tier (design/class-trainers.md), sold at the Silvermere stables: each a few
+# points better than its tier-1 cousin, priced at hundreds of gold. `magic` is the blows'
+# Magical level, as a weapon's.
+
+[[pet_kind]]
+number = 5
+name = "war hound"
+hit_verb = "savages"
+miss_verb = "lunges at"
+energy_per_blow = 1000
+damage = "3-9"
+per_level = [55, 210]
+accuracy = 5
+
+[[pet_kind]]
+number = 6
+name = "gyrfalcon"
+hit_verb = "rakes"
+miss_verb = "stoops at"
+energy_per_blow = 333
+damage = "1-5"
+per_level = [16, 65]
+accuracy = 8
+magic = 1
+
+[[pet_kind]]
+number = 7
+name = "desert viper"
+hit_verb = "bites"
+miss_verb = "strikes at"
+energy_per_blow = 1000
+damage = "1-5"
+per_level = [30, 105]
+accuracy = 2
+poison = 8
+
+[[pet_kind]]
+number = 8
+name = "cave bear"
+hit_verb = "mauls"
+miss_verb = "swipes at"
+energy_per_blow = 2000
+damage = "4-17"
+per_level = [105, 420]
+accuracy = -3
+
+[[pet_kind]]
+number = 9
+name = "shadow mastiff"
+hit_verb = "tears into"
+miss_verb = "snaps at"
+energy_per_blow = 1000
+damage = "3-10"
+per_level = [58, 220]
+accuracy = 8
+magic = 1

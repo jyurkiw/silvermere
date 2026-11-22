@@ -3267,6 +3267,11 @@ offhand_ok
   palette 1: \x1b[79D\x1b[KYou are now holding shortsword in your off-hand.\r\n
   palette 2: \x1b[79D\x1b[KYou are now holding shortsword in your off-hand.\r\n
   palette 3: \x1b[79D\x1b[KYou are now holding shortsword in your off-hand.\r\n
+offhand_only_wield
+  palette 0: \x1b[79D\x1b[K\x1b[1;31mblood-jeweled kris is balanced for the off-hand.\r\n
+  palette 1: \x1b[79D\x1b[K\x1b[1;31mblood-jeweled kris is balanced for the off-hand.\r\n
+  palette 2: \x1b[79D\x1b[K\x1b[1;31mblood-jeweled kris is balanced for the off-hand.\r\n
+  palette 3: \x1b[79D\x1b[K\x1b[1;31mblood-jeweled kris is balanced for the off-hand.\r\n
 offhand_other_wields
   palette 0: \x1b[79D\x1b[K\x1b[0;33mBob wields shortsword in his off-hand!\r\n
   palette 1: \x1b[79D\x1b[K\x1b[0;33mBob wields shortsword in his off-hand!\r\n

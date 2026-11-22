@@ -504,6 +504,11 @@ pub fn ready_weapon(
             tell_user(world, id, Msg::NotAWeapon { item: itm.name });
             break 'done;
         }
+        // Fork: an off-hand-only weapon is held only with OFFHAND (design/class-trainers.md)
+        if item_has_ability(&itm, silvermere_types::fork::OFFHAND_ONLY) {
+            tell_user(world, id, Msg::OffhandOnlyWield { item: itm.name });
+            break 'done;
+        }
         let Some(plr) = world.sessions.get(&id).and_then(|s| s.player()) else {
             return false;
         };

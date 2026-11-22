@@ -4594,6 +4594,11 @@ note = "Fork (design/dervish.md): OFFHAND naming the main-hand weapon, with no s
 text = "{@ANSI_LTREDBLK}Syntax: OFFHAND {{weapon}}\r"
 note = "Fork (design/dervish.md): OFFHAND alone."
 
+[messages.offhand_only_wield]
+text = "{@ANSI_CLRLINE}{@ANSI_LTRED}{item} is balanced for the off-hand.\r"
+example = { item = "blood-jeweled kris" }
+note = "Fork (design/class-trainers.md): WIELD of an off-hand-only weapon."
+
 [messages.cast_resisted]
 text = "{@ANSI_CLRLINE}{@ANSI_CYAN}You attempt to cast {spell} at {target}, but the spell is resisted.\r"
 pattern = "cast_resisted"

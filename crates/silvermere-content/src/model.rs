@@ -144,6 +144,9 @@ pub struct PetKindEntry {
     /// Damage as `"2-8"` at level 0, and what each level adds to each end, in hundredths.
     pub damage: String,
     pub per_level: [i16; 2],
+    /// Its blows' Magical level, as a weapon's.
+    #[serde(default)]
+    pub magic: i16,
     /// Added to the owner's attack value.
     #[serde(default)]
     pub accuracy: i16,
@@ -172,6 +175,69 @@ pub struct WorldFile {
     pub item_change: Vec<ItemChange>,
     #[serde(default)]
     pub text: Vec<TextSpec>,
+    #[serde(default)]
+    pub message: Vec<MessageSpec>,
+}
+
+/// An exit: a room on the same map (a plain exit), or a stock exit of any type with its
+/// four parameters as the stock records hold them (`{ to = 9101, kind = "Class", par = [16,
+/// 0, 1, 0] }`).
+#[derive(Debug, Clone, Deserialize)]
+#[serde(untagged)]
+pub enum ExitSpec {
+    To(u32),
+    Typed(TypedExit),
+}
+
+/// An exit with its type and parameters.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct TypedExit {
+    pub to: u32,
+    /// The exit type by name: `Key`, `Hidden`, `Text`, `RemoteAction`, `Class`, ...
+    pub kind: String,
+    #[serde(default)]
+    pub par: [i64; 4],
+}
+
+impl ExitSpec {
+    /// The room it leads to.
+    pub fn to(&self) -> u32 {
+        match self {
+            ExitSpec::To(n) => *n,
+            ExitSpec::Typed(t) => t.to,
+        }
+    }
+}
+
+/// A message (WCCMSG): what the actor sees, what the target or room sees, and a third text
+/// (an exit's phrases are its three texts).
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct MessageSpec {
+    pub number: i32,
+    pub texts: [String; 3],
+}
+
+/// An item a new monster carries.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct CarriedItem {
+    pub item: i32,
+    /// Percent chance it carries it.
+    #[serde(default = "always")]
+    pub pct: u8,
+    /// Its uses, -1 for none.
+    #[serde(default = "no_uses")]
+    pub uses: i16,
+}
+
+fn always() -> u8 {
+    100
+}
+
+fn no_uses() -> i16 {
+    -1
 }
 
 /// A new room.
@@ -187,7 +253,7 @@ pub struct RoomSpec {
     pub desc: Vec<String>,
     /// Exits by direction (`north`, `east`, `ne`, `up`, ...) to rooms on the same map.
     #[serde(default)]
-    pub exits: std::collections::BTreeMap<String, u32>,
+    pub exits: std::collections::BTreeMap<String, ExitSpec>,
     /// `Normal`, `Shop`, ... (the copied room's when left out).
     pub kind: Option<String>,
     /// The shop the room is (0 none).
@@ -196,7 +262,7 @@ pub struct RoomSpec {
     pub specmon: Option<i32>,
     /// The text block of the room's commands (its script).
     pub script: Option<i32>,
-    /// Random monsters the room may hold (the copied room's when left out; 0 for a safe room).
+    /// Random monsters the room may hold; none when left out (a new room has no monster group).
     pub max_monsters: Option<u8>,
 }
 
@@ -206,9 +272,12 @@ pub struct RoomSpec {
 pub struct RoomChange {
     pub room: String,
     #[serde(default)]
-    pub exits: std::collections::BTreeMap<String, u32>,
+    pub exits: std::collections::BTreeMap<String, ExitSpec>,
     /// The shop the room becomes (a fork shop that replaces a stock one).
     pub shop: Option<i32>,
+    /// The monster always in the room (an NPC), and the text block of its commands.
+    pub specmon: Option<i32>,
+    pub script: Option<i32>,
 }
 
 /// A new known monster (an NPC).
@@ -222,6 +291,8 @@ pub struct MonsterSpec {
     pub desc: Vec<String>,
     /// Its talk block (`KEYWORDS:block` lines, linking to its greeting).
     pub talk: Option<i32>,
+    /// What it carries (a key it drops); the copied monster's when left out.
+    pub items: Option<Vec<CarriedItem>>,
 }
 
 /// A new shop.
@@ -232,7 +303,12 @@ pub struct ShopSpec {
     pub like: i32,
     pub name: String,
     /// What it sells: item numbers, each kept in stock.
+    #[serde(default)]
     pub items: Vec<i32>,
+    /// A training shop's class (0 any) and levels (the copied shop's when left out).
+    pub trainclass: Option<u16>,
+    pub minlevel: Option<u16>,
+    pub maxlevel: Option<u16>,
 }
 
 /// A new item.
@@ -255,6 +331,11 @@ pub struct ItemSpec {
     pub mindmg: Option<i16>,
     pub maxdmg: Option<i16>,
     pub speed: Option<i16>,
+    /// The only classes that may use it, by number (the copied item's when left out).
+    pub classes: Option<Vec<u16>>,
+    /// Accuracy and strength needed (the copied item's when left out).
+    pub accuracy: Option<i16>,
+    pub strreq: Option<i16>,
     /// The item whose hit and miss verbs it uses (the copied item's when left out).
     pub verbs_like: Option<i32>,
 }
