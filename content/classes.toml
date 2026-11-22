@@ -164,3 +164,38 @@ ranks = [
   { from = 65, title = "Master of Shadows" },
   { from = 70, title = "Assassin" },
 ]
+
+# The Dervish (design/dervish.md): a fighter with a one-handed weapon in each hand.
+[[class]]
+number   = 20
+name     = "Dervish"
+hp       = "5-9"
+exp      = 200            # percent
+magic    = "None"
+fighting = 5
+weapons  = "AnyOneHand"
+armour   = "StuddedRigidLeather"
+abilities = [
+  { name = "DualWield", value = 10 },  # the off-hand's accuracy penalty
+]
+
+[class.titles]
+block = 3023
+ranks = [
+  { from = 1 , title = "Novice" },
+  { from = 2 , title = "Dancer" },
+  { from = 5 , title = "Spinner" },
+  { from = 10, title = "Twinblade" },
+  { from = 15, title = "Blade Dancer" },
+  { from = 20, title = "Whirler" },
+  { from = 25, title = "Dervish Adept" },
+  { from = 30, title = "Steel Dancer" },
+  { from = 35, title = "Bladewind" },
+  { from = 40, title = "Storm Dancer" },
+  { from = 45, title = "Whirlwind" },
+  { from = 50, title = "Sandstorm" },
+  { from = 55, title = "Sword Saint" },
+  { from = 60, title = "Dance Master" },
+  { from = 65, title = "Master of the Lodge" },
+  { from = 70, title = "Dervish" },
+]

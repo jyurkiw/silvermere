@@ -1,6 +1,11 @@
 # The Dervish: two blades
 
-Status: **draft, in design.** Nothing here is implemented. Fork-only.
+Status: **implemented** (`feature/dervish`). Fork-only.
+
+As built: the off-hand weapon sits in a worn slot (any worn slot, since a weapon's own
+`worn` place is "nowhere"), which is how its bonuses count as a worn item's. `DualWield` is
+fork ability 1017. The two hands take turns only in auto-combat against monsters; a Dervish
+fighting a player uses its main hand alone for now.
 
 - [Summary](#summary)
 - [Where it sits](#where-it-sits)
@@ -31,7 +36,7 @@ anyone else. It always swings at least twice a round, once with each hand.
 | Warrior | 4 | plate | any | yes | 6-10 | 100% |
 | Witchunter | 5 | chainmail | any | yes | | |
 | Ninja | 3 | ninja | any | yes | 4-8 | 185% |
-| **Dervish** | **5** | **leather** | **1-H melee, two at once** | **no** | **5-9** | **130%** |
+| **Dervish** | **5** | **leather** | **1-H melee, two at once** | **no** | **5-9** | **200%** |
 
 ## The class
 
@@ -39,7 +44,7 @@ anyone else. It always swings at least twice a round, once with each hand.
 |---|---|---|
 | class number | 20 | after the Assassin (19) |
 | HP per level | 5-9 | lighter armour than a Warrior, so a little less |
-| experience | 130% | on par with the Witchunter, which has heavier armour and two-handed weapons |
+| experience | 200% | raised from 130% after play-testing: the extra blows earn it |
 | magic | none | |
 | fighting | 5 | `combat` 7 |
 | weapons | `AnyOneHand` | stock already bars a one-handed class from off-hand (shield) items |
@@ -136,8 +141,8 @@ blow at level 1, which would otherwise be one blow every other round.
 
 A Dervish lands twice the Witchunter's blows until the cap, and 8 to its 5 once both are
 at the floor, less the off-hand penalty, with lighter armour and no shield. Its experience
-is 130%, on par with the Witchunter, whose heavier armour, shield and two-handed weapons
-weigh against the Dervish's extra blows. The balance sim in [testing.md](testing.md) should
+was first set at 130%, on par with the Witchunter, and raised to 200% after play-testing:
+the extra blows are worth more than the Witchunter's heavier armour and shield. The balance sim in [testing.md](testing.md) should
 check the penalty and the experience.
 
 ## Messages
@@ -153,7 +158,7 @@ stock room lines.
 | Piece | Where |
 |---|---|
 | The class, its titles and HELP | content (`content/classes.toml`, `content/help.toml`), like the War Mage and the Warden |
-| Fork ability `DualWield` (1013) | `silvermere-types` `fork` |
+| Fork ability `DualWield` (1017) | `silvermere-types` `fork` |
 | OFFHAND | a new command (an input hook, like `PET`), reusing WIELD's checks and the equip path into `worn[OffHand]` |
 | Moving the off-hand weapon over when the main one comes off | one hook wherever `weapon` is cleared (remove, drop, theft, breakage), in `items/equip.rs` |
 | Refusing two-handed and ranged off-hand weapons | `items/can_use.rs`, next to the War Mage's `NoOffHand` |
@@ -179,12 +184,12 @@ experience paths, so kills, experience and death lines stay stock.
    weapon's. Its on-hit abilities apply to its own blows.
 8. OFFHAND needs a main weapon wielded. When the main weapon comes off, the off-hand weapon
    moves into the main hand.
-9. 5-9 HP a level and 130% experience, on par with the Witchunter.
+9. 5-9 HP a level and 200% experience (first 130%, raised after play-testing).
 10. All races may be Dervishes.
 
 ## Open questions
 
-1. ~~HP and experience.~~ **Decided:** 5-9 HP a level, 130% experience.
+1. ~~HP and experience.~~ **Decided:** 5-9 HP a level, 200% experience (first 130%).
 2. ~~The off-hand penalty.~~ **Decided:** −10 accuracy, full damage, the same at every
    level. It's the `DualWield` ability's value, so the balance sim can tune it.
 3. ~~The blow limit.~~ **Decided:** 8 a round for both hands together, and never more than

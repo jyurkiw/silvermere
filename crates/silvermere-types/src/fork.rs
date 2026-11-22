@@ -50,6 +50,10 @@ pub const VANISH: Ability = Ability::Unknown(1015);
 /// On a class: BACKSTAB works with any blunt weapon, as if it had "Alter Backstab Attack
 /// Value".
 pub const BLUNT_BACKSTAB: Ability = Ability::Unknown(1016);
+/// On a class: OFFHAND, a second one-handed weapon held in the off-hand that strikes on its
+/// own each round (design/dervish.md). The value is the off-hand's accuracy penalty. The
+/// class may use no item marked [`RANGED`].
+pub const DUAL_WIELD: Ability = Ability::Unknown(1017);
 
 /// The fork's abilities by the name content uses, and whether players are shown them.
 pub const FORK_ABILITIES: &[(&str, Ability, bool)] = &[
@@ -69,6 +73,7 @@ pub const FORK_ABILITIES: &[(&str, Ability, bool)] = &[
     ("SpellBackstabStealth", SPELL_BACKSTAB_STEALTH, true),
     ("Vanish", VANISH, false),
     ("BluntBackstab", BLUNT_BACKSTAB, false),
+    ("DualWield", DUAL_WIELD, false),
 ];
 
 /// A fork ability by its content name.

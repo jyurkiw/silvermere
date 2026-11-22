@@ -47,11 +47,9 @@ pub fn carried_words(world: &World, plr: &Character) -> Option<String> {
     };
     for &w in plr.worn.iter().filter(|w| w.0 != 0) {
         if let Some(itm) = world.items.get(&w) {
-            words.push(format!(
-                "{} ({})",
-                itm.name,
-                itm.worn.name().unwrap_or_default()
-            ));
+            // Fork: a weapon worn is a Dervish's off-hand weapon (design/dervish.md)
+            let place = crate::combat::dual::worn_place(itm);
+            words.push(format!("{} ({place})", itm.name));
             take(&mut tally, w);
         }
     }

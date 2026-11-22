@@ -197,6 +197,7 @@ pub fn forget(world: &mut World, id: SessionId) {
     world.ambush.remove(&id);
     world.vanish_wait.remove(&id);
     world.vanish_skip.remove(&id);
+    world.offhand_energy.remove(&id);
 }
 
 /// The entry takes the target, the move `mv` (the attack in progress) and the spell, and

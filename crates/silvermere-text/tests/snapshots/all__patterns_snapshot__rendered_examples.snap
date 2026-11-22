@@ -3242,6 +3242,46 @@ offhand_2h_ready
   palette 1: \x1b[79D\x1b[K\x1b[1;31mYou may not ready a 2-handed weapon with your buckler worn!\r\n
   palette 2: \x1b[79D\x1b[K\x1b[1;31mYou may not ready a 2-handed weapon with your buckler worn!\r\n
   palette 3: \x1b[79D\x1b[K\x1b[1;31mYou may not ready a 2-handed weapon with your buckler worn!\r\n
+offhand_full
+  palette 0: \x1b[79D\x1b[KYou already hold a weapon in your off-hand.\r\n
+  palette 1: \x1b[79D\x1b[KYou already hold a weapon in your off-hand.\r\n
+  palette 2: \x1b[79D\x1b[KYou already hold a weapon in your off-hand.\r\n
+  palette 3: \x1b[79D\x1b[KYou already hold a weapon in your off-hand.\r\n
+offhand_in_main
+  palette 0: \x1b[79D\x1b[KYou have no other shortsword to hold.\r\n
+  palette 1: \x1b[79D\x1b[KYou have no other shortsword to hold.\r\n
+  palette 2: \x1b[79D\x1b[KYou have no other shortsword to hold.\r\n
+  palette 3: \x1b[79D\x1b[KYou have no other shortsword to hold.\r\n
+offhand_need_main
+  palette 0: \x1b[79D\x1b[KYou must wield a weapon in your main hand first.\r\n
+  palette 1: \x1b[79D\x1b[KYou must wield a weapon in your main hand first.\r\n
+  palette 2: \x1b[79D\x1b[KYou must wield a weapon in your main hand first.\r\n
+  palette 3: \x1b[79D\x1b[KYou must wield a weapon in your main hand first.\r\n
+offhand_not_that
+  palette 0: \x1b[79D\x1b[K\x1b[1;31mYou can only hold a one-handed melee weapon in your off-hand.\r\n
+  palette 1: \x1b[79D\x1b[K\x1b[1;31mYou can only hold a one-handed melee weapon in your off-hand.\r\n
+  palette 2: \x1b[79D\x1b[K\x1b[1;31mYou can only hold a one-handed melee weapon in your off-hand.\r\n
+  palette 3: \x1b[79D\x1b[K\x1b[1;31mYou can only hold a one-handed melee weapon in your off-hand.\r\n
+offhand_ok
+  palette 0: \x1b[79D\x1b[KYou are now holding shortsword in your off-hand.\r\n
+  palette 1: \x1b[79D\x1b[KYou are now holding shortsword in your off-hand.\r\n
+  palette 2: \x1b[79D\x1b[KYou are now holding shortsword in your off-hand.\r\n
+  palette 3: \x1b[79D\x1b[KYou are now holding shortsword in your off-hand.\r\n
+offhand_other_wields
+  palette 0: \x1b[79D\x1b[K\x1b[0;33mBob wields shortsword in his off-hand!\r\n
+  palette 1: \x1b[79D\x1b[K\x1b[0;33mBob wields shortsword in his off-hand!\r\n
+  palette 2: \x1b[79D\x1b[K\x1b[0;33mBob wields shortsword in his off-hand!\r\n
+  palette 3: \x1b[79D\x1b[K\x1b[0;33mBob wields shortsword in his off-hand!\r\n
+offhand_shifted
+  palette 0: \x1b[79D\x1b[KYou shift shortsword to your main hand.\r\n
+  palette 1: \x1b[79D\x1b[KYou shift shortsword to your main hand.\r\n
+  palette 2: \x1b[79D\x1b[KYou shift shortsword to your main hand.\r\n
+  palette 3: \x1b[79D\x1b[KYou shift shortsword to your main hand.\r\n
+offhand_syntax
+  palette 0: \x1b[1;31;40mSyntax: OFFHAND {weapon}\r\n
+  palette 1: \x1b[1;31;40mSyntax: OFFHAND {weapon}\r\n
+  palette 2: \x1b[1;31;40mSyntax: OFFHAND {weapon}\r\n
+  palette 3: \x1b[1;31;40mSyntax: OFFHAND {weapon}\r\n
 offhand_with_2h
   palette 0: \x1b[79D\x1b[K\x1b[1;31mYou may not wear an off-hand item while you have a 2-handed weapon readied.\r\n
   palette 1: \x1b[79D\x1b[K\x1b[1;31mYou may not wear an off-hand item while you have a 2-handed weapon readied.\r\n

@@ -4558,6 +4558,42 @@ note = "Fork (design/stealth-casters.md): VANISH again before its rounds have pa
 text = "{@ANSI_CLRLINE}{@ANSI_GREEN}You can only vanish in the middle of a fight; try HIDE.\r"
 note = "Fork (design/stealth-casters.md): VANISH out of combat."
 
+[messages.offhand_ok]
+text = "{@ANSI_CLRLINE}You are now holding {item} in your off-hand.\r"
+example = { item = "shortsword" }
+note = "Fork (design/dervish.md): OFFHAND worked; shaped like `wield_ok`."
+
+[messages.offhand_other_wields]
+text = "{@ANSI_CLRLINE}{@ANSI_BROWN}{who} wields {item} in {his} off-hand!\r"
+example = { who = "Bob", item = "shortsword", his = "his" }
+note = "Fork (design/dervish.md): the room sees an OFFHAND; shaped like `other_wields`."
+
+[messages.offhand_shifted]
+text = "{@ANSI_CLRLINE}You shift {item} to your main hand.\r"
+example = { item = "shortsword" }
+note = "Fork (design/dervish.md): the main hand emptied, the off-hand weapon moves into it."
+
+[messages.offhand_need_main]
+text = "{@ANSI_CLRLINE}You must wield a weapon in your main hand first.\r"
+note = "Fork (design/dervish.md): OFFHAND with nothing in the main hand."
+
+[messages.offhand_full]
+text = "{@ANSI_CLRLINE}You already hold a weapon in your off-hand.\r"
+note = "Fork (design/dervish.md): OFFHAND with the off-hand already full."
+
+[messages.offhand_not_that]
+text = "{@ANSI_CLRLINE}{@ANSI_LTRED}You can only hold a one-handed melee weapon in your off-hand.\r"
+note = "Fork (design/dervish.md): OFFHAND with a two-handed or ranged weapon."
+
+[messages.offhand_in_main]
+text = "{@ANSI_CLRLINE}You have no other {item} to hold.\r"
+example = { item = "shortsword" }
+note = "Fork (design/dervish.md): OFFHAND naming the main-hand weapon, with no second copy."
+
+[messages.offhand_syntax]
+text = "{@ANSI_LTREDBLK}Syntax: OFFHAND {{weapon}}\r"
+note = "Fork (design/dervish.md): OFFHAND alone."
+
 [messages.cast_resisted]
 text = "{@ANSI_CLRLINE}{@ANSI_CYAN}You attempt to cast {spell} at {target}, but the spell is resisted.\r"
 pattern = "cast_resisted"

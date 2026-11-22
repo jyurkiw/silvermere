@@ -24,6 +24,8 @@ use crate::world::World;
 /// The secondary stats in mode 2: the derived stats again, keeping the current hit
 /// points and mana.
 pub fn recalc(world: &mut World, id: SessionId) {
+    // Fork: an emptied main hand takes the off-hand's weapon (design/dervish.md)
+    crate::combat::dual::settle_hands(world, id);
     let Some(mut c) = world.session_mut(id).and_then(|s| s.character.take()) else {
         return;
     };
@@ -80,7 +82,7 @@ pub(crate) fn tell_others(world: &mut World, id: SessionId, room: RoomKey, msg: 
 /// A player in auto-combat is told `*Combat Off*` with the
 /// prompt (and with `announce`, the room that they break off combat); the slots are freed
 /// either way and energy above one round is cut.
-pub(crate) fn break_off_autocombat(world: &mut World, id: SessionId, announce: bool) {
+pub fn break_off_autocombat(world: &mut World, id: SessionId, announce: bool) {
     if is_inside_autocombat(world, id) {
         display_autocombat_broken(world, id, announce);
     }

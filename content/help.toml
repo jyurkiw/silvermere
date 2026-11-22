@@ -116,3 +116,30 @@ matters, and it is as likely to be a bolt of force as a knife. From hiding, its 
 spells land as backstabs.
 '''
 abilities = "Stealth, backstab, spell backstab."
+
+[[class_topic]]
+class = "Dervish"
+words = "Dervishes"
+text = '''
+The Dervishes come out of the desert dancing. Their fighting is a spinning dance taught in
+the desert lodges, two blades turning around the dancer. They wear nothing heavier than
+leather, because a dancer in mail can't turn, and they trust neither shields ("the second
+blade is the shield") nor bows.
+
+A Dervish fights with a one-handed weapon in each hand, and each hand strikes on its own,
+so a Dervish's foe faces more blows than any other fighter could land. WIELD a weapon, then
+OFFHAND a second.
+'''
+abilities = "Dual wielding."
+
+[[topic]]
+words = "Offhand"
+text = '''
+Offhand
+
+OFFHAND <weapon> puts a second one-handed melee weapon in a Dervish's off-hand. A weapon
+must be wielded in the main hand first. In combat each hand strikes in turn, with its own
+weapon's speed and damage, and each hand strikes at least once a round, up to eight blows a
+round between them. The off-hand is a little less accurate. REMOVE takes the off-hand
+weapon off; if the main-hand weapon goes, the off-hand weapon moves to the main hand.
+'''

@@ -223,3 +223,31 @@ fn every_title_fits_the_character_record() {
         }
     }
 }
+
+#[test]
+fn the_dervish_record_matches_the_design() {
+    let c = Content::embedded().unwrap();
+    let d = c.classes.iter().find(|c| c.name == "Dervish").unwrap();
+    assert_eq!(d.number, ClassNo(20));
+    assert_eq!((d.basehp, d.hplevel), (5, 4), "5-9 HP per level");
+    assert_eq!(d.exp, 100, "200% experience");
+    assert_eq!((d.magery, d.magelvl), (Magery::None, 0));
+    assert_eq!(d.combat, 7, "fighting 5");
+    assert_eq!(d.weapon, WeaponClass::AnyOneHand);
+    assert_eq!(d.armour, ArmourType::StuddedRigidLeather);
+    assert_eq!(d.titles, TextBlockNo(3023));
+    assert!(d.abilities.contains(&(fork::DUAL_WIELD, 10)));
+    let block = c
+        .titles
+        .iter()
+        .find(|t| t.number == TextBlockNo(3023))
+        .unwrap();
+    let lines: Vec<&str> = block.text.lines().collect();
+    assert_eq!(
+        (lines[0], lines[1], lines[69]),
+        ("Novice", "Dancer", "Dervish")
+    );
+    let topics = help::topics(&c).unwrap();
+    assert!(topics.iter().any(|t| t.words == "Dervishes"));
+    assert!(topics.iter().any(|t| t.words == "Offhand"));
+}

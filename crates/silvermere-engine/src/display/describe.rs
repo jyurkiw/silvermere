@@ -340,7 +340,8 @@ fn equipment(world: &World, plr: &Character, debug: bool, msgs: &mut Vec<Msg>) {
             };
             shown[j] = true;
             cnt += 1;
-            let loc = itm.worn.name().unwrap_or_default().to_owned();
+            // Fork: a Dervish's off-hand weapon shows as worn off-hand (design/dervish.md)
+            let loc = crate::combat::dual::worn_place(itm).to_owned();
             let uses = plr.itemuses.get(i).copied().unwrap_or(-1);
             msgs.push(if uses != -1 && debug {
                 Msg::LookEquipWornDebug {

@@ -23,6 +23,7 @@
 pub mod attack;
 pub mod ambush;
 pub mod autocombat;
+pub mod dual;
 pub mod experience_split;
 pub mod kill_monster;
 pub mod kill_user;
