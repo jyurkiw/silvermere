@@ -46,6 +46,7 @@ pub mod parse;
 pub mod pending;
 pub mod pet;
 pub mod rest;
+pub mod room_id;
 pub mod settings;
 pub mod shop;
 pub mod social;
