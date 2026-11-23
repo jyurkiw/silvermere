@@ -177,6 +177,11 @@ pub fn execute_input(world: &mut World, id: SessionId, line: &str, queued: bool)
         return Outcome::Continue;
     }
 
+    // Fork: `/room` alone tells anyone the room they are in, as `map/room`
+    if super::room_id::try_room_id(world, id, &cl) {
+        prompt(world, id);
+        return Outcome::Continue;
+    }
     // Fork: PET and PET NAME from a character with a companion (design/warden.md)
     if super::pet::try_pet(world, id, &cl) {
         prompt(world, id);

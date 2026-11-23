@@ -67,6 +67,7 @@ mod pets;
 mod player_record;
 mod progression;
 mod room_display;
+mod room_id;
 mod room_spells;
 mod scheduler;
 mod scripts;
