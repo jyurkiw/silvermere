@@ -9,6 +9,7 @@ mod admin_api;
 mod admin_complete;
 mod backup_cli;
 mod backup_schedule;
+mod class_trainers;
 mod cleanup_store;
 mod cli;
 mod docs_in_sync;

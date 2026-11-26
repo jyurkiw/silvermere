@@ -22,6 +22,31 @@ use super::{
 use crate::tell::{Noise, TellBlind, tell_room};
 use crate::world::World;
 
+/// The character's companion changed kind (a new leash): the old name goes with the old
+/// beast, and the new one is saved unnamed.
+pub fn companion_changed(world: &mut World, id: SessionId, kind: u16) {
+    world.pet_names.remove(&id);
+    world.pet_energy.remove(&id);
+    let Some(account) = world
+        .session(id)
+        .and_then(|s| s.account.as_ref())
+        .map(|a| a.id)
+    else {
+        return;
+    };
+    world.outbox.push(crate::event_loop::EngineOutput::Persist(
+        crate::event_loop::PersistRequest::Pet(Box::new(fork::Pet {
+            account,
+            source: fork::PET_SOURCE_CLASS.to_string(),
+            kind,
+            name: String::new(),
+            summoned: true,
+            immortal: true,
+            dead: false,
+        })),
+    ));
+}
+
 /// The kind of companion a character has bonded, if any.
 pub fn pet_kind(world: &World, id: SessionId) -> Option<PetKind> {
     let plr = player(world, id)?;
@@ -110,8 +135,29 @@ pub fn pet_round(world: &mut World, id: SessionId, mon: ActiveMonsterId) {
     let Some((def, _)) = monster_side(world, &m, 0, Move::Attack, user_group(&plr)) else {
         return;
     };
-    let (min, max) = kind.damage(plr.level);
-    atk.av += i32::from(kind.accuracy);
+    // Fork (design/class-trainers.md): the companion's Magic against what the monster needs,
+    // as a weapon's; a companion that can't hurt it doesn't try
+    let magreq = super::attack::magic_and_guard(world, mon).0;
+    if magreq != 0 && !silvermere_rules::combat::can_hit(0, magreq, Some(i32::from(kind.magic))) {
+        let (to_owner, _) = pet_names(world, id, &kind);
+        let who = to_owner;
+        crate::tell::tell_user(
+            world,
+            id,
+            Msg::ForkText {
+                text: format!("{who} can't hurt {}!", m.name),
+            },
+        );
+        return;
+    }
+    let (mut min, mut max) = kind.damage(plr.level);
+    // the owner's weapon may strengthen it (the Warden's arbalest)
+    let more = user_ability(world, &plr, fork::COMPANION_DAMAGE);
+    if more != 0 {
+        min = min * (100 + more) / 100;
+        max = max * (100 + more) / 100;
+    }
+    atk.av += i32::from(kind.accuracy) + user_ability(world, &plr, fork::COMPANION_ACCURACY);
     atk.mindmg = min;
     atk.maxdmg = max;
     let cost = i32::from(kind.energy_per_blow.max(1));

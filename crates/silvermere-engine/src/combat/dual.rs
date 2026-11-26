@@ -159,6 +159,12 @@ pub fn settle_hands(world: &mut World, id: SessionId) {
     let Some((slot, item)) = offhand_weapon(world, plr) else {
         return;
     };
+    // an off-hand-only weapon stays where it is (design/class-trainers.md)
+    if world.items.get(&item).is_some_and(|i| {
+        silvermere_rules::abilities::item_has_ability(i, fork::OFFHAND_ONLY)
+    }) {
+        return;
+    }
     let name = world
         .items
         .get(&item)

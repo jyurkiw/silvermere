@@ -184,6 +184,7 @@ impl Content {
                 max_per_level: p.per_level[1],
                 accuracy: p.accuracy,
                 poison: p.poison,
+                magic: p.magic,
             });
         }
         Ok(())

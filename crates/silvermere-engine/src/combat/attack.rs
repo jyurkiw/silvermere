@@ -130,7 +130,7 @@ fn user_can_hit_monster(world: &World, id: SessionId, monnum: ActiveMonsterId) -
 }
 
 /// The "Magical" total and the "Guarded by Monster" number of a known monster's slots.
-fn magic_and_guard(world: &World, monnum: ActiveMonsterId) -> (i32, i32) {
+pub(crate) fn magic_and_guard(world: &World, monnum: ActiveMonsterId) -> (i32, i32) {
     let Some(kmon) = monster(world, monnum).and_then(|m| world.monsters.get(&m.knownnum)) else {
         return (0, 0);
     };

@@ -12,10 +12,12 @@ use silvermere_types::enums::{Ability, Direction, ExitType, RoomType};
 use silvermere_types::ids::{
     ActiveMonsterId, ItemNo, MonsterNo, RoomId, RoomKey, ShopNo, TextBlockNo,
 };
-use silvermere_types::records::{AbilitySlot, Coins, Exit, RoomItem, ShopSlot, TextBlock};
+use silvermere_types::records::{
+    AbilitySlot, Coins, Exit, Message, MonsterItem, RoomItem, ShopSlot, TextBlock,
+};
 
 use crate::install::InstallError;
-use crate::model::{AbilityEntry, WorldFile};
+use crate::model::{AbilityEntry, ExitSpec, WorldFile};
 
 /// The first room number (on any map) of the fork's rooms.
 pub const FORK_ROOMS: u32 = 9000;
@@ -27,6 +29,8 @@ pub const FORK_ITEMS: i32 = 9000;
 pub const FORK_SHOPS: i32 = 900;
 /// The first text block number of the fork's text blocks.
 pub const FORK_TEXTS: i32 = 20000;
+/// The first message number of the fork's messages.
+pub const FORK_MESSAGES: i32 = 20000;
 
 /// `"1/9000"` as a room key.
 pub fn room_key(s: &str) -> Option<RoomKey> {
@@ -94,14 +98,33 @@ fn lines<const N: usize>(text: &[String]) -> [String; N] {
     std::array::from_fn(|i| text.get(i).cloned().unwrap_or_default())
 }
 
-fn exits(list: &std::collections::BTreeMap<String, u32>) -> Result<Vec<(usize, u32)>, String> {
+fn exits(list: &std::collections::BTreeMap<String, ExitSpec>) -> Result<Vec<(usize, Exit)>, String> {
     list.iter()
-        .map(|(d, to)| {
-            direction(d)
-                .map(|d| (usize::from(d.code()), *to))
-                .ok_or_else(|| format!("unknown direction `{d}`"))
+        .map(|(d, spec)| {
+            let d = direction(d).ok_or_else(|| format!("unknown direction `{d}`"))?;
+            Ok((usize::from(d.code()), exit_of(spec)?))
         })
         .collect()
+}
+
+/// The stock exit a content exit is.
+fn exit_of(spec: &ExitSpec) -> Result<Exit, String> {
+    let ExitSpec::Typed(t) = spec else {
+        return Ok(exit_to(spec.to()));
+    };
+    let kind = ExitType::ALL
+        .iter()
+        .copied()
+        .find(|k| format!("{k:?}").eq_ignore_ascii_case(&t.kind))
+        .ok_or_else(|| format!("unknown exit kind `{}`", t.kind))?;
+    Ok(Exit {
+        target: RoomId(t.to),
+        kind,
+        par1: t.par[0] as u32,
+        par2: t.par[1] as i16,
+        par3: t.par[2] as i32,
+        par4: t.par[3] as i32,
+    })
 }
 
 fn exit_to(target: u32) -> Exit {
@@ -174,15 +197,46 @@ pub fn check(w: &WorldFile) -> Result<(), String> {
     for c in &w.item_change {
         abilities(&c.add_abilities).map_err(|e| format!("item change {}: {e}", c.number))?;
     }
+    for m in &w.message {
+        if m.number < FORK_MESSAGES {
+            return Err(format!("message {}: numbered from {FORK_MESSAGES}", m.number));
+        }
+    }
     for t in &w.text {
-        if t.number < FORK_TEXTS || t.text.len() > 1999 {
-            return Err(format!(
-                "text {}: numbered from {FORK_TEXTS}, at most 1999 bytes",
-                t.number
-            ));
+        if t.number < FORK_TEXTS {
+            return Err(format!("text {}: numbered from {FORK_TEXTS}", t.number));
+        }
+        let parts = text_parts(&t.text)
+            .ok_or_else(|| format!("text {}: a line longer than {TEXT_PART} bytes", t.number))?;
+        if parts.len() > TEXT_PARTS {
+            return Err(format!("text {}: more than {TEXT_PARTS} parts", t.number));
         }
     }
     Ok(())
+}
+
+/// The most bytes a text block's part (record) holds.
+const TEXT_PART: usize = 1999;
+/// The most parts a block is read in.
+const TEXT_PARTS: usize = 50;
+
+/// A text block split into parts of at most [`TEXT_PART`] bytes, each ending a line, as the
+/// game reads a long block (a script line never spans two parts). `None` when a line alone
+/// is too long.
+pub fn text_parts(text: &str) -> Option<Vec<String>> {
+    let mut parts = vec![String::new()];
+    for line in text.trim_end_matches('\n').split('\n') {
+        if line.len() + 1 > TEXT_PART {
+            return None;
+        }
+        if parts.last()?.len() + line.len() + 1 > TEXT_PART {
+            parts.push(String::new());
+        }
+        let last = parts.last_mut()?;
+        last.push_str(line);
+        last.push('\n');
+    }
+    Some(parts)
 }
 
 /// A record whose stock template isn't in this world (a test's small world, a realm that
@@ -249,19 +303,28 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
         return Ok(0);
     }
     let mut n = 0;
-    for t in &w.text {
-        let mut text = t.text.clone();
-        if !text.ends_with('\n') {
-            text.push('\n');
-        }
-        db.text_blocks()
-            .put(&TextBlock {
-                part: 0,
-                number: TextBlockNo(t.number),
-                link: TextBlockNo(t.link),
-                text,
+    for m in &w.message {
+        db.messages()
+            .put(&Message {
+                number: silvermere_types::ids::MessageNo(m.number),
+                msgs: m.texts.clone(),
             })
             .await?;
+        n += 1;
+    }
+    for t in &w.text {
+        // a long block in parts, each ending a line; the link is the first part's
+        let parts = text_parts(&t.text).ok_or_else(|| bad(format!("text {}", t.number)))?;
+        for (i, text) in parts.into_iter().enumerate() {
+            db.text_blocks()
+                .put(&TextBlock {
+                    part: i as i16,
+                    number: TextBlockNo(t.number),
+                    link: TextBlockNo(if i == 0 { t.link } else { 0 }),
+                    text,
+                })
+                .await?;
+        }
         n += 1;
     }
     for i in &w.item {
@@ -284,6 +347,17 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
         }
         if let Some(v) = i.speed {
             item.speed = v;
+        }
+        if let Some(v) = i.accuracy {
+            item.accuracy = v;
+        }
+        if let Some(list) = &i.classes {
+            for (n, slot) in item.classes.iter_mut().enumerate() {
+                *slot = silvermere_types::ids::ClassNo(list.get(n).copied().unwrap_or(0));
+            }
+        }
+        if let Some(v) = i.strreq {
+            item.strreq = v;
         }
         if let Some(n) = i.verbs_like
             && let Some(verbs) = db.items().get(ItemNo(n)).await?
@@ -326,6 +400,22 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
         if let Some(t) = m.talk {
             mon.talktext = TextBlockNo(t);
         }
+        if let Some(items) = &m.items {
+            for (i, slot) in mon.items.iter_mut().enumerate() {
+                *slot = match items.get(i) {
+                    Some(c) => MonsterItem {
+                        item: ItemNo(c.item),
+                        uses: c.uses,
+                        pct: c.pct,
+                    },
+                    None => MonsterItem {
+                        item: ItemNo(0),
+                        uses: 0,
+                        pct: 0,
+                    },
+                };
+            }
+        }
         // a copy starts with none alive, whatever its template had: the template's count
         // would stop a unique copy (max alive 1) from ever appearing
         mon.curalive = 0;
@@ -355,6 +445,15 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
         };
         shop.number = ShopNo(s.number);
         shop.name = s.name.clone();
+        if let Some(c) = s.trainclass {
+            shop.trainclass = silvermere_types::ids::ClassNo(c);
+        }
+        if let Some(l) = s.minlevel {
+            shop.minlevel = l;
+        }
+        if let Some(l) = s.maxlevel {
+            shop.maxlevel = l;
+        }
         for (i, slot) in shop.stock.iter_mut().enumerate() {
             *slot = match s.items.get(i) {
                 Some(&item) => ShopSlot {
@@ -406,8 +505,8 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
         for e in room.exits.iter_mut() {
             *e = exit_to(0);
         }
-        for (d, to) in exits(&r.exits).map_err(bad)? {
-            room.exits[d] = exit_to(to);
+        for (d, exit) in exits(&r.exits).map_err(bad)? {
+            room.exits[d] = exit;
         }
         if let Some(k) = &r.kind {
             room.room_type = RoomType::ALL
@@ -425,9 +524,10 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
         if let Some(t) = r.script {
             room.cmdtext = TextBlockNo(t);
         }
-        if let Some(m) = r.max_monsters {
-            room.maxmonsters = m;
-        }
+        // a new room has no monster group of its own (cleared above), so it holds no random
+        // monsters unless the content says so: a copied limit with no group to draw from
+        // stalls the monster generation as a player walks in
+        room.maxmonsters = r.max_monsters.unwrap_or(0);
         db.rooms()
             .put_many(&[room], StateWrite::CreateMissing)
             .await?;
@@ -439,11 +539,17 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
             skipped(format!("room {}", c.room));
             continue;
         };
-        for (d, to) in exits(&c.exits).map_err(bad)? {
-            room.exits[d] = exit_to(to);
+        for (d, exit) in exits(&c.exits).map_err(bad)? {
+            room.exits[d] = exit;
         }
         if let Some(shop) = c.shop {
             room.shopnum = ShopNo(shop);
+        }
+        if let Some(m) = c.specmon {
+            room.specmon = MonsterNo(m);
+        }
+        if let Some(t) = c.script {
+            room.cmdtext = TextBlockNo(t);
         }
         db.rooms().put_many(&[room], StateWrite::Untouched).await?;
         n += 1;

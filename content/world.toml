@@ -287,3 +287,1460 @@ items = [100, 90, 9004]
 [[room_change]]
 room = "1/2141"
 shop = 901
+
+# --------------------------------------------------------------------------------------
+# Class trainers, the level-10 tomb quests and class weapons (design/class-trainers.md).
+
+# The Warden: the Silvermere stables, three rooms east of Park Street (1/165).
+[[room_change]]
+room = "1/165"
+exits = { east = 9010 }
+
+[[room]]
+room = "1/9010"
+like = "1/165"
+name = "Silvermere Stables, Yard"
+desc = [
+  "A cobbled yard opens off Park Street, swept clean and ringed with hitching",
+  "posts. A long stone stable block runs along its eastern side, and from",
+  "inside come the yelps, hisses and grunts of a great many animals. A",
+  "painted sign over the door shows a hound, a hawk and a bear beneath the",
+  "words WARDEN STABLES.",
+]
+exits = { west = 165, east = 9011 }
+kind = "Normal"
+specmon = 9002
+max_monsters = 0
+
+[[room]]
+room = "1/9011"
+like = "1/2141"
+name = "Silvermere Stables"
+desc = [
+  "Stalls and pens fill this high, airy stable, far grander than any village",
+  "barn. Hounds of every size pace their runs, hawks and falcons sit hooded",
+  "on a long perch, snakes doze in glass-fronted crates, and in the largest",
+  "stalls something heavy shifts and breathes. A counter by the door is hung",
+  "with leashes, jesses and harnesses, each tagged with a price.",
+]
+exits = { west = 9010, east = 9012 }
+kind = "Shop"
+shop = 902
+specmon = 9003
+script = 20110
+max_monsters = 0
+
+[[room]]
+room = "1/9012"
+like = "1/497"
+name = "Warden Training Room"
+desc = [
+  "A long room at the back of the stables, its floor strewn with sawdust.",
+  "Bows and crossbows hang along one wall beside heavy spears, and the other",
+  "is covered in charcoal sketches of tracks, spoor and the shapes of beasts.",
+  "A weathered man in mud-spattered leathers sits on a feed bin, a hound",
+  "asleep across his boots. He is plainly the trainer here.",
+]
+exits = { west = 9011 }
+kind = "Shop"
+shop = 903
+specmon = 9004
+max_monsters = 0
+
+[[monster]]
+number = 9002
+like = 74
+name = "Corra Hale"
+desc = [
+  "A brisk, sun-browned woman with a whistle on a cord around her neck. She",
+  "looks you over like a horse she might buy. Ask her about LEASHES.",
+]
+talk = 20100
+
+[[monster]]
+number = 9003
+like = 74
+name = "Tobias Wren"
+desc = [
+  "A stooped, soft-spoken stablemaster with a hawk feather in his cap and old",
+  "scars on both forearms. He keeps one eye on the pens at all times.",
+]
+talk = 20120
+
+[[monster]]
+number = 9004
+like = 74
+name = "Warden Trainer"
+desc = [
+  "A weathered man in mud-spattered leathers, a hound asleep across his",
+  "boots. He watches you the way he would watch a deer at the edge of a wood.",
+]
+talk = 20130
+
+[[shop]]
+number = 902
+like = 45
+name = "Silvermere Stables"
+items = [9010, 9011, 9012, 9013, 9014, 9015, 9016, 9017, 9018]
+
+[[shop]]
+number = 903
+like = 14
+name = "Warden Training Room"
+items = []
+trainclass = 17
+minlevel = 1
+maxlevel = 10
+
+[[item]]
+number = 9010
+like = 191
+name = "hound's leash"
+desc = [
+  "A sturdy leather leash with a brass clip, sized for a hunting hound. A",
+  "Warden can USE it at a Warden Stables to bond the beast.",
+]
+cost = 30
+abilities = [{ name = "RoomUse" }]
+
+[[item]]
+number = 9011
+like = 191
+name = "hawkling's leash"
+desc = [
+  "A thin jess of soft leather with a falconer's swivel, for a young hawk. A",
+  "Warden can USE it at a Warden Stables to bond the beast.",
+]
+cost = 24
+abilities = [{ name = "RoomUse" }]
+
+[[item]]
+number = 9012
+like = 191
+name = "rattlesnake's leash"
+desc = [
+  "A handler's pole loop and a padded collar, for a trained rattlesnake. A",
+  "Warden can USE it at a Warden Stables to bond the beast.",
+]
+cost = 36
+abilities = [{ name = "RoomUse" }]
+
+[[item]]
+number = 9013
+like = 191
+name = "drop bear's leash"
+desc = [
+  "A heavy harness of thick straps and iron rings, for a drop bear. A Warden",
+  "can USE it at a Warden Stables to bond the beast.",
+]
+cost = 50
+abilities = [{ name = "RoomUse" }]
+
+[[item]]
+number = 9014
+like = 191
+name = "war hound's leash"
+desc = [
+  "A studded collar and a chain leash, for a broad-chested war hound. A",
+  "Warden can USE it at a Warden Stables to bond the beast.",
+]
+cost = 150
+abilities = [{ name = "RoomUse" }]
+
+[[item]]
+number = 9015
+like = 191
+name = "gyrfalcon's jess"
+desc = [
+  "A white leather jess with a silver swivel, for a great gyrfalcon. Its",
+  "talons strike like enchanted steel. A Warden can USE it at a Warden",
+  "Stables to bond the beast.",
+]
+cost = 250
+abilities = [{ name = "RoomUse" }]
+
+[[item]]
+number = 9016
+like = 191
+name = "desert viper's leash"
+desc = [
+  "A long handler's pole and a padded collar, for a desert viper. A Warden",
+  "can USE it at a Warden Stables to bond the beast.",
+]
+cost = 200
+abilities = [{ name = "RoomUse" }]
+
+[[item]]
+number = 9017
+like = 191
+name = "cave bear's harness"
+desc = [
+  "A massive harness of riveted straps, for a cave bear. A Warden can USE it",
+  "at a Warden Stables to bond the beast.",
+]
+cost = 350
+abilities = [{ name = "RoomUse" }]
+
+[[item]]
+number = 9018
+like = 191
+name = "shadow mastiff's leash"
+desc = [
+  "A leash of black-dyed leather that is always cold to the touch, for a",
+  "shadow mastiff. A Warden can USE it at a Warden Stables to bond the beast.",
+]
+cost = 500
+abilities = [{ name = "RoomUse" }]
+
+# The Silvermere stables' script: a leash used here bonds its beast; an old companion is released, and the new one starts unnamed.
+[[text]]
+number = 20110
+text = """
+use ho*und's leash:class 17:checkitem 9010 0:removeability 1005:takeitem 9010 0:giveability 1005 1:text 20111
+use ho*und's leash:class 17:takeitem 9010 0:giveability 1005 1:text 20111
+use ho*und's leash:class 17:checkitem 9000 0:removeability 1005:takeitem 9000 0:giveability 1005 1:text 20111
+use ho*und's leash:class 17:takeitem 9000 0:giveability 1005 1:text 20111
+use ho*und's leash:class 17:text 20039
+use ho*und's leash:text 20036
+use ha*wkling's leash:class 17:checkitem 9011 0:removeability 1005:takeitem 9011 0:giveability 1005 2:text 20112
+use ha*wkling's leash:class 17:takeitem 9011 0:giveability 1005 2:text 20112
+use ha*wkling's leash:class 17:checkitem 9001 0:removeability 1005:takeitem 9001 0:giveability 1005 2:text 20112
+use ha*wkling's leash:class 17:takeitem 9001 0:giveability 1005 2:text 20112
+use ha*wkling's leash:class 17:text 20039
+use ha*wkling's leash:text 20036
+use r*attlesnake's leash:class 17:checkitem 9012 0:removeability 1005:takeitem 9012 0:giveability 1005 3:text 20113
+use r*attlesnake's leash:class 17:takeitem 9012 0:giveability 1005 3:text 20113
+use r*attlesnake's leash:class 17:checkitem 9002 0:removeability 1005:takeitem 9002 0:giveability 1005 3:text 20113
+use r*attlesnake's leash:class 17:takeitem 9002 0:giveability 1005 3:text 20113
+use r*attlesnake's leash:class 17:text 20039
+use r*attlesnake's leash:text 20036
+use dr*op bear's leash:class 17:checkitem 9013 0:removeability 1005:takeitem 9013 0:giveability 1005 4:text 20114
+use dr*op bear's leash:class 17:takeitem 9013 0:giveability 1005 4:text 20114
+use dr*op bear's leash:class 17:checkitem 9003 0:removeability 1005:takeitem 9003 0:giveability 1005 4:text 20114
+use dr*op bear's leash:class 17:takeitem 9003 0:giveability 1005 4:text 20114
+use dr*op bear's leash:class 17:text 20039
+use dr*op bear's leash:text 20036
+use w*ar hound's leash:class 17:checkitem 9014 0:removeability 1005:takeitem 9014 0:giveability 1005 5:text 20115
+use w*ar hound's leash:class 17:takeitem 9014 0:giveability 1005 5:text 20115
+use w*ar hound's leash:class 17:text 20039
+use w*ar hound's leash:text 20036
+use g*yrfalcon's jess:class 17:checkitem 9015 0:removeability 1005:takeitem 9015 0:giveability 1005 6:text 20116
+use g*yrfalcon's jess:class 17:takeitem 9015 0:giveability 1005 6:text 20116
+use g*yrfalcon's jess:class 17:text 20039
+use g*yrfalcon's jess:text 20036
+use de*sert viper's leash:class 17:checkitem 9016 0:removeability 1005:takeitem 9016 0:giveability 1005 7:text 20117
+use de*sert viper's leash:class 17:takeitem 9016 0:giveability 1005 7:text 20117
+use de*sert viper's leash:class 17:text 20039
+use de*sert viper's leash:text 20036
+use c*ave bear's harness:class 17:checkitem 9017 0:removeability 1005:takeitem 9017 0:giveability 1005 8:text 20118
+use c*ave bear's harness:class 17:takeitem 9017 0:giveability 1005 8:text 20118
+use c*ave bear's harness:class 17:text 20039
+use c*ave bear's harness:text 20036
+use s*hadow mastiff's leash:class 17:checkitem 9018 0:removeability 1005:takeitem 9018 0:giveability 1005 9:text 20119
+use s*hadow mastiff's leash:class 17:takeitem 9018 0:giveability 1005 9:text 20119
+use s*hadow mastiff's leash:class 17:text 20039
+use s*hadow mastiff's leash:text 20036
+"""
+
+[[text]]
+number = 20111
+text = """
+Tobias takes the leash and comes back with a hunting hound, which sniffs your
+hand and sits at your heel. If you had a companion before, it stays here in
+the pens. The beast is yours. (PET NAME <name> names it.)
+"""
+
+[[text]]
+number = 20112
+text = """
+Tobias lifts a hawkling from the perch onto your arm, and it grips hard as you
+fasten the jess. If you had a companion before, it stays here in the pens. The
+beast is yours. (PET NAME <name> names it.)
+"""
+
+[[text]]
+number = 20113
+text = """
+Tobias lowers a trained rattlesnake to you with the pole, and it coils loosely
+about your arm. If you had a companion before, it stays here in the pens. The
+beast is yours. (PET NAME <name> names it.)
+"""
+
+[[text]]
+number = 20114
+text = """
+Something heavy drops from the rafters beside you with a thud, and you buckle
+the harness on before it changes its mind. If you had a companion before, it
+stays here in the pens. The beast is yours. (PET NAME <name> names it.)
+"""
+
+[[text]]
+number = 20115
+text = """
+Tobias leads out a broad-chested war hound, scarred about the muzzle, which
+looks you over and then leans against your leg. If you had a companion before,
+it stays here in the pens. The beast is yours. (PET NAME <name> names it.)
+"""
+
+[[text]]
+number = 20116
+text = """
+A great white gyrfalcon drops from the high perch to your arm, and its talons
+ring faintly, like steel, as they close. If you had a companion before, it
+stays here in the pens. The beast is yours. (PET NAME <name> names it.)
+"""
+
+[[text]]
+number = 20117
+text = """
+Tobias draws a desert viper from its crate with the pole. It tastes the air,
+then winds itself about your arm. If you had a companion before, it stays here
+in the pens. The beast is yours. (PET NAME <name> names it.)
+"""
+
+[[text]]
+number = 20118
+text = """
+The largest stall's door swings open, and a cave bear ambles out, sniffs you
+all over, and sits down at your side. If you had a companion before, it stays
+here in the pens. The beast is yours. (PET NAME <name> names it.)
+"""
+
+[[text]]
+number = 20119
+text = """
+Out of the darkest pen comes a mastiff as black as soot, so quiet you do not
+hear its paws on the boards. If you had a companion before, it stays here in
+the pens. The beast is yours. (PET NAME <name> names it.)
+"""
+
+# Corra Hale: ASK CORRA ABOUT LEASHES; greeting.
+[[text]]
+number = 20100
+text = """
+LEASH:20101
+PET:20101
+COMPANION:20101
+BEAST:20101
+"""
+link = 20102
+
+[[text]]
+number = 20101
+text = """
+Corra Hale sounds her whistle once, and the yard falls quiet. "Leashes? You'll
+find the plain ones inside: hounds, hawklings, rattlesnakes and drop bears,
+the same as the Newhaven stable gives away, but here you pay for them. Then
+there are the better beasts. A war hound, a gyrfalcon, a desert viper, a cave
+bear, a shadow mastiff: each a little better than its cousin, and priced like
+it. The gyrfalcon and the mastiff can even hurt the things that only magic
+hurts."
+
+"A leash binds only when it's used in a Warden Stables, like ours. Use a new
+one and your old beast stays here with us; the new one comes to you without a
+name."
+"""
+
+[[text]]
+number = 20102
+text = """
+Corra Hale gives you a quick nod and goes back to watching the yard.
+"""
+
+# Tobias Wren.
+[[text]]
+number = 20120
+text = """
+LEASH:20121
+PET:20121
+BEAST:20121
+"""
+link = 20122
+
+[[text]]
+number = 20121
+text = """
+Tobias Wren rubs the scars on his forearm. "LIST and see what's on the
+counter. Buy a leash, then USE it here, and I'll bring you the beast. If
+you've a companion already, it stays with me in the pens. I'll look after it."
+"""
+
+[[text]]
+number = 20122
+text = """
+Tobias Wren looks up from a pen and touches the feather in his cap.
+"""
+
+# The Warden Trainer.
+[[text]]
+number = 20130
+text = """
+TRAIN:20131
+WARDEN:20131
+"""
+link = 20132
+
+[[text]]
+number = 20131
+text = """
+The Warden Trainer scratches his hound's ears. "You want to learn to walk the
+wild places? Then TRAIN, and we'll see what you're made of."
+"""
+
+[[text]]
+number = 20132
+text = """
+The Warden Trainer looks up at you without moving his boots from under the hound.
+"""
+
+# The War Mage: up from the Magic Shoppe (1/398).
+[[room_change]]
+room = "1/398"
+exits = { up = 9020 }
+
+[[room]]
+room = "1/9020"
+like = "1/497"
+name = "War Mage Training Room"
+desc = [
+  "The upper floor of the Magic Shoppe has been cleared for something louder",
+  "than enchanting. Scorch marks blacken the floorboards around a battered",
+  "armour stand, and the walls are hung with notched blades, each with a",
+  "spell-glyph etched near the hilt. A broad-shouldered veteran of the",
+  "Battle-Mage corps runs the room, a longsword on her back and chalk on her",
+  "fingers.",
+]
+exits = { down = 398 }
+kind = "Shop"
+shop = 904
+max_monsters = 0
+
+[[shop]]
+number = 904
+like = 14
+name = "War Mage Training Room"
+items = []
+trainclass = 16
+minlevel = 1
+maxlevel = 10
+
+# The Assassin: the ink shop, north of Mystic Alley (1/396).
+[[room_change]]
+room = "1/396"
+exits = { north = 9030 }
+
+[[room]]
+room = "1/9030"
+like = "1/497"
+name = "Ink Shop"
+desc = [
+  "A cramped shop that smells of soot, oak galls and something sharper",
+  "underneath. Jars of ink in every colour crowd the shelves, and a little",
+  "furnace glows in the corner beside a rack of very thin, very clean knives.",
+  "A figure in a dark robe works at the counter, face hidden, grinding",
+  "something in a mortar.",
+]
+exits = { south = 396 }
+kind = "Shop"
+shop = 905
+specmon = 9005
+max_monsters = 0
+
+[[shop]]
+number = 905
+like = 14
+name = "Ink Shop"
+items = []
+trainclass = 19
+minlevel = 1
+maxlevel = 10
+
+[[monster]]
+number = 9005
+like = 74
+name = "Dark Robed Figure"
+desc = [
+  "A figure in a dark, shapeless robe, its face lost in the shadow of its",
+  "hood. Its hands, grinding away at the mortar, are pale and very steady.",
+]
+talk = 20140
+
+# The Dark Robed Figure: anything asked gets the lead-in, then the script picks the answer.
+[[text]]
+number = 20140
+text = """
+INK:20141
+INKS:20141
+TRAIN:20141
+AIKEN:20141
+SHOP:20141
+WORK:20141
+ASSASSIN:20141
+KNIFE:20141
+KNIVES:20141
+BUY:20141
+WHO:20141
+WHAT:20141
+HELLO:20141
+JOB:20141
+HELP:20141
+TEACH:20141
+LEARN:20141
+KILL:20141
+GUILD:20141
+"""
+link = 20145
+
+[[text]]
+number = 20141
+text = """
+The figure's mortar stops.
+"""
+link = 20142
+
+[[text]]
+number = 20142
+text = """
+class 19:text 20143
+maxlevel 9999:text 20144
+"""
+
+[[text]]
+number = 20143
+text = """
+The figure glances at the door, then at the window, and lowers its voice. "Ah.
+You're not here for ink. I can see to your training."
+"""
+
+[[text]]
+number = 20144
+text = """
+"Inks," the figure murmurs. "I make inks for Aiken, in the Magic Shoppe.
+Nothing else."
+"""
+
+[[text]]
+number = 20145
+text = """
+The figure in the dark robe keeps grinding at its mortar, and does not look up.
+"""
+
+# The Avenger: a hidden room north of the Temple Foyer (1/2316). The hidden exit has two
+# blocks that must go in order (stock hidden exits): PUSH CATCH takes the second, PULL
+# LEVER the first, and the door opens for anyone for a while.
+[[message]]
+number = 20000
+texts = ["push catch", "push the catch", "press catch"]
+
+[[message]]
+number = 20001
+texts = ["You feel a small catch give under your fingers with a click.", "%s fiddles with something behind the coat racks.", ""]
+
+[[message]]
+number = 20002
+texts = ["pull lever", "pull the lever", "yank lever"]
+
+[[message]]
+number = 20003
+texts = ["You pull the lever.", "%s pulls something behind the coat racks.", ""]
+
+[[message]]
+number = 20004
+texts = ["Something clunks behind the coat racks, and a section of the wall to the %s swings inward!", "Something clunks behind the coat racks, and a section of the wall to the %s swings inward!", "Something clunks behind the coat racks, and a section of the wall to the %s swings inward!"]
+
+[[message]]
+number = 20005
+texts = ["secret door %s", "secret door %s", "secret door %s"]
+
+[[room_change]]
+room = "1/2316"
+exits = { north = { to = 9040, kind = "Hidden", par = [48, 2, 20004, 20005] }, southeast = { to = 2316, kind = "RemoteAction", par = [20000, 20, 20001, 0] }, southwest = { to = 2316, kind = "RemoteAction", par = [20002, 10, 20003, 0] } }
+specmon = 9006
+
+[[room]]
+room = "1/9040"
+like = "1/497"
+name = "Avenger Training Room"
+desc = [
+  "A narrow chapel without windows, lit by a single lamp of red glass. There",
+  "is no altar here, only a long rack of maces and flails, a scarred practice",
+  "post and a ledger of names, many of them crossed out. A hooded woman in",
+  "dark leather sits by the ledger, turning a mace slowly in her hands.",
+]
+exits = { south = 2316 }
+kind = "Shop"
+shop = 906
+specmon = 9007
+max_monsters = 0
+
+[[shop]]
+number = 906
+like = 14
+name = "Avenger Training Room"
+items = []
+trainclass = 18
+minlevel = 1
+maxlevel = 10
+
+[[monster]]
+number = 9006
+like = 74
+name = "shifty preacher"
+desc = [
+  "A thin man in a threadbare cassock, with ink-stained fingers and a",
+  "collection plate he never lets go of. His eyes keep drifting to the coat",
+  "racks.",
+]
+talk = 20150
+
+[[monster]]
+number = 9007
+like = 74
+name = "Avenger Trainer"
+desc = [
+  "A hooded woman in dark leather, a mace turning slowly in her hands. She",
+  "looks at you as if deciding which page of her ledger you belong on.",
+]
+talk = 20160
+
+# The shifty preacher: forgiveness costs gold, and to an Avenger, blood.
+[[text]]
+number = 20150
+text = """
+FORGIVE:20151
+BLOOD:20153
+SIN:20151
+PAY:20151
+"""
+link = 20158
+
+[[text]]
+number = 20151
+text = """
+"Forgiveness, friend? The gods are generous, but their servants must eat.
+Forgiveness can be paid for in gold..."
+"""
+link = 20152
+
+[[text]]
+number = 20152
+text = """
+class 18:text 20154
+"""
+
+[[text]]
+number = 20154
+text = """
+"...or in blood," he adds softly, watching your face.
+"""
+
+[[text]]
+number = 20153
+text = """
+The preacher's eyes narrow.
+"""
+link = 20155
+
+[[text]]
+number = 20155
+text = """
+class 18:text 20156
+maxlevel 9999:text 20157
+"""
+
+[[text]]
+number = 20156
+text = """
+He leans in close. "The temple keeps its blades out of sight. Behind the coat
+racks there's a catch. PUSH it, then PULL the LEVER beside it, and go north."
+"""
+
+[[text]]
+number = 20157
+text = """
+"Blood? I said nothing about blood." He rattles his collection plate at you.
+"""
+
+[[text]]
+number = 20158
+text = """
+The shifty preacher rattles his collection plate hopefully.
+"""
+
+# The Avenger Trainer.
+[[text]]
+number = 20160
+text = """
+TRAIN:20161
+AVENGER:20161
+LEDGER:20161
+"""
+link = 20162
+
+[[text]]
+number = 20161
+text = """
+"You came through the door. That is the first lesson. TRAIN, and I'll teach
+you the rest."
+"""
+
+[[text]]
+number = 20162
+text = """
+The Avenger Trainer turns another page of her ledger.
+"""
+
+# The Dervish: a hall west of 1/491, its training room north of it.
+[[room_change]]
+room = "1/491"
+exits = { west = 9050 }
+
+[[room]]
+room = "1/9050"
+like = "1/494"
+name = "Adventurer's Guild, Halls of Training"
+desc = [
+  "This wide corridor is lined with lit torches along. The smooth wooden",
+  "walls reflect the light, diffusing it into a comforting soft glow. The",
+  "floor is made of earth, packed down by the ceaseless tread of",
+  "adventurers.",
+]
+exits = { east = 491, north = 9051 }
+kind = "Normal"
+max_monsters = 0
+
+[[room]]
+room = "1/9051"
+like = "1/497"
+name = "Dervish Training Room"
+desc = [
+  "Sand crunches underfoot in this long, bare room, brought in by the sackful",
+  "and raked smooth each morning. Pairs of practice blades hang on pegs along",
+  "the walls, and a ring is painted on the floor, scuffed by years of turning",
+  "feet. A lean, sun-darkened woman watches from the edge of the ring, two",
+  "curved knives at her belt. She is plainly the trainer here.",
+]
+exits = { south = 9050 }
+kind = "Shop"
+shop = 907
+max_monsters = 0
+
+[[shop]]
+number = 907
+like = 14
+name = "Dervish Training Room"
+items = []
+trainclass = 20
+minlevel = 1
+maxlevel = 10
+
+# The tomb wings, built as stock's: each class enters by its own class exit, then a glyph
+# dead end (PUSH BUTTON), a guardian with the key to the iron door, a hub, and the class
+# tombs (the spirit, the level-11 Super trainer, the portal home).
+[[room_change]]
+room = "1/1420"
+exits = { northwest = { to = 9100, kind = "Class", par = [16, 0, 8570, 0] }, northeast = { to = 9100, kind = "Class", par = [17, 0, 8570, 0] }, down = { to = 9100, kind = "Class", par = [20, 0, 8570, 0] } }
+
+[[room]]
+room = "1/9100"
+like = "1/1425"
+name = "Marble Passage"
+desc = [
+  "This narrow passageway is made of smooth white marble, polished to a",
+  "mirrorlike shine. Your every sound echoes down its length like a",
+  "thunderclap, it is so silent here. The passage slopes downwards at a",
+  "steady angle, heading into the bowels of the earth.",
+]
+exits = { north = 9101, south = 1420 }
+
+[[room]]
+room = "1/9101"
+like = "1/2223"
+name = "Marble Passage, Dead End"
+desc = [
+  "This narrow passageway is made of smooth white marble, polished to a",
+  "mirrorlike shine. Your every sound echoes down its length like a",
+  "thunderclap, it is so silent here. The passage levels off abruptly at",
+  "this point, and ends in a smooth wall. Inscribed upon the centre of",
+  "the wall is a curious glyph.",
+]
+exits = { west = { to = 9102, kind = "Text", par = [8259, 0, 8571, 1] }, south = 9100 }
+
+[[room]]
+room = "1/9102"
+like = "1/2224"
+name = "Large Chamber"
+desc = [
+  "This thirty foot square room has vaulted ceilings that reach up into",
+  "the darkness. Tall marble pillars rise up like smooth-skinned trees.",
+  "A large, filthy mound of rags dominates the centre of the chamber, and",
+  "you notice gnawed bones littering the floor about this rancid nest. A",
+  "plain-looking iron door is set in the northern wall.",
+]
+exits = { north = { to = 9103, kind = "Key", par = [9020, 2, 0, 0] }, east = { to = 9101, kind = "Text", par = [8259, 0, 8571, 1] } }
+specmon = 9008
+
+[[room]]
+room = "1/9103"
+like = "1/2225"
+name = "Marble Passage"
+desc = [
+  "This corridor is made of the same highly polished white marble as the",
+  "rest of the passages you have traveled through. It is wide and high-",
+  "ceilinged -- indeed, you are hard pressed in your efforts to even see",
+  "if there IS a ceiling. An iron door is set in the passage's end to the",
+  "south, and you can continue off to the north.",
+]
+exits = { north = 9104, south = { to = 9102, kind = "Key", par = [9020, 2, 0, 0] } }
+
+[[room]]
+room = "1/9104"
+like = "1/2226"
+name = "Marble Chamber"
+desc = [
+  "This small, round marble chamber is illuminated by a single glowing",
+  "crystal hanging from the ceiling. Its curving wall is broken by four",
+  "identical passages, each arrowing off into the darkness.",
+]
+exits = { south = 9103, northwest = { to = 9105, kind = "Class", par = [16, 0, 8570, 0] }, north = { to = 9106, kind = "Class", par = [17, 0, 8570, 0] }, northeast = { to = 9107, kind = "Class", par = [20, 0, 8570, 0] } }
+
+[[room]]
+room = "1/9105"
+like = "1/2231"
+name = "Large Tomb"
+desc = [
+  "This cavernous chamber's walls are covered with hundreds of intricate",
+  "frescoes depicting the turbulent history of Silvermere. The Heroes of",
+  "Silvermere can clearly be seen battling against the demonic forces of",
+  "the unnamed one. A mammoth stone sarcophagus rests on the floor in the",
+  "centre of the chamber, and a small altar stands at its feet. There is",
+  "a shimmering blue portal in the far wall.",
+]
+exits = { southeast = 9104, north = { to = 834, kind = "Text", par = [8576, 0, 8577, 1] } }
+kind = "Shop"
+shop = 908
+specmon = 9010
+
+[[shop]]
+number = 908
+like = 49
+name = "Super War Mage Trainer"
+items = []
+trainclass = 16
+minlevel = 11
+maxlevel = 11
+
+[[monster]]
+number = 9010
+like = 83
+name = "War Mage spirit"
+desc = [
+  "A pale, shimmering figure stands by the sarcophagus, the ghost of one of",
+  "the first War Mages. It watches you with old, patient eyes. Ask it about",
+  "your WEAPON.",
+]
+talk = 20200
+
+# The War Mage spirit: asked about its WEAPON, it gives its class weapon once.
+[[text]]
+number = 20200
+text = """
+WEAPON:20201
+REWARD:20201
+BLADE:20201
+GIFT:20201
+"""
+link = 20205
+
+[[text]]
+number = 20201
+text = """
+The spirit turns its old, patient eyes on you.
+"""
+link = 20202
+
+[[text]]
+number = 20202
+text = """
+class 16:failability 1021:giveitem 9030:giveability 1021 1:text 20203
+class 16:text 20204
+maxlevel 9999:text 20206
+"""
+
+[[text]]
+number = 20203
+text = """
+"You came this far, War Mage. Take this, and carry it well." The spirit lays a
+weapon in your hands, and is still again.
+"""
+
+[[text]]
+number = 20204
+text = """
+"You have had my gift already," the spirit says.
+"""
+
+[[text]]
+number = 20205
+text = """
+The spirit inclines its head to you, and says nothing.
+"""
+
+[[text]]
+number = 20206
+text = """
+"This is not your tomb," the spirit says. "Seek your own."
+"""
+
+[[room]]
+room = "1/9106"
+like = "1/2231"
+name = "Large Tomb"
+desc = [
+  "This cavernous chamber's walls are covered with hundreds of intricate",
+  "frescoes depicting the turbulent history of Silvermere. The Heroes of",
+  "Silvermere can clearly be seen battling against the demonic forces of",
+  "the unnamed one. A mammoth stone sarcophagus rests on the floor in the",
+  "centre of the chamber, and a small altar stands at its feet. There is",
+  "a shimmering blue portal in the far wall.",
+]
+exits = { south = 9104, north = { to = 834, kind = "Text", par = [8576, 0, 8577, 1] } }
+kind = "Shop"
+shop = 909
+specmon = 9011
+
+[[shop]]
+number = 909
+like = 49
+name = "Super Warden Trainer"
+items = []
+trainclass = 17
+minlevel = 11
+maxlevel = 11
+
+[[monster]]
+number = 9011
+like = 83
+name = "Warden spirit"
+desc = [
+  "A pale, shimmering figure stands by the sarcophagus, the ghost of one of",
+  "the first Wardens. It watches you with old, patient eyes. Ask it about",
+  "your WEAPON.",
+]
+talk = 20210
+
+# The Warden spirit: asked about its WEAPON, it gives its class weapon once.
+[[text]]
+number = 20210
+text = """
+WEAPON:20211
+REWARD:20211
+BLADE:20211
+GIFT:20211
+"""
+link = 20215
+
+[[text]]
+number = 20211
+text = """
+The spirit turns its old, patient eyes on you.
+"""
+link = 20212
+
+[[text]]
+number = 20212
+text = """
+class 17:failability 1021:giveitem 9032:giveability 1021 1:text 20213
+class 17:text 20214
+maxlevel 9999:text 20216
+"""
+
+[[text]]
+number = 20213
+text = """
+"You came this far, Warden. Take this, and carry it well." The spirit lays a
+weapon in your hands, and is still again.
+"""
+
+[[text]]
+number = 20214
+text = """
+"You have had my gift already," the spirit says.
+"""
+
+[[text]]
+number = 20215
+text = """
+The spirit inclines its head to you, and says nothing.
+"""
+
+[[text]]
+number = 20216
+text = """
+"This is not your tomb," the spirit says. "Seek your own."
+"""
+
+[[room]]
+room = "1/9107"
+like = "1/2231"
+name = "Large Tomb"
+desc = [
+  "This cavernous chamber's walls are covered with hundreds of intricate",
+  "frescoes depicting the turbulent history of Silvermere. The Heroes of",
+  "Silvermere can clearly be seen battling against the demonic forces of",
+  "the unnamed one. A mammoth stone sarcophagus rests on the floor in the",
+  "centre of the chamber, and a small altar stands at its feet. There is",
+  "a shimmering blue portal in the far wall.",
+]
+exits = { southwest = 9104, north = { to = 834, kind = "Text", par = [8576, 0, 8577, 1] } }
+kind = "Shop"
+shop = 910
+specmon = 9012
+
+[[shop]]
+number = 910
+like = 49
+name = "Super Dervish Trainer"
+items = []
+trainclass = 20
+minlevel = 11
+maxlevel = 11
+
+[[monster]]
+number = 9012
+like = 83
+name = "Dervish spirit"
+desc = [
+  "A pale, shimmering figure stands by the sarcophagus, the ghost of one of",
+  "the first Dervishs. It watches you with old, patient eyes. Ask it about",
+  "your WEAPON.",
+]
+talk = 20220
+
+# The Dervish spirit: asked about its WEAPON, it gives its class weapon once.
+[[text]]
+number = 20220
+text = """
+WEAPON:20221
+REWARD:20221
+BLADE:20221
+GIFT:20221
+"""
+link = 20225
+
+[[text]]
+number = 20221
+text = """
+The spirit turns its old, patient eyes on you.
+"""
+link = 20222
+
+[[text]]
+number = 20222
+text = """
+class 20:failability 1021:giveitem 9031:giveability 1021 1:text 20223
+class 20:text 20224
+maxlevel 9999:text 20226
+"""
+
+[[text]]
+number = 20223
+text = """
+"You came this far, Dervish. Take this, and carry it well." The spirit lays a
+weapon in your hands, and is still again.
+"""
+
+[[text]]
+number = 20224
+text = """
+"You have had my gift already," the spirit says.
+"""
+
+[[text]]
+number = 20225
+text = """
+The spirit inclines its head to you, and says nothing.
+"""
+
+[[text]]
+number = 20226
+text = """
+"This is not your tomb," the spirit says. "Seek your own."
+"""
+
+[[monster]]
+number = 9008
+like = 82
+name = "bone colossus"
+desc = [
+  "A hulking thing of fused bones, taller than two men, with a cage of ribs",
+  "for a chest and something dark and patient moving inside it.",
+]
+items = [{ item = 9020 }]
+
+[[item]]
+number = 9020
+like = 338
+name = "bone-white key"
+desc = [
+  "A heavy old key, taken from the guardian of a tomb deep in the Crypt.",
+]
+cost = 0
+
+[[room_change]]
+room = "1/1421"
+exits = { northwest = { to = 9120, kind = "Class", par = [18, 0, 8570, 0] }, northeast = { to = 9120, kind = "Class", par = [19, 0, 8570, 0] } }
+
+[[room]]
+room = "1/9120"
+like = "1/1425"
+name = "Marble Passage"
+desc = [
+  "This narrow passageway is made of smooth white marble, polished to a",
+  "mirrorlike shine. Your every sound echoes down its length like a",
+  "thunderclap, it is so silent here. The passage slopes downwards at a",
+  "steady angle, heading into the bowels of the earth.",
+]
+exits = { north = 9121, south = 1421 }
+
+[[room]]
+room = "1/9121"
+like = "1/2223"
+name = "Marble Passage, Dead End"
+desc = [
+  "This narrow passageway is made of smooth white marble, polished to a",
+  "mirrorlike shine. Your every sound echoes down its length like a",
+  "thunderclap, it is so silent here. The passage levels off abruptly at",
+  "this point, and ends in a smooth wall. Inscribed upon the centre of",
+  "the wall is a curious glyph.",
+]
+exits = { west = { to = 9122, kind = "Text", par = [8259, 0, 8571, 1] }, south = 9120 }
+
+[[room]]
+room = "1/9122"
+like = "1/2224"
+name = "Large Chamber"
+desc = [
+  "This thirty foot square room has vaulted ceilings that reach up into",
+  "the darkness. Tall marble pillars rise up like smooth-skinned trees.",
+  "A large, filthy mound of rags dominates the centre of the chamber, and",
+  "you notice gnawed bones littering the floor about this rancid nest. A",
+  "plain-looking iron door is set in the northern wall.",
+]
+exits = { north = { to = 9123, kind = "Key", par = [9021, 2, 0, 0] }, east = { to = 9121, kind = "Text", par = [8259, 0, 8571, 1] } }
+specmon = 9009
+
+[[room]]
+room = "1/9123"
+like = "1/2225"
+name = "Marble Passage"
+desc = [
+  "This corridor is made of the same highly polished white marble as the",
+  "rest of the passages you have traveled through. It is wide and high-",
+  "ceilinged -- indeed, you are hard pressed in your efforts to even see",
+  "if there IS a ceiling. An iron door is set in the passage's end to the",
+  "south, and you can continue off to the north.",
+]
+exits = { north = 9124, south = { to = 9122, kind = "Key", par = [9021, 2, 0, 0] } }
+
+[[room]]
+room = "1/9124"
+like = "1/2226"
+name = "Marble Chamber"
+desc = [
+  "This small, round marble chamber is illuminated by a single glowing",
+  "crystal hanging from the ceiling. Its curving wall is broken by four",
+  "identical passages, each arrowing off into the darkness.",
+]
+exits = { south = 9123, northwest = { to = 9125, kind = "Class", par = [18, 0, 8570, 0] }, north = { to = 9126, kind = "Class", par = [19, 0, 8570, 0] } }
+
+[[room]]
+room = "1/9125"
+like = "1/2231"
+name = "Large Tomb"
+desc = [
+  "This cavernous chamber's walls are covered with hundreds of intricate",
+  "frescoes depicting the turbulent history of Silvermere. The Heroes of",
+  "Silvermere can clearly be seen battling against the demonic forces of",
+  "the unnamed one. A mammoth stone sarcophagus rests on the floor in the",
+  "centre of the chamber, and a small altar stands at its feet. There is",
+  "a shimmering blue portal in the far wall.",
+]
+exits = { southeast = 9124, north = { to = 834, kind = "Text", par = [8576, 0, 8577, 1] } }
+kind = "Shop"
+shop = 911
+specmon = 9013
+
+[[shop]]
+number = 911
+like = 49
+name = "Super Avenger Trainer"
+items = []
+trainclass = 18
+minlevel = 11
+maxlevel = 11
+
+[[monster]]
+number = 9013
+like = 83
+name = "Avenger spirit"
+desc = [
+  "A pale, shimmering figure stands by the sarcophagus, the ghost of one of",
+  "the first Avengers. It watches you with old, patient eyes. Ask it about",
+  "your WEAPON.",
+]
+talk = 20230
+
+# The Avenger spirit: asked about its WEAPON, it gives its class weapon once.
+[[text]]
+number = 20230
+text = """
+WEAPON:20231
+REWARD:20231
+BLADE:20231
+GIFT:20231
+"""
+link = 20235
+
+[[text]]
+number = 20231
+text = """
+The spirit turns its old, patient eyes on you.
+"""
+link = 20232
+
+[[text]]
+number = 20232
+text = """
+class 18:failability 1021:giveitem 9033:giveability 1021 1:text 20233
+class 18:text 20234
+maxlevel 9999:text 20236
+"""
+
+[[text]]
+number = 20233
+text = """
+"You came this far, Avenger. Take this, and carry it well." The spirit lays a
+weapon in your hands, and is still again.
+"""
+
+[[text]]
+number = 20234
+text = """
+"You have had my gift already," the spirit says.
+"""
+
+[[text]]
+number = 20235
+text = """
+The spirit inclines its head to you, and says nothing.
+"""
+
+[[text]]
+number = 20236
+text = """
+"This is not your tomb," the spirit says. "Seek your own."
+"""
+
+[[room]]
+room = "1/9126"
+like = "1/2231"
+name = "Large Tomb"
+desc = [
+  "This cavernous chamber's walls are covered with hundreds of intricate",
+  "frescoes depicting the turbulent history of Silvermere. The Heroes of",
+  "Silvermere can clearly be seen battling against the demonic forces of",
+  "the unnamed one. A mammoth stone sarcophagus rests on the floor in the",
+  "centre of the chamber, and a small altar stands at its feet. There is",
+  "a shimmering blue portal in the far wall.",
+]
+exits = { south = 9124, north = { to = 834, kind = "Text", par = [8576, 0, 8577, 1] } }
+kind = "Shop"
+shop = 912
+specmon = 9014
+
+[[shop]]
+number = 912
+like = 49
+name = "Super Assassin Trainer"
+items = []
+trainclass = 19
+minlevel = 11
+maxlevel = 11
+
+[[monster]]
+number = 9014
+like = 83
+name = "Assassin spirit"
+desc = [
+  "A pale, shimmering figure stands by the sarcophagus, the ghost of one of",
+  "the first Assassins. It watches you with old, patient eyes. Ask it about",
+  "your WEAPON.",
+]
+talk = 20240
+
+# The Assassin spirit: asked about its WEAPON, it gives its class weapon once.
+[[text]]
+number = 20240
+text = """
+WEAPON:20241
+REWARD:20241
+BLADE:20241
+GIFT:20241
+"""
+link = 20245
+
+[[text]]
+number = 20241
+text = """
+The spirit turns its old, patient eyes on you.
+"""
+link = 20242
+
+[[text]]
+number = 20242
+text = """
+class 19:failability 1021:giveitem 9034:giveability 1021 1:text 20243
+class 19:text 20244
+maxlevel 9999:text 20246
+"""
+
+[[text]]
+number = 20243
+text = """
+"You came this far, Assassin. Take this, and carry it well." The spirit lays a
+weapon in your hands, and is still again.
+"""
+
+[[text]]
+number = 20244
+text = """
+"You have had my gift already," the spirit says.
+"""
+
+[[text]]
+number = 20245
+text = """
+The spirit inclines its head to you, and says nothing.
+"""
+
+[[text]]
+number = 20246
+text = """
+"This is not your tomb," the spirit says. "Seek your own."
+"""
+
+[[monster]]
+number = 9009
+like = 84
+name = "grave wraith"
+desc = [
+  "A tall, ragged shape of grey mist with a face that is almost a face. The",
+  "air around it is as cold as a grave.",
+]
+items = [{ item = 9021 }]
+
+[[item]]
+number = 9021
+like = 338
+name = "grave-cold key"
+desc = [
+  "A heavy old key, taken from the guardian of a tomb deep in the Crypt.",
+]
+cost = 0
+
+# The class weapons, each given once by its class's tomb spirit.
+[[item]]
+number = 9030
+like = 78
+name = "runic athame"
+desc = [
+  "A ritual blade grown to the length of a greatsword, forged from mithril",
+  "and covered in acid-etched runes that glow with an inner light.",
+]
+cost = 0
+abilities = [{ name = "Magical", value = 2 }, { name = "MinLevel", value = 10 }, { name = "SpellstrikeSuccessOff", value = 10 }, { name = "SpellstrikeFailOff", value = 10 }]
+weapon_type = "TwoHandSharp"
+mindmg = 7
+maxdmg = 24
+speed = 1900
+accuracy = 4
+strreq = 55
+classes = [16]
+
+[[item]]
+number = 9031
+like = 67
+name = "blood-jeweled kris"
+desc = [
+  "A short, wavy-bladed kris, its hilt set with dark red jewels that seem to",
+  "drink the light. It is balanced for the off-hand and nothing else.",
+]
+cost = 0
+abilities = [{ name = "Magical", value = 2 }, { name = "MinLevel", value = 10 }, { name = "OffhandOnly" }]
+weapon_type = "OneHandSharp"
+mindmg = 4
+maxdmg = 13
+speed = 800
+accuracy = 6
+strreq = 40
+classes = [20]
+verbs_like = 68
+
+[[item]]
+number = 9032
+like = 624
+name = "darkwood arbalest"
+desc = [
+  "A heavy crossbow of near-black darkwood, its stock carved with running",
+  "hounds and stooping hawks. Its string hums faintly whenever an animal is",
+  "near.",
+]
+cost = 0
+abilities = [{ name = "Magical", value = 2 }, { name = "MinLevel", value = 10 }, { name = "Ranged" }, { name = "CompanionAccuracy", value = 10 }, { name = "CompanionDamage", value = 25 }]
+weapon_type = "TwoHandSharp"
+mindmg = 8
+maxdmg = 25
+speed = 2000
+accuracy = 8
+strreq = 65
+classes = [17]
+
+[[item]]
+number = 9033
+like = 88
+name = "censer of judgement"
+desc = [
+  "A heavy iron censer on a length of blackened chain, swung like a flail.",
+  "Embers smoulder inside it, and wherever it goes it leaves a thin trail of",
+  "bitter incense, like a church after a funeral.",
+]
+cost = 0
+abilities = [{ name = "Magical", value = 2 }, { name = "MinLevel", value = 10 }, { name = "SpellBackstabStealth", value = -10 }]
+weapon_type = "OneHandBlunt"
+mindmg = 5
+maxdmg = 17
+speed = 1600
+accuracy = 4
+strreq = 55
+classes = [18]
+
+[[item]]
+number = 9034
+like = 67
+name = "hexknife"
+desc = [
+  "A thin stiletto of blued steel, its needle blade scribed from hilt to",
+  "point with tiny, cramped sigils in a hand no one admits to teaching. The",
+  "letters are too small to read, and they feel warm.",
+]
+cost = 0
+abilities = [{ name = "Magical", value = 2 }, { name = "MinLevel", value = 10 }, { name = "BackstabAv", value = 10 }, { name = "SpellBackstab", value = 50 }]
+weapon_type = "OneHandSharp"
+mindmg = 3
+maxdmg = 12
+speed = 900
+accuracy = 6
+strreq = 40
+classes = [19]
+verbs_like = 70

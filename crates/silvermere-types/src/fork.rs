@@ -54,6 +54,17 @@ pub const BLUNT_BACKSTAB: Ability = Ability::Unknown(1016);
 /// own each round (design/dervish.md). The value is the off-hand's accuracy penalty. The
 /// class may use no item marked [`RANGED`].
 pub const DUAL_WIELD: Ability = Ability::Unknown(1017);
+/// On an item: a weapon that can only be held in the off-hand, with OFFHAND (the Dervish's
+/// kris, design/class-trainers.md). WIELD refuses it, and it stays in the off-hand when the
+/// main hand empties.
+pub const OFFHAND_ONLY: Ability = Ability::Unknown(1018);
+/// On an item: added to the wielder's companion's attack value (the Warden's arbalest).
+pub const COMPANION_ACCURACY: Ability = Ability::Unknown(1019);
+/// On an item: the wielder's companion's damage raised by this percentage.
+pub const COMPANION_DAMAGE: Ability = Ability::Unknown(1020);
+/// On a character: has had its class weapon from its tomb spirit. Set and checked by
+/// content scripts. Hidden.
+pub const CLASS_WEAPON_GIVEN: Ability = Ability::Unknown(1021);
 
 /// The fork's abilities by the name content uses, and whether players are shown them.
 pub const FORK_ABILITIES: &[(&str, Ability, bool)] = &[
@@ -74,6 +85,10 @@ pub const FORK_ABILITIES: &[(&str, Ability, bool)] = &[
     ("Vanish", VANISH, false),
     ("BluntBackstab", BLUNT_BACKSTAB, false),
     ("DualWield", DUAL_WIELD, false),
+    ("OffhandOnly", OFFHAND_ONLY, false),
+    ("CompanionAccuracy", COMPANION_ACCURACY, false),
+    ("CompanionDamage", COMPANION_DAMAGE, false),
+    ("ClassWeaponGiven", CLASS_WEAPON_GIVEN, true),
 ];
 
 /// A fork ability by its content name.
@@ -124,6 +139,10 @@ pub struct PetKind {
     pub accuracy: i16,
     /// Poison a hit leaves on the target (0 none).
     pub poison: i16,
+    /// Its blows' Magical level, as a weapon's: what it can hurt of the monsters that need
+    /// magic weapons (design/class-trainers.md).
+    #[serde(default)]
+    pub magic: i16,
 }
 
 impl PetKind {
@@ -204,6 +223,7 @@ mod tests {
             max_per_level: 200,
             accuracy: 0,
             poison: 0,
+            magic: 0,
         };
         assert_eq!(hound.damage(1), (2, 10));
         assert_eq!(hound.damage(10), (7, 28));

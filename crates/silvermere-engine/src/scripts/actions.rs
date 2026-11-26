@@ -240,6 +240,10 @@ fn run_clause(
                     add_spell_to_spellbook(plr, SpellNo(value));
                 }
             }
+            // Fork: a new companion (a leash used, design/class-trainers.md) starts unnamed
+            if found && abl == silvermere_types::fork::PET_KIND && value > 0 {
+                crate::combat::pet::companion_changed(world, id, value as u16);
+            }
             if found { OK } else { STOP }
         }
         Clause::AddAbility { ability: a, amount } => {
