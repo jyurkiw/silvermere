@@ -107,9 +107,14 @@ Each hand gets a stock round of its own. The main hand is exactly the stock roun
   slow main-hand mace.
 - **The order:** the hands take turns: main, off, main, off..., until both have run out of
   energy. A hand that runs out first drops out and the other keeps going.
-- **The limit: 8 blows a round, both hands together.** Since the hands take turns, two hands
-  with energy to spare get 4 each. When one hand runs out, the other goes on until the total
-  reaches 8, though never past the stock 6 for one hand (`MAX_BLOWS`).
+- **The limit: 8 blows a round, both hands together,** never past the stock 6 for one hand
+  (`MAX_BLOWS`), and the off-hand within its share (below).
+- **The off-hand's share** (changed after play-testing): the off-hand makes at most 1 blow
+  a round below level 12 and at most 2 from level 12 to 19. From level 20 it fills in for
+  the main hand: at most the blows the main hand's energy leaves short of the 8 (and never
+  more than 6). The main hand's count is its round-start energy over its blow cost, 1 to 6.
+  Within the share the hands still take turns, and the off-hand still needs the energy for
+  each blow after its first. (`combat/dual.rs`: `offhand_cap`.)
 - **The minimum:** each hand swings at least once a round, even when its weapon costs more
   than a round's energy. That is the "always two swings". A slow weapon's extra cost isn't
   carried over as a debt: the hand's carry-over just goes to 0.
@@ -130,17 +135,18 @@ hand's.
 
 | Level | Cost per blow | Witchunter (blows a round) | Dervish (both hands) |
 |---|---|---|---|
-| 1 | 577 | 1-2 | 2-4 |
-| 5 | 375 | 2-3 | 4-6 |
-| 10 | 260 | 3-4 | 6-8 |
-| 15+ | 200 (the floor) | 5 | 8 (the cap) |
+| 1 | 577 | 1-2 | 2-3 |
+| 5 | 375 | 2-3 | 3-4 |
+| 10 | 260 | 3-4 | 4-5 |
+| 15 | 200 (the floor) | 5 | 7 |
+| 20+ | 200 (the floor) | 5 | 8 (the cap) |
 
 The figures come from `cost = speed × 1000 / ((level × 7 + 45) × 200 × 1500 / 9000)`.
 The minimum of one blow per hand matters for slow weapons. A speed-2000 weapon costs 1154 a
 blow at level 1, which would otherwise be one blow every other round.
 
-A Dervish lands twice the Witchunter's blows until the cap, and 8 to its 5 once both are
-at the floor, less the off-hand penalty, with lighter armour and no shield. Its experience
+A Dervish lands one blow more than the Witchunter below level 12, two more to level 19,
+and 8 to its 5 from level 20, when both are at the floor, less the off-hand penalty, with lighter armour and no shield. Its experience
 was first set at 130%, on par with the Witchunter, and raised to 200% after play-testing:
 the extra blows are worth more than the Witchunter's heavier armour and shield. The balance sim in [testing.md](testing.md) should
 check the penalty and the experience.
@@ -178,8 +184,9 @@ experience paths, so kills, experience and death lines stay stock.
 4. Each hand gets its own round of blows, beyond the stock blow limit. At least two blows a
    round, one per hand.
 5. Off-hand blows take −10 accuracy, at full damage, the same at every level.
-6. At most 8 blows a round for both hands together, taken in turns (4 each when both have
-   the energy), and never more than 6 for one hand.
+6. At most 8 blows a round for both hands together, taken in turns, and never more than 6
+   for one hand. The off-hand makes at most 1 below level 12, 2 to level 19, and from level
+   20 what the main hand leaves of the 8 (changed after play-testing).
 7. The off-hand weapon counts as a worn item: all its bonuses apply and stack with the main
    weapon's. Its on-hit abilities apply to its own blows.
 8. OFFHAND needs a main weapon wielded. When the main weapon comes off, the off-hand weapon
