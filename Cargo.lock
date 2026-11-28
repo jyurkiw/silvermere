@@ -2351,6 +2351,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "silvermere-world"
+version = "0.1.18"
+dependencies = [
+ "serde",
+ "silvermere-content",
+ "silvermere-types",
+ "thiserror",
+ "toml 1.1.8+spec-1.1.0",
+]
+
+[[package]]
 name = "similar"
 version = "2.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

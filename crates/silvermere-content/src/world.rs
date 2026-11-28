@@ -98,7 +98,9 @@ fn lines<const N: usize>(text: &[String]) -> [String; N] {
     std::array::from_fn(|i| text.get(i).cloned().unwrap_or_default())
 }
 
-fn exits(list: &std::collections::BTreeMap<String, ExitSpec>) -> Result<Vec<(usize, Exit)>, String> {
+fn exits(
+    list: &std::collections::BTreeMap<String, ExitSpec>,
+) -> Result<Vec<(usize, Exit)>, String> {
     list.iter()
         .map(|(d, spec)| {
             let d = direction(d).ok_or_else(|| format!("unknown direction `{d}`"))?;
@@ -161,6 +163,21 @@ pub fn check(w: &WorldFile) -> Result<(), String> {
                 .find(|t| format!("{t:?}").eq_ignore_ascii_case(k))
                 .ok_or_else(|| format!("room {}: unknown kind `{k}`", r.room))?;
         }
+        if let Some(g) = r.mon_group
+            && usize::try_from(g)
+                .ok()
+                .is_none_or(|g| g >= silvermere_types::names::MONSTER_TYPES.len())
+        {
+            return Err(format!("room {}: no monster group {g}", r.room));
+        }
+        if w.room
+            .iter()
+            .filter(|o| room_key(&o.room) == Some(key))
+            .count()
+            > 1
+        {
+            return Err(format!("room {} twice", r.room));
+        }
     }
     for c in &w.room_change {
         room_key(&c.room).ok_or_else(|| format!("room change `{}` is not a room", c.room))?;
@@ -191,7 +208,8 @@ pub fn check(w: &WorldFile) -> Result<(), String> {
         }
         abilities(&i.abilities).map_err(|e| format!("item {}: {e}", i.number))?;
         if let Some(t) = &i.weapon_type {
-            weapon_type(t).ok_or_else(|| format!("item {}: unknown weapon type `{t}`", i.number))?;
+            weapon_type(t)
+                .ok_or_else(|| format!("item {}: unknown weapon type `{t}`", i.number))?;
         }
     }
     for c in &w.item_change {
@@ -199,7 +217,10 @@ pub fn check(w: &WorldFile) -> Result<(), String> {
     }
     for m in &w.message {
         if m.number < FORK_MESSAGES {
-            return Err(format!("message {}: numbered from {FORK_MESSAGES}", m.number));
+            return Err(format!(
+                "message {}: numbered from {FORK_MESSAGES}",
+                m.number
+            ));
         }
     }
     for t in &w.text {
@@ -528,6 +549,18 @@ pub async fn install_world(db: &Db, w: &WorldFile) -> Result<usize, InstallError
         // monsters unless the content says so: a copied limit with no group to draw from
         // stalls the monster generation as a player walks in
         room.maxmonsters = r.max_monsters.unwrap_or(0);
+        if let Some(g) = r.mon_group {
+            room.mongroup = g;
+        }
+        if let Some(l) = r.min_level {
+            room.minlevel = l;
+        }
+        if let Some(l) = r.max_level {
+            room.maxlevel = l;
+        }
+        if let Some(m) = r.gen_monster {
+            room.genmonster = MonsterNo(m);
+        }
         db.rooms()
             .put_many(&[room], StateWrite::CreateMissing)
             .await?;

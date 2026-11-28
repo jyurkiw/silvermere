@@ -1,0 +1,27 @@
+[package]
+name = "silvermere-world"
+description = "The world editor's builder format (MMUD_Builder) and its compiler into content/builder.toml."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+license.workspace = true
+# one test binary for all of tests/ (tests/all.rs), not one per file (T-129)
+autotests = false
+
+[lints]
+workspace = true
+
+[dependencies]
+silvermere-types.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+toml.workspace = true
+
+[dev-dependencies]
+# the compiled file is checked by the loader that reads it
+silvermere-content.workspace = true
+
+[[test]]
+name = "all"
+path = "tests/all.rs"

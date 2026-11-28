@@ -179,6 +179,20 @@ pub struct WorldFile {
     pub message: Vec<MessageSpec>,
 }
 
+impl WorldFile {
+    /// Adds another file's records to these.
+    pub fn extend(&mut self, other: WorldFile) {
+        self.room.extend(other.room);
+        self.room_change.extend(other.room_change);
+        self.monster.extend(other.monster);
+        self.shop.extend(other.shop);
+        self.item.extend(other.item);
+        self.item_change.extend(other.item_change);
+        self.text.extend(other.text);
+        self.message.extend(other.message);
+    }
+}
+
 /// An exit: a room on the same map (a plain exit), or a stock exit of any type with its
 /// four parameters as the stock records hold them (`{ to = 9101, kind = "Class", par = [16,
 /// 0, 1, 0] }`).
@@ -264,6 +278,15 @@ pub struct RoomSpec {
     pub script: Option<i32>,
     /// Random monsters the room may hold; none when left out (a new room has no monster group).
     pub max_monsters: Option<u8>,
+    /// The monster group its random monsters come from, a `MonsterType` code (`Group 1` is
+    /// 6); the copied room's when left out.
+    pub mon_group: Option<i16>,
+    /// The levels (`genindex`) of the group's monsters it makes, 0 for no limit; the copied
+    /// room's when left out.
+    pub min_level: Option<i16>,
+    pub max_level: Option<i16>,
+    /// One known monster it makes instead of the group's; none when left out.
+    pub gen_monster: Option<i32>,
 }
 
 /// Changes to a room already in the world: new exits, and the shop it is.
