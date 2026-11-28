@@ -6,8 +6,9 @@
 //! here, a round's energy added each round), and each blow costs that hand's weapon's
 //! energy. A hand that can't pay drops out and the other goes on. Each hand strikes at
 //! least once a round, whatever its weapon costs; the two make at most
-//! [`DUAL_MAX_BLOWS`] together, and neither more than the stock [`MAX_BLOWS`]. The
-//! off-hand's blow is a stock blow with the off-hand weapon, its attack value less the
+//! [`DUAL_MAX_BLOWS`] together, and neither more than the stock [`MAX_BLOWS`]. The off-hand
+//! makes at most [`offhand_cap`] blows: 1 below level 12, 2 below level 20, and from level 20
+//! the blows the main hand's energy leaves short of the 8. The off-hand's blow is a stock blow with the off-hand weapon, its attack value less the
 //! ability's value.
 
 use silvermere_rules::combat::{AlignGroup, Fighter, MAX_BLOWS, Move, TICK_ENERGY};
@@ -24,6 +25,34 @@ use crate::world::World;
 
 /// The most blows a round makes with both hands.
 pub const DUAL_MAX_BLOWS: u32 = 8;
+
+/// The level from which the off-hand makes 2 blows a round rather than 1.
+pub const OFFHAND_TWO_BLOWS_LEVEL: u16 = 12;
+/// The level from which the off-hand fills in the blows the main hand doesn't make.
+pub const OFFHAND_FILL_LEVEL: u16 = 20;
+
+/// The most blows the off-hand makes in a round for a Dervish of `level` whose main hand
+/// makes `main_blows`: 1 below [`OFFHAND_TWO_BLOWS_LEVEL`], 2 below [`OFFHAND_FILL_LEVEL`],
+/// and from then on what the main hand leaves of [`DUAL_MAX_BLOWS`]. Never more than the
+/// stock [`MAX_BLOWS`], and never less than the one blow each hand always makes.
+pub fn offhand_cap(level: u16, main_blows: u32) -> u32 {
+    let by_level = if level < OFFHAND_TWO_BLOWS_LEVEL {
+        1
+    } else if level < OFFHAND_FILL_LEVEL {
+        2
+    } else {
+        MAX_BLOWS
+    };
+    by_level
+        .min(DUAL_MAX_BLOWS.saturating_sub(main_blows))
+        .clamp(1, MAX_BLOWS)
+}
+
+/// The blows the main hand's `energy` pays for at `cost` a blow: at least 1, at most the
+/// stock [`MAX_BLOWS`].
+fn main_blows(energy: i32, cost: i32) -> u32 {
+    (energy.max(0) / cost.max(1)).clamp(1, MAX_BLOWS as i32) as u32
+}
 
 /// The off-hand weapon a character holds: the worn slot and the item, the first weapon
 /// among its worn items.
@@ -71,6 +100,10 @@ pub struct Hands {
     /// The off-hand's energy left this round.
     pub energy: i32,
     penalty: i32,
+    /// The character's level, for [`offhand_cap`].
+    level: u16,
+    /// The off-hand's most blows this round, set at the round's first blow.
+    off_cap: Option<u32>,
     blows: [u32; 2],
     last: Option<Hand>,
 }
@@ -91,6 +124,8 @@ impl Hands {
             verbs: Verbs::default(),
             energy: carry + TICK_ENERGY,
             penalty,
+            level: plr.level,
+            off_cap: None,
             blows: [0, 0],
             last: None,
         };
@@ -103,8 +138,14 @@ impl Hands {
     pub fn refresh(&mut self, world: &mut World, id: SessionId) -> Option<()> {
         let mut plr = player(world, id)?.clone();
         plr.weapon = self.item;
-        let (mut atk, verbs) =
-            player_side(world, id, &plr, Move::Attack, Move::Attack, AlignGroup::Neutral)?;
+        let (mut atk, verbs) = player_side(
+            world,
+            id,
+            &plr,
+            Move::Attack,
+            Move::Attack,
+            AlignGroup::Neutral,
+        )?;
         atk.av -= self.penalty;
         self.atk = atk;
         self.verbs = verbs;
@@ -113,7 +154,11 @@ impl Hands {
 
     fn can(&self, hand: Hand, energy: i32, cost: i32) -> bool {
         let n = self.blows[hand as usize];
-        n < MAX_BLOWS && (n == 0 || energy >= cost)
+        let cap = match hand {
+            Hand::Main => MAX_BLOWS,
+            Hand::Off => self.off_cap.unwrap_or(1),
+        };
+        n < cap && (n == 0 || energy >= cost)
     }
 
     /// The hand to strike next, the main hand's `main_energy` and `main_cost` given: the hands
@@ -121,6 +166,10 @@ impl Hands {
     pub fn next(&mut self, main_energy: i32, main_cost: i32) -> Option<Hand> {
         if self.blows[0] + self.blows[1] >= DUAL_MAX_BLOWS {
             return None;
+        }
+        // the off-hand's share, from the main hand's energy at the round's start
+        if self.off_cap.is_none() {
+            self.off_cap = Some(offhand_cap(self.level, main_blows(main_energy, main_cost)));
         }
         let main = self.can(Hand::Main, main_energy, main_cost);
         let off = self.can(Hand::Off, self.energy, self.atk.energy as i32);
@@ -160,9 +209,11 @@ pub fn settle_hands(world: &mut World, id: SessionId) {
         return;
     };
     // an off-hand-only weapon stays where it is (design/class-trainers.md)
-    if world.items.get(&item).is_some_and(|i| {
-        silvermere_rules::abilities::item_has_ability(i, fork::OFFHAND_ONLY)
-    }) {
+    if world
+        .items
+        .get(&item)
+        .is_some_and(|i| silvermere_rules::abilities::item_has_ability(i, fork::OFFHAND_ONLY))
+    {
         return;
     }
     let name = world
@@ -201,4 +252,31 @@ pub fn tell_room_wields(world: &mut World, id: SessionId, item: &str, his: &str)
             his: his.to_owned(),
         },
     );
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn the_off_hand_cap_grows_with_level() {
+        assert_eq!(offhand_cap(1, 1), 1);
+        assert_eq!(offhand_cap(11, 3), 1);
+        assert_eq!(offhand_cap(12, 3), 2);
+        assert_eq!(offhand_cap(19, 1), 2);
+        // from 20, the blows the main hand leaves of the 8, at most 6
+        assert_eq!(offhand_cap(20, 6), 2);
+        assert_eq!(offhand_cap(20, 5), 3);
+        assert_eq!(offhand_cap(20, 1), 6);
+        assert_eq!(offhand_cap(60, 8), 1);
+    }
+
+    #[test]
+    fn the_main_hand_blows_come_from_its_energy() {
+        assert_eq!(main_blows(1000, 200), 5);
+        assert_eq!(main_blows(1200, 200), 6);
+        assert_eq!(main_blows(2000, 200), 6);
+        assert_eq!(main_blows(1000, 1500), 1);
+        assert_eq!(main_blows(0, 0), 1);
+    }
 }
