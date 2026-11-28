@@ -10,6 +10,7 @@ Fork-only.
 - [The builder format](#the-builder-format)
 - [Compiling](#compiling)
 - [Installing: claims and the comb](#installing-claims-and-the-comb)
+- [Editing stock records](#editing-stock-records)
 - [The app](#the-app)
   - [The 3D map](#the-3d-map)
   - [Rooms: navigation](#rooms-navigation)
@@ -42,6 +43,8 @@ world editor replaces that with:
 - **Claims and the comb** in silvermere: the install records which numbers the content
   holds, and when a number has to move, moves the characters, items and monsters that used
   it, or refuses to start until told to.
+- **Stock edits**: stock rooms, NPCs, monsters, items and spells can be changed or deleted
+  as well, as patches the installer applies over the stock records at every start.
 
 The content overlay ([content-overlay.md](content-overlay.md)) is unchanged in kind: the
 compiled file is built into the program and installed at every start.
@@ -142,6 +145,23 @@ open_steps = 2
   the compiler. It has nothing to do with the room's number: moving a room in the editor
   never changes its number, and its number never changes where it sits.
 
+A **stock edit** names the stock record by number and holds only what changes
+([Editing stock records](#editing-stock-records)):
+
+```toml
+[[edit]]
+room = "1/2146"                  # Newhaven, Narrow Road
+title = "Newhaven, Muddy Road"
+max_monsters = 2
+
+[[edit]]
+monster = 76                     # Dathalar, the General Store's keeper
+talk = "dathalar-talk"
+
+[[delete]]
+item = 312
+```
+
 The first version of the format covers what `world.toml` covers today. It grows with the
 game-side format, one record kind at a time ([The other editors](#the-other-editors)).
 
@@ -220,6 +240,56 @@ content's). With claims it decides by `content_claims`, which is what
 The current hand-numbered content is adopted into the claims with the numbers it has, so
 no character moves on the first install.
 
+## Editing stock records
+
+The editor changes and deletes **stock** records as well as adding new ones: rooms (exits
+included), NPCs and other monsters, items, spells, shops, and their texts and messages.
+
+**Patches.** A stock edit is a **patch**: the stock record by number, and only the fields it
+changes. The builder saves one when a stock record is changed in the editor; the compiler
+writes it into `world.toml` as a change record for its kind (`[[room_change]]`,
+`[[monster_change]]`, `[[item_change]]`, `[[spell_change]]`, `[[shop_change]]`, ...).
+Today's `[[room_change]]` (exits, shop, NPC, script) and `[[item_change]]` (abilities) grow
+into these. Patches number nothing, so the claims aren't involved: the installer reads the
+stock record, sets the patched fields and writes it back, at every start. A re-import
+reverts stock and the next start puts the patches back, as with the rest of the overlay.
+
+**Drift.** For every patched field the compiler also writes the **stock value the patch was
+made against** (`base`). At install, a field must hold either its `base` (stock, not yet
+patched) or the patched value (already patched). Anything else means stock changed
+underneath the edit (a different import, a stock update), and **the install refuses: the
+server doesn't start**, naming each record and field. The fix is to look at the new stock
+value in the editor, keep or redo the edit, and recompile.
+
+**Undoing an edit.** The database keeps no copy of a field's stock value once it's patched.
+Removing a patch from the builder leaves the patched value in place, so undoing a stock
+edit needs `silvermere import` and a restart, which writes stock back; the remaining
+patches go on again at that start. The installer remembers which fields it has patched
+(`content_patches`) so it can warn: "1/2140 `exits.east` was edited by the content and no
+longer is; run `silvermere import` to restore stock."
+
+**Deleting stock records.** Allowed, and handled like orphans:
+
+- A deleted room's characters go to the fallback rooms through the comb (the bank, or the
+  Blue Tower if evil), and are told at next login. A deleted item is taken out of
+  inventories, floors and shop stock; a deleted monster's live copies are removed.
+- Deleting changes live state, so it sits behind the same gate: without `--allow-remap` the
+  install stops and lists what would move.
+- References left pointing at a deleted record (an exit into a deleted room, a shop selling
+  a deleted item, a monster casting a deleted spell, a script giving a deleted item) are
+  warnings at compile time, listed in the report below.
+
+**The orphan report.** Deleting records and changing stock exits can cut parts of the world
+off. `silvermere-world report`, and a panel in the app, list:
+
+- **orphaned rooms**: rooms nothing leads to any more (no exit, Map Change, teleport or
+  script gets a player there), walking from the stock start rooms;
+- **orphaned maps**: maps no room on another map leads into;
+- **dangling references**: anything that names a deleted record.
+
+The compiler prints the report as warnings on every compile, and the map can colour
+orphaned rooms.
+
 ## The app
 
 One native window: the 3D map in the middle, egui panels around it. Bevy 0.20 with
@@ -243,14 +313,17 @@ picking, a panel with the clicked room's data.
 - **Links between mechanisms.** A Remote Action is drawn to the exit it works on (the door
   it swaps, the hidden exit whose block it clears); a key exit to where its key comes from
   (a monster that carries it, a shop that sells it, a script that gives it).
-- **Stock browsing, read-only.** Stock rooms have no positions, so an area is laid out from
+- **Stock rooms, editable.** Stock rooms have no positions, so an area is laid out from
   its exits: breadth-first from a room, one cell per exit in its direction, the nearest
   free cell where the geometry doesn't close. The walk extends as you move; layouts are
   cached in an editor-only file and can be pinned by hand. A `/room` ID from the game or
-  mudparty jumps straight to a room.
+  mudparty jumps straight to a room. Stock rooms open in the same forms as ours; a change
+  saves a patch ([Editing stock records](#editing-stock-records)), fields changed from stock
+  are marked, and edited stock rooms are tinted on the map. Deleting a stock room is a form
+  action too.
 - **Building.** Our rooms sit at their own `at` positions. **Dig** from a selected room
   (ours or stock) in a direction makes a new room in the next cell and a two-way exit; from
-  a stock room that's a `[[room_change]]` on the stock side.
+  a stock room that's a patch on the stock side.
 
 ### Rooms: navigation
 
@@ -320,9 +393,10 @@ effects, output) comes later.
 
 ### The other editors
 
-Only **new** records, for now (no changes to stock items, monsters or spells). Monster
-logic is **only what the stock data supports**: no new behaviour, so no engine changes.
-Order: monsters, items, spells, then the rest.
+Each editor creates new records and patches or deletes stock ones, in the same forms
+(fields changed from stock are marked). Monster logic is **only what the stock data
+supports**: no new behaviour, so no engine changes. Order: monsters, items, spells, then
+the rest.
 
 | Editor | What it edits | Worth building in |
 |---|---|---|
@@ -331,8 +405,9 @@ Order: monsters, items, spells, then the rest.
 | Spells | about 30 fields, with level scaling (`maxval += maxinc * level / maxlvls`, the same for min and duration) | the computed values at levels 1-50 |
 | The rest | messages, text blocks, shops (stock, training class and levels) | forms |
 
-Each one needs the **game-side format extended first** (a `[[spell]]` record, more fields
-on `[[monster]]`, `[[item]]` and `[[room]]`), in silvermere's `silvermere-content`, before
+Each one needs the **game-side format extended first** (a `[[spell]]` record and its
+`[[spell_change]]`, more fields on `[[monster]]`, `[[item]]` and `[[room]]` and on their
+change records, deletes), in silvermere's `silvermere-content`, before
 the editor can ship it: the compiler can only write what the game installs.
 
 ## Checks
@@ -347,6 +422,10 @@ the editor can ship it: the compiler can only write what the game installs.
 | A number held by something the content doesn't own | install | the server doesn't start |
 | A remap or orphan without `--allow-remap` | install | the server doesn't start; the list is printed |
 | The compiled file's version stamp differs from the installer's | install | a warning |
+| A patched stock field holds neither its `base` nor the patched value (drift) | install | the server doesn't start, naming the record and field |
+| A field the content patched before and no longer does | install | a warning: run `silvermere import` to restore stock |
+| A stock delete without `--allow-remap` | install | the server doesn't start; the list is printed |
+| Orphaned rooms and maps; references to deleted records | the compiler (`silvermere-world report`); the app | a warning |
 
 ## Fitting it into silvermere
 
@@ -354,7 +433,8 @@ the editor can ship it: the compiler can only write what the game installs.
 |---|---|---|
 | `silvermere-world` (compiler, library and CLI) | a new crate, main workspace | the workspace list |
 | The script parser | a new crate, out of `silvermere-engine/src/scripts` | the engine uses it instead of its own copy |
-| `content_claims` table | new migrations, sqlite and postgres | none |
+| `content_claims` and `content_patches` tables | new migrations, sqlite and postgres | none |
+| Change records for every kind, with `base` values; deletes | `silvermere-content`'s `model.rs` and `world.rs` | today's `[[room_change]]` and `[[item_change]]` grow into them |
 | Claims, collision check, comb, login messages | `silvermere-content`'s install | `world.rs` decides ownership by claims, not by range |
 | `--allow-remap`, `--dry-run`, `content claims export` | `bin/silvermere`'s `content` subcommand | the CLI list and `docs/cli.md` |
 | The sidecar | `content/world.claims.toml` | `Content::from_files` skips it |
@@ -373,12 +453,13 @@ The importer, the stock files and the engine's game logic are untouched.
 3. **Claims and the comb** (silvermere): the table, the collision check, the comb, the
    fallback rooms, login messages, `--allow-remap`, `--dry-run`, `claims export`. Can run
    alongside 4.
-4. **Room editing** (MMUD_Builder): our rooms on the map with stock, the room and exit
-   forms, dig, saving builder files, Compile.
+4. **Room editing** (MMUD_Builder): our rooms and stock rooms on the map, the room and exit
+   forms for both (stock edits as patches, with the drift check and deletes), dig, saving
+   builder files, Compile, the orphan report.
 5. **Checks**: the shared script parser split out, script linting and which-line-wins, the
    cross-room checks, MMUD_Builder CI.
-6. **The other editors**, each after its game-side format: monsters, items, spells, then
-   messages, shops and the rest.
+6. **The other editors**, each after its game-side format, new and stock records together:
+   monsters, items, spells, then messages, shops and the rest.
 7. **Later**: live re-install and `/v1/reload-world` without a restart; the rule builder.
 
 ## Decisions
@@ -398,11 +479,20 @@ The importer, the stock files and the engine's game logic are untouched.
    (1/2327) if evil, and are told at next login.
 8. **A remap needs `--allow-remap`**, or the install stops with a warning and the server
    doesn't start.
-9. **Stock rooms can be browsed read-only** on the 3D map, laid out from their exits.
+9. **Stock rooms are on the 3D map**, laid out from their exits, and editable.
 10. **Scripts are raw text with tools** first; the rule builder later.
 11. **Monster logic is only what the stock data supports.**
-12. **New records only**, for now; no changes to stock items, monsters or spells.
-13. **Editors after rooms: monsters, items, spells**, then the rest.
+12. **Stock records can be changed and deleted**: rooms, NPCs and monsters, items, spells,
+    shops, texts and messages. Changes are patches of only the changed fields; deletes go
+    through the comb.
+13. **Editors after rooms: monsters, items, spells**, then the rest; each does new and stock
+    records together.
+14. **Drift refuses the start.** A patched field whose stock value isn't the one the patch
+    was made against stops the install until the edit is redone.
+15. **Undoing a stock edit needs a re-import** (`silvermere import` and a restart); the
+    installer warns about fields it patched before and no longer does.
+16. **Orphaned rooms and maps are reported**, with references to deleted records, by the
+    compiler and the app.
 
 ## Open questions
 
@@ -424,6 +514,7 @@ The importer, the stock files and the engine's game logic are untouched.
   rooms and pipes, before installing.
 - **mudparty** sending the party's current room to the editor, so the map follows a live
   game.
-- Exporting a stock area into builder files as a starting point for a copy (when changes
-  to stock records come back into scope).
+- Exporting a stock area into builder files as a starting point for a copy.
+- Keeping each field's stock value in the database the first time it's patched, so an edit
+  could be undone without a re-import (set aside in favour of the re-import, Decision 15).
 - The rule builder writing the same raw lines, so the two can be mixed in one script.
