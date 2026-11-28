@@ -96,7 +96,8 @@ impl Content {
         Content::from_files(embedded::FILES)
     }
 
-    /// The content of the named files (`classes.toml`, `help.toml`); others are refused.
+    /// The content of the named files (`classes.toml`, `help.toml`, `world.toml`,
+    /// `builder.toml`, ...); others are refused.
     pub fn from_files(files: &[(&str, &str)]) -> Result<Content, ContentError> {
         let mut content = Content::default();
         for &(name, text) in files {
@@ -106,11 +107,15 @@ impl Content {
                     content.add_classes(name, &f)?;
                 }
                 "help.toml" => content.help = parse(name, text)?,
-                "world.toml" => {
+                // the hand-written world and the world editor's compiled one (MMUD_Builder,
+                // design/world-editor.md) add up; the compiler's claims sidecar is its own
+                "world.toml" | "builder.toml" => {
                     let f: model::WorldFile = parse(name, text)?;
                     world::check(&f).map_err(|e| bad(name, "world", e))?;
-                    content.world = f;
+                    content.world.extend(f);
+                    world::check(&content.world).map_err(|e| bad(name, "world", e))?;
                 }
+                "builder.claims.toml" => {}
                 "pets.toml" => {
                     let f: model::PetsFile = parse(name, text)?;
                     content.add_pets(name, &f)?;

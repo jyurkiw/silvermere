@@ -15,6 +15,7 @@ members = [
     "crates/silvermere-text",
     "crates/silvermere-types",
     "crates/silvermere-web",
+    "crates/silvermere-world",
 ]
 # The crate template is copied by scaffolding cards; it is not built.
 exclude = ["crates/_template"]
@@ -44,6 +45,7 @@ silvermere-testkit = { path = "crates/silvermere-testkit" }
 silvermere-text = { path = "crates/silvermere-text" }
 silvermere-types = { path = "crates/silvermere-types" }
 silvermere-web = { path = "crates/silvermere-web" }
+silvermere-world = { path = "crates/silvermere-world" }
 anyhow = "1.0.104"
 argon2 = "0.6.0"
 axum = "0.8.9"
